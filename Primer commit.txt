@@ -1,0 +1,21 @@
+PASOS PARA PREPARACIÓN DE ENTORNO GIT:
+
+1. Instalar GIT
+2. Crear una cuenta github
+3. Crear una carpeta para guardar el repositorio. Por ejemplo: C:\Users\TuUsuario\Documentos\DAW
+4. Abre git bash y ubica en la carpeta creada
+5. copia el siguiente comando: git clone https://github.com/slg71/DAW.git
+6. abre visual code con: code .
+8. Abajo a la izquierda aparece la rama en el que se está trabajando, dale click y dale a crear una rama nueva.
+9. Pon tu nombre y confirma.
+10. Realiza cualquier cambio. Por ejemplo: crea un .html vacío.
+11. A la izquierda, en "Source Control" (la opción debajo de la lupa) muestra los cambios realizados
+12. Añade los cambios con el + al lado del cambio.
+13. Confirma el cambio con Commit
+14. Aparecerá un botón en lugar de Commit para publicar la rama, publicala.
+15. Refresca la página del repositorio en github y confirma que la rama se ha publicado correctamente.
+
+RAMAS:
+
+- main: donde se publica el trabajo hecho.
+- tunombre: rama personal para no solapar posibles errores.
