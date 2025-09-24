@@ -6,6 +6,72 @@
     <title>Registro</title>
 </head>
 <body>
-    
+    <header>
+        <h1>PI - Pisos & Inmuebles</h1>
+        <p>Tu nuevo hogar te espera</p>
+
+        <nav>
+            <a href="index.html">Inicio</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="registro">
+            <h2>Registro</h2>
+
+            <form action="index_registrado.html" method="post">
+                <label for="usuario">Usuario</label>
+                <input type="text" id="usuario" name="usuario">
+                
+                <label for="pwd">Contraseña</label>
+                <input type="password" id="pwd" name="pwd">
+
+                <!--repetir contraseña??? osea ns si se hace así pero bueno ok-->
+                <label for="pwd2">Contraseña</label>
+                <input type="password" id="pwd2" name="pwd2">
+
+                <label for="email">Dirección de email</label>
+                <input type="text" id="email" name="email">
+
+
+                <!--mencionaba un datalist en el enunciado pero he optado mejor por un select ya que es lo más común-->
+                <label for="sexo">Sexo</label>
+                <select id="sexo" name="sexo">
+                    <option value="hombre">Hombre</option>
+                    <option value="mujer">Mujer</option>
+                    <option value="otro">Otro</option>
+                </select>
+
+                <label for="nac">Fecha de nacimiento</label>
+                <input type="date" id="nac" name="nac">
+
+                <label for="ciudad">Ciudad de residencia</label>
+                <input type="text" id="ciudad" name="ciudad">
+
+                <label for="pais">País de residencia</label>
+                <select id="pais" name="pais">
+                    <option value="espana">España</option>
+                    <option value="uk">Reino Unido</option>
+                    <option value="italia">Italia</option>
+                    <option value="francia">Francia</option>
+                    <option value="usa">Estados Unidos</option>
+                    <option value="china">China</option>
+                    <option value="japon">Japón</option>
+                    <option value="sk">Corea del Sur</option>
+                    <option value="india">India</option>
+                    <option value="australia">Australia</option>
+                </select>
+
+                <label for="foto">Foto de perfil</label>
+                <input type="file" id="foto" name="foto">
+
+                <button type="submit">Confirmar</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        © Leigh Garett & Maria Luisa Roca, Grupo 3 de Prácticas
+    </footer>
 </body>
 </html>
