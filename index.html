@@ -13,7 +13,7 @@
         <nav>
             <a href="publicar.html">Publicar anuncio</a>
             <a href="registro.html">Registro</a>
-            <a href="perfil.html"><img src="/imagen.jpg">Perfil</a>
+            <a href="perfil.html"><img src="/imagen.jpg" alt="Foto Perfil">Perfil</a>
         </nav>
     </header>
 
@@ -22,11 +22,16 @@
             <h2>Iniciar sesión</h2>
 
             <form action="index_registrado.html" method="post">
-                <label for="usuario">Usuario</label>
-                <input type="text" id="usuario" name="usuario">
-                
-                <label for="pwd">Contraseña</label>
-                <input type="password" id="pwd" name="pwd">
+
+                <fieldset>
+                    <legend>Datos de usuario</legend>
+
+                    <label for="usuario">Usuario</label>
+                    <input type="text" id="usuario" name="usuario">
+                    
+                    <label for="pwd">Contraseña</label>
+                    <input type="password" id="pwd" name="pwd">
+                </fieldset>
 
                 <button type="submit">Confirmar</button>
             </form>
@@ -36,8 +41,13 @@
             <h2>Búsqueda rápida</h2>
 
             <form action="resultado.html" method="get">
-                <label for="buscar">Buscar</label>
-                <input type="text" id="buscar" name="buscar">
+
+                <fieldset>
+                    <legend>Datos de búsqueda</legend>
+
+                    <label for="buscar">Buscar</label>
+                    <input type="text" id="buscar" name="buscar">
+                </fieldset>
 
                 <button type="submit">Buscar</button>
             </form>

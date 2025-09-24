@@ -12,7 +12,7 @@
 
         <nav>
             <a href="publicar.html">Publicar anuncio</a>
-            <a href="perfil.html"><img src="/imagen.jpg">Perfil</a>
+            <a href="perfil.html"><img src="/imagen.jpg" alt="Foto Perfil">Perfil</a>
             <a href="index.html">Cerrar sesión</a> <!--esto luego se emterá en perfil-->
         </nav>
     </header>
@@ -22,8 +22,13 @@
             <h2>Búsqueda rápida</h2>
 
             <form action="resultado.html" method="get">
-                <label for="buscar">Buscar</label>
-                <input type="text" id="buscar" name="buscar">
+
+                <fieldset>
+                    <legend>Datos de búsqueda</legend>
+
+                    <label for="buscar">Buscar</label>
+                    <input type="text" id="buscar" name="buscar">
+                </fieldset>
 
                 <button type="submit">Buscar</button>
             </form>
