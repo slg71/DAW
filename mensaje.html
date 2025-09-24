@@ -13,8 +13,16 @@
 
     <main>
         <form action="#" method="post">
+            <label for="tipo_mensaje">Tipo de mensaje:</label><br><br>
+            <select id="tipo_mensaje" name="tipo_mensaje">
+                <option value="informacion">Más información</option>
+                <option value="cita">Solicitar una cita</option>
+                <option value="oferta">Comunicar una oferta</option>
+            </select><br><br>
+
             <label for="mensaje">Escribe tu mensaje:</label><br><br>
             <textarea id="mensaje" name="mensaje" rows="6" cols="50" placeholder="Escribe aquí tu mensaje..."></textarea><br><br>
+
             <button type="submit">Enviar mensaje</button>
         </form>
     </main>
