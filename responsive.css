@@ -78,7 +78,54 @@ Al principio de flex usar box-sizing:border-box;
 
 media query cambiar solo el ancho y ya cambias de movil, tablet y pc
 */
+#anuncio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+#anuncio > img:first-of-type {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    object-fit: cover;
+    margin: 1rem 0;
+}
+
+#anuncio img:not(:first-of-type) {
+    width: 100px;
+    height: 70px;
+    object-fit: cover;
+    margin: 0.3rem;
+}
+
+#anuncio h2, h3 {
+    grid-column: 1 / -1;/* el título ocupa todas las columnas */
+    text-align: center;
+}
+
+fieldset {
+    display: grid;
+    grid-template-columns: 150px 1fr; /* label + input */
+    align-items: center;
+    gap: 0.8rem 1rem; /* espacio entre filas y columnas */
+    text-align: left;
+}
+
+fieldset label {
+    justify-self: end; /* alinea los labels a la derecha */
+}
+
+fieldset input {
+    width: 100%;
+    padding: 0.4rem;
+    box-sizing: border-box;
+}
 
 /* PARA MÓVIL */
 @media screen and (max-width: 480px){
@@ -108,14 +155,14 @@ media query cambiar solo el ancho y ya cambias de movil, tablet y pc
         gap: 1rem; /*margen*/
     }
 
-    #busqueda {
+    #busqueda, #login {
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
     }
 
-    #busqueda form {
+    #busqueda form, #login form {
         width: 100%;
         max-width: 400px;
     }
@@ -164,14 +211,14 @@ media query cambiar solo el ancho y ya cambias de movil, tablet y pc
         margin: 0 auto;
     }
     
-    #busqueda {
+    #busqueda, #login {
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
     }
 
-    #busqueda form {
+    #busqueda form, #login form {
         width: 100%;
         max-width: 400px;
     }
@@ -217,7 +264,19 @@ media query cambiar solo el ancho y ya cambias de movil, tablet y pc
         gap: 1.5rem;
         max-width: 2000px;
         margin: 0 auto;
-    }   
+    }
+
+    #login {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    #login form {
+        width: 100%;
+        max-width: 400px;
+    }
 
     nav {
         display: flex;
