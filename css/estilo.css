@@ -1,0 +1,193 @@
+*{
+    box-sizing:border-box;
+}
+
+:root{
+    --color_sec: #474c18; /* #2596be*/
+    --color_principal: #ddbaa1;
+    --blanco: #fff;
+}
+
+/*=================================DISEÑO DEL HEADER=================================*/
+
+/* --- Contenedor del encabezado --- */
+header {
+  position: relative; 
+  text-align: center;
+}
+
+
+/*=================================DISEÑO DEL TITULO PRINCIPAL H1=================================*/
+
+h1 {
+  font-size: clamp(2rem, 7vw, 3.5rem);
+  margin: 5px 0 5px 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/*=================================DISEÑO DEL ESLOGAN=================================*/
+
+#eslogan {
+  text-align: center;
+  font-size: clamp(1rem, 4vw, 1.5rem);
+  margin-bottom: 15px;
+  margin-top:0%;
+}
+
+
+/*=================================DISEÑO DEL NAVEGADOR=================================*/
+
+nav {
+  display: flex;
+  flex-direction: column; /* Coloca los enlaces uno debajo del otro */
+  align-items: center;
+  padding: 10px 0;
+}
+
+
+nav a {
+ 
+  text-decoration:none;
+  color: var(--blanco);
+  background: var(--color_sec);
+  display: flex;
+  align-items: center;         /* Centra verticalmente imagen y texto */
+  justify-content: center;     /* Centra todo el contenido del enlace */
+  width: 100%;
+  gap: 8px;                    /* Espacio entre la imagen y el texto */
+  text-align: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 18px;
+  border-radius: 10px;
+  margin-bottom: 10px; 
+
+}
+
+/*=================================DISEÑO DE IMAGEN DE PERFIL=================================*/
+
+nav img {
+  width: 50px;           /* Tamaño de la imagen (ajústalo a tu gusto) */
+  height: 50px;          /* Igual que el ancho para formar un círculo */
+  border-radius: 50%;    /* Hace la imagen completamente redonda */
+  object-fit: cover;     /* Ajusta la imagen sin deformarla */
+}
+/*=================================DISEÑO DE LA SECCION DE BUSQUEDA=================================*/
+
+form{
+  background:var(--color_sec);
+  border-radius: 10px;
+  text-align: center;
+  padding: 10px;
+}
+
+fieldset{
+  color: var(--blanco);
+}
+
+button {
+  background-color: var(--blanco);
+  color:var(--color_sec);               
+  border-radius: 10px;          
+  padding: 10px 20px;           
+  font-size: 16px;              
+  font-weight: bold;
+  cursor: pointer;              /* Cambia el cursor al pasar por encima */
+  transition: all 0.3s ease;    /* Animación suave */
+}
+
+/* Efecto al pasar el cursor */
+button:hover {
+  transform: scale(1.05);       /* Ligero aumento */
+}
+
+/* Efecto al presionar el botón */
+button:active {
+  transform: scale(0.97);
+}
+
+/*=================================DISEÑO DEL LA SECCION DE LISTADO=================================*/
+article{
+  background: var(--color_sec);
+  border-radius: 10px;
+  text-align: center;
+} 
+
+
+h3 {
+  padding: 10px;
+  margin-top: 0;
+}
+
+
+img {              /*IMAGEN DE LOS ARTICULOS*/
+  display: block;      
+  width: 100%;         
+  height: auto;        
+  border-radius: 10px; 
+}
+
+article a {
+  text-decoration:none;
+  color: var(--blanco);
+  background: var(--color_sec);
+  display: flex;
+  align-items: center;         /* Centra verticalmente imagen y texto */
+  justify-content: center;     /* Centra todo el contenido del enlace */
+  width: 100%;
+  gap: 8px;                    /* Espacio entre la imagen y el texto */
+  text-align: center;
+  padding: 5px 0;
+  font-size: 18px;
+  border-radius: 10px;
+}
+
+nav a:last-child {
+  border-bottom: none;
+}
+
+/*=================================DISEÑO DEL PIE DE PAGINA=================================*/
+
+footer {
+  color: var(--blanco);
+  background: var(--color_sec);
+  display: block;
+}
+
+body{
+  background: var(--color_principal);
+  color:  var(--color_sec);
+  width: 90%;
+  max-width: 1000px;
+  margin: 10px auto;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+fieldset {
+    border: none;
+    /* background: var(--color_sec); */
+    margin: 0;
+
+}
