@@ -1,0 +1,259 @@
+/* Ejemplos de clase de teoria */
+
+/* p {
+    color: brown;
+}
+
+section {
+    border: 0px solid #f00;
+    border-bottom: 2px solid #f00;
+    margin: 1em 0em 1em 0em;
+}
+
+.busqueda{
+    display: block;
+    border:1px solid #f00;
+    padding: 0.5em 1em;
+    background-color: green;
+}
+
+.busqueda:hover{
+    background-color: brown;
+    color: white;
+}
+
+article{
+    display: flex;
+    border: 1px solid green;
+} */
+
+/* NO SE PUEDE UTILIZAR NI DIV NI SPAN 
+
+También debes añadir en cada página web al menos un enlace “saltar a” que dirija al contenido
+principal de cada página. Este enlace puede estar siempre visible o lo puedes ocultar con CSS para que
+se muestre únicamente cuando el enlace reciba el foco del teclado: 
+- colocar fuera del footer en el body con position absolute un boton para que redirige al inicio de la pagina
+*/
+
+/* header{
+    display: flex; /*uno al lado del otro
+    justify-content: space-between; /*con espacio entre ellos
+} */
+
+
+/*obligatorio algo como esto pero en CSS en vez de en la etiqueta style en html
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<title>Variables CSS</title>
+<style>
+:root {
+--color1: blue;
+--color2: yellow;
+}
+#par1 {
+background-color: var(--color1);
+color: var(--color2);
+}
+#par2 {
+background-color: var(--color2);
+color: var(--color1);
+}
+</style>
+</head>
+<body>
+<p id="par1">Este párrafo debería tener texto amarillo sobre fondo azul.</p>
+<p id="par2">Este párrafo debería tener texto azul sobre fondo amarillo.</p>
+</body>
+</html>
+*/
+
+
+/*Adaptabilidad: Se asegura que la página se vea bien en distintos dispositivos y tamaños de pantalla
+(responsive design). --> FLEX
+
+Al principio de flex usar box-sizing:border-box;
+
+media query cambiar solo el ancho y ya cambias de movil, tablet y pc
+*/
+
+
+/* PARA MÓVIL */
+@media screen and (max-width: 480px){
+    #listado article img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;/* recorta proporcionalmente si hace falta */
+        margin-bottom: 0.5rem;
+    }
+
+    #listado article {
+        min-height: 400px;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    #listado h2 {
+        grid-column: 1 / -1;/* el título ocupa todas las columnas */
+        text-align: center;
+    }
+
+    #listado {
+        display: grid;
+        grid-template-columns: 1fr !important; /*para que se ordene en una sola columna como un anuncio por fila*/
+        gap: 1rem; /*margen*/
+    }
+
+    #busqueda {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    #busqueda form {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    nav {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    header {
+        flex-direction: column;/* título arriba y enlaces debajo */
+        align-items: center;
+        text-align: center;
+    }
+}
+
+
+/* PARA TABLET */
+@media screen and (min-width: 481px) and (max-width: 1024px){
+    #listado article img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        margin-bottom: 0.5rem;
+    }
+
+    #listado article {
+        min-height: 400px;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    #listado h2 {
+        grid-column: 1 / -1;
+        text-align: center;
+    }
+
+    #listado {
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        gap: 1rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    #busqueda {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    #busqueda form {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    nav {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+/* PARA ORDENADOR */
+@media screen and (min-width:1025px) {
+    #listado article img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        margin-bottom: 0.5rem;
+    }
+
+    #listado article {
+        min-height: 400px;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    #listado h2 {
+        grid-column: 1 / -1;
+        text-align: center; 
+    }
+
+    #listado {
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        gap: 1.5rem;
+        max-width: 2000px;
+        margin: 0 auto;
+    }   
+
+    nav {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1.5rem;
+    }
+
+    main {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    header h1 {
+        order: 1;
+        margin: 0;
+    }
+
+    header nav {
+        order: 2;
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    header p {
+        order: 3;
+        flex-basis: 100%;
+        margin-top: 0.5rem;
+        text-align: left;
+    }
+}
