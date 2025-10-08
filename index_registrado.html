@@ -1,37 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="responsive.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>index_registrado</title>
+    <link rel="stylesheet" href="./css/estilo.css">
+    <link rel="stylesheet" href="./css/fontello.css"> <!-- link que vincula la carpeta paraponer iconos -->
 </head>
 <body>
     <header>
         <h1>PI - Pisos & Inmuebles</h1>
-        <p>Tu nuevo hogar te espera</p>
+        <p id="eslogan">Tu nuevo hogar te espera</p>
 
         <nav>
-            <a href="index_registrado.html">Inicio</a>
-            <a href="publicar.html">Publicar anuncio</a>
-            <a href="MenuRegistradoUsu.html">Menú de Usuario</a>
+          <a href="publicar.html"><i class="icon-upload"></i>Publicar anuncio</a>
+          <a href="MenuRegistradoUsu.html"><i class="icon-menu"></i>Menú de Usuario</a>
+          <a href="perfil.html"><img src="./img/perfil.jpg" alt="Foto de Perfil">Perfil</a>
+          <a href="index.html"><i class="icon-logout"></i>Cerrar sesión</a> <!--esto luego se emterá en perfil-->    
         </nav>
     </header>
 
     <main>
         <section id="busqueda">
             <h2>Búsqueda rápida</h2>
-
             <form action="resultado.html" method="get">
-
                 <fieldset>
                     <legend>Datos de búsqueda</legend>
-
                     <label for="buscar">Buscar</label>
-                    <input type="text" id="buscar" name="buscar">
+                    <input type="text" id="buscar" name="buscar" placeholder="Ciudad...">
                 </fieldset>
-
-                <button type="submit">Buscar</button>
+                <button type="submit"><i class="icon-search"></i>Buscar</button>
             </form>
         </section>
 
@@ -39,27 +37,27 @@
             <h2>Anuncios recientes</h2>
 
             <article>
-                <img src="piso.jpg" alt="Foto principal">
+                <img src="./img/piso.jpg" alt="Foto principal">
                 <h3><a href="anuncio.html">Piso renovado en el centro</a></h3>
             </article>
             <article>
-                <img src="piso.jpg" alt="Foto principal">
+                <img src="./img/piso.jpg" alt="Foto principal">
                 <h3><a href="anuncio.html">Piso renovado en el centro</a></h3>
             </article>
             <article>
-                <img src="piso.jpg" alt="Foto principal">
+                <img src="./img/piso.jpg" alt="Foto principal">
                 <h3><a href="anuncio.html">Piso renovado en el centro</a></h3>
             </article>
             <article>
-                <img src="piso.jpg" alt="Foto principal">
+                <img src="./img/piso.jpg" alt="Foto principal">
                 <h3><a href="anuncio.html">Piso renovado en el centro</a></h3>
             </article>
             <article>
-                <img src="piso.jpg" alt="Foto principal">
+                <img src="./img/piso.jpg" alt="Foto principal">
                 <h3><a href="anuncio.html">Piso renovado en el centro</a></h3>
             </article>
             <article>
-                <img src="piso.jpg" alt="Foto principal">
+                <img src="./img/piso.jpg" alt="Foto principal">
                 <h3><a href="anuncio.html">Piso renovado en el centro</a></h3>
             </article>
         </section>

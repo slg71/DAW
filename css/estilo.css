@@ -1,0 +1,402 @@
+*{
+    box-sizing:border-box;
+}
+
+:root{
+    --color_sec: #474c18; /* #2596be*/
+    --color_principal: #ddbaa1;
+    --blanco: #fff;
+}
+
+main {
+  display: block;
+}
+
+#listado {
+  display: block;
+}
+
+#listado article {
+  margin-bottom: 1rem;
+}
+
+/*=================================DISEÑO DEL HEADER=================================*/
+
+/* --- Contenedor del encabezado --- */
+header {
+  position: relative; 
+  text-align: center;
+}
+
+
+/*=================================DISEÑO DEL TITULO PRINCIPAL H1=================================*/
+
+h1 {
+  font-size: clamp(2rem, 7vw, 3.5rem);
+  margin: 5px 0 5px 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+p {
+  color: #000;
+}
+
+/*=================================DISEÑO DEL ESLOGAN=================================*/
+
+#eslogan {
+  color: var(--color_sec);
+  font-size: clamp(1rem, 4vw, 1.5rem);
+  margin-bottom: 15px;
+  margin-top:0%;
+}
+
+
+/*=================================DISEÑO DEL NAVEGADOR=================================*/
+
+nav {
+  display: flex;
+  flex-direction: column; /* Coloca los enlaces uno debajo del otro */
+  align-items: center;
+  padding: 10px 0;
+}
+
+
+nav a {
+ 
+  text-decoration:none;
+  color: var(--blanco);
+  background: var(--color_sec);
+  display: flex;
+  align-items: center;         /* Centra verticalmente imagen y texto */
+  justify-content: center;     /* Centra todo el contenido del enlace */
+  width: 100%;
+  gap: 8px;                    /* Espacio entre la imagen y el texto */
+  text-align: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 18px;
+  border-radius: 10px;
+  margin-bottom: 5px; 
+
+}
+
+/*=================================DISEÑO DE IMAGEN DE PERFIL=================================*/
+
+nav img {
+  width: 50px;           /* Tamaño de la imagen (ajústalo a tu gusto) */
+  height: 50px;          /* Igual que el ancho para formar un círculo */
+  border-radius: 50%;    /* Hace la imagen completamente redonda */
+  object-fit: cover;     /* Ajusta la imagen sin deformarla */
+}
+/*=================================DISEÑO DE LA SECCION DE BUSQUEDA=================================*/
+
+form{
+  background:var(--color_sec);
+  border-radius: 10px;
+  text-align: center;
+  padding: 10px;
+}
+
+fieldset{
+  color: var(--blanco);
+  border: none;
+  margin: 0;
+
+}
+
+button {
+  background-color: var(--blanco);
+  color:var(--color_sec);               
+  border-radius: 10px;          
+  padding: 10px 20px;           
+  font-size: 16px;              
+  font-weight: bold;
+  cursor: pointer;              /* Cambia el cursor al pasar por encima */
+  transition: all 0.3s ease;    /* Animación suave */
+}
+
+/* Efecto al pasar el cursor */
+button:hover {
+  transform: scale(1.05);       /* Ligero aumento */
+}
+
+/* Efecto al presionar el botón */
+button:active {
+  transform: scale(0.97);
+}
+
+/*=================================DISEÑO DEL LA SECCION DE LISTADO=================================*/
+article{
+  background: var(--color_sec);
+  border-radius: 10px;
+  text-align: center;
+}
+
+article h2, h3{
+  color: white;
+}
+
+article p{
+  color: white;
+}
+
+
+h3 {
+  padding: 10px;
+  margin-top: 0;
+}
+
+
+img {              /*IMAGEN DE LOS ARTICULOS*/
+  display: block;      
+  width: 100%;         
+  height: auto;        
+  border-radius: 10px; 
+}
+
+article a {
+  text-decoration:none;
+  color: var(--blanco);
+  background: var(--color_sec);
+  display: flex;
+  align-items: center;         /* Centra verticalmente imagen y texto */
+  justify-content: center;     /* Centra todo el contenido del enlace */
+  width: 100%;
+  gap: 8px;                    /* Espacio entre la imagen y el texto */
+  text-align: center;
+  padding: 5px 0;
+  font-size: 18px;
+  border-radius: 10px;
+}
+
+nav a:last-child {
+  border-bottom: none;
+}
+
+/*=================================DISEÑO DEL PIE DE PAGINA=================================*/
+
+footer {
+  color: var(--blanco);
+  background: var(--color_sec);
+  display: block;
+}
+
+body{
+  background: var(--color_principal);
+  color:  var(--color_sec);
+  width: 100%;
+  max-width: 1300px;
+  margin: 10px auto;
+  padding: 0 10px;
+}
+
+
+/*=================================DISEÑO DE LA TABLA=================================*/
+table, tr, th, td {
+  border: 1px solid black;
+  color:#000;
+}
+
+
+/*=================================DISEÑO DE FORMULARIO DE FOLLETO=================================*/
+.form-folleto{
+  max-width: 500px; 
+  margin: 0 auto;
+  color: var(--blanco);
+}
+.form-folleto input{
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 10px;
+  width: 100%;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+input:focus {
+  background-color: #f0f0f0; 
+  border-color: #000;
+  outline: none;
+}
+
+.form-folleto label{
+  display: block;         /* Hace que el label esté encima del input */
+  text-align: left;       /* Alinea el texto del label a la izquierda */
+  margin-bottom: 4px;     
+}
+
+textarea {
+  resize: none;
+  width: 100%;            /* Para que el input ocupe todo el ancho del formulario */
+  padding: 6px;
+}
+.form-folleto fieldset {
+  border: none;            /* Quita el borde del recuadro */
+  margin-bottom: 20px;     /* Espacio entre grupos */
+  padding: 0;
+}
+
+.form-folleto legend {
+  display: block;          /* Hace que el texto quede arriba */
+  text-align: left;
+}
+label.required::after {
+  content: "*";
+  color: red;
+  margin-left: 5px; 
+}
+
+footer p{
+  color: white;
+}
+
+/* PARA TABLET */
+@media screen and (min-width: 481px){
+    #listado article img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
+
+    #listado article {
+        min-height: 400px;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    #listado h2 {
+        grid-column: 1 / -1;
+        text-align: center;
+    }
+
+    #listado {
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        gap: 1rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    #busqueda, #login {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    #busqueda form, #login form {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    nav {
+        display: flex;
+        justify-content: center;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+/* PARA ORDENADOR */
+@media screen and (min-width:1025px) {
+    #listado article img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
+
+    #listado article {
+        min-height: 400px;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    #listado h2 {
+        grid-column: 1 / -1;
+        text-align: center; 
+    }
+
+    #listado {
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        gap: 1.5rem;
+        max-width: 2000px;
+        margin: 0 auto;
+    }
+
+    #login {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    #login form {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    nav {
+        display: flex;
+        align-items: stretch;
+        flex-direction: row;
+        justify-content: flex-end;
+    }
+
+    nav a {
+      width: auto;
+      padding: 10px 20px;
+      margin-bottom: 0;
+    }
+
+    nav img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--color_sec);
+      padding: 5px;
+      box-sizing: content-box;
+    }
+
+    main {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    header h1 {
+        order: 1;
+        margin: 0;
+    }
+
+    header nav {
+        order: 2;
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    header p {
+        order: 3;
+        flex-basis: 100%;
+        margin-top: 0.5rem;
+        text-align: left;
+    }
+}
