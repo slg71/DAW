@@ -176,13 +176,23 @@ table, tr, th, td {
   border: 1px solid black;
   color:#000;
 }
-
+td {
+  padding: 4px 10px; /* da un poco de espacio interno */
+  border: 1px solid #ccc; /* opcional: para que se vea mejor */
+  text-align: left;
+}
 
 /*=================================DISEÑO DE FORMULARIO DE FOLLETO=================================*/
 .form-folleto{
   max-width: 500px; 
   margin: 0 auto;
   color: var(--blanco);
+}
+
+textarea {
+  resize: none;
+  width: 100%;            /* Para que el input ocupe todo el ancho del formulario */
+  padding: 6px;
 }
 .form-folleto input{
   -webkit-box-sizing: border-box;
@@ -194,8 +204,17 @@ table, tr, th, td {
   border-radius: 5px;
 }
 
+/* EXCEPCIÓN: los radio buttons no deben tener ese ancho ni ese padding */
+.form-folleto input[type="radio"] {
+  width: auto;
+  padding: 0;
+  margin: 0 5px 0 15px; /* Espaciado entre opciones */
+  accent-color: #000;   /* Color del botón (puedes cambiarlo) */
+  cursor: pointer;
+}
+
 input:focus {
-  background-color: #f0f0f0; 
+  background-color: var(--blanco); 
   border-color: #000;
   outline: none;
 }
@@ -203,26 +222,54 @@ input:focus {
 .form-folleto label{
   display: block;         /* Hace que el label esté encima del input */
   text-align: left;       /* Alinea el texto del label a la izquierda */
-  margin-bottom: 4px;     
+  margin-bottom: 10px;     
 }
 
-textarea {
-  resize: none;
-  width: 100%;            /* Para que el input ocupe todo el ancho del formulario */
-  padding: 6px;
+/* EXCEPCIÓN: los label que acompañan a un radio button deben ir en línea */
+.form-folleto input[type="radio"] + label {
+  display: inline;
+  margin-right: 5px;
+  cursor: pointer;
+  font-weight: normal;
 }
-.form-folleto fieldset {
-  border: none;            /* Quita el borde del recuadro */
-  margin-bottom: 20px;     /* Espacio entre grupos */
-  padding: 0;
+.form-folleto select {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 10px;
+  width: 100%;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: var(--blanco); 
+  font-size: 1rem;             /* mismo tamaño de texto */
+  appearance: none;            /* quita el estilo del sistema */
 }
 
-.form-folleto legend {
-  display: block;          /* Hace que el texto quede arriba */
-  text-align: left;
-}
 label.required::after {
   content: "*";
   color: red;
   margin-left: 5px; 
 }
+
+
+/* ==================== RADIO BUTTONS ==================== */
+.form-folleto fieldset {
+  border: none;
+  margin-bottom: 20px;
+  padding: 0;
+}
+
+.form-folleto legend {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.form-folleto input[type="radio"] {
+  vertical-align: middle; /* Alinea con el texto */
+}
+
+/* Opcional: mejora visual del color del radio */
+.form-folleto input[type="radio"] {
+  accent-color: #000; /* Cambia el color al negro o tu color de marca */
+}
+
