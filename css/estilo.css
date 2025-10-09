@@ -10,7 +10,6 @@
 *{
     box-sizing:border-box;
     font-family: "Figtree", sans-serif;
-    font-optical-sizing: auto;
     font-weight:bold;
     font-style: normal;
 }
@@ -204,7 +203,6 @@ label.required::after {
 }
 
 form input{
-    -webkit-box-sizing: border-box;
     box-sizing: border-box;
     padding: 10px;
     width: 100%;
