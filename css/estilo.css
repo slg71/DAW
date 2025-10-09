@@ -330,6 +330,11 @@ article a {
 }
 
 /*=================================DISEÑO DE LA TABLA=================================*/
+table {
+  margin: 0 auto; /* centra horizontalmente */
+  border-collapse: collapse; /* opcional: mejora el aspecto */
+}
+
 
 table, tr, th, td {
     border: 1px solid black;
@@ -372,13 +377,14 @@ footer {
     text-align: center;
     background: var(--color_sec);
     display: block;
-    margin-top:auto;
+    margin-top: 10px;
     padding:10px;
     border-radius: 10px;
 }
 
 footer p {
     color: var(--blanco);
+    margin:0;
 }
 
 
