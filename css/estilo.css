@@ -1,6 +1,4 @@
-*{
-    box-sizing:border-box;
-}
+/*=================================BASE Y VARIABLES=================================*/
 
 :root{
     --color_sec: #474c18; /* #2596be*/
@@ -8,321 +6,321 @@
     --blanco: #fff;
 }
 
+*{
+    box-sizing:border-box;
+}
+
+body{
+    background: var(--color_principal);
+    color: var(--color_sec);
+    width: 100%;
+    max-width: 1300px;
+    margin: 10px auto;
+    padding: 0 10px;
+}
+
 main {
-  display: block;
+    display: block;
 }
 
-#listado {
-  display: block;
-}
-
-#listado article {
-  margin-bottom: 1rem;
-}
-
-/*=================================DISEÑO DEL HEADER=================================*/
-
-/* --- Contenedor del encabezado --- */
-header {
-  position: relative; 
-  text-align: center;
-}
-
-
-/*=================================DISEÑO DEL TITULO PRINCIPAL H1=================================*/
+/* --- Tipografía y Elementos Comunes --- */
 
 h1 {
-  font-size: clamp(2rem, 7vw, 3.5rem);
-  margin: 5px 0 5px 0;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+    font-size: clamp(2rem, 7vw, 3.5rem);
+    margin: 5px 0 5px 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
+
+h2 {
+    margin: 0.5%;
+    text-align: center;
+}
+
+h3 {
+    padding: 10px;
+    margin-top: 0;
+}
+
 p {
-  color: #000;
+    color: #000;
 }
 
-/*=================================DISEÑO DEL ESLOGAN=================================*/
-
-#eslogan {
-  color: var(--color_sec);
-  font-size: clamp(1rem, 4vw, 1.5rem);
-  margin-bottom: 15px;
-  margin-top:0%;
+img { /* IMAGEN GENERAL */
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
 }
 
+/*=================================DISEÑO DEL HEADER Y NAVEGACIÓN=================================*/
 
-/*=================================DISEÑO DEL NAVEGADOR=================================*/
-
-nav {
-  display: flex;
-  flex-direction: column; /* Coloca los enlaces uno debajo del otro */
-  align-items: center;
-  padding: 10px 0;
+header { /* --- Contenedor del encabezado --- */
+    position: relative;
+    text-align: center;
 }
 
+#eslogan { /* DISEÑO DEL ESLOGAN */
+    color: var(--color_sec);
+    font-size: clamp(1rem, 4vw, 1.5rem);
+    margin-bottom: 15px;
+    margin-top: 0%;
+}
+
+nav { /* DISEÑO DEL NAVEGADOR */
+    display: flex;
+    flex-direction: column; /* Coloca los enlaces uno debajo del otro */
+    align-items: center;
+    padding: 10px 0;
+}
 
 nav a {
- 
-  text-decoration:none;
-  color: var(--blanco);
-  background: var(--color_sec);
-  display: flex;
-  align-items: center;         /* Centra verticalmente imagen y texto */
-  justify-content: center;     /* Centra todo el contenido del enlace */
-  width: 100%;
-  gap: 8px;                    /* Espacio entre la imagen y el texto */
-  text-align: center;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 18px;
-  border-radius: 10px;
-  margin-bottom: 5px; 
-
+    text-decoration: none;
+    color: var(--blanco);
+    background: var(--color_sec);
+    display: flex;
+    align-items: center; /* Centra verticalmente imagen y texto */
+    justify-content: center; /* Centra todo el contenido del enlace */
+    width: 100%;
+    gap: 8px; /* Espacio entre la imagen y el texto */
+    text-align: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 18px;
+    border-radius: 10px;
+    margin-bottom: 5px;
 }
 
-/*=================================DISEÑO DE IMAGEN DE PERFIL=================================*/
-
-nav img {
-  width: 50px;           /* Tamaño de la imagen (ajústalo a tu gusto) */
-  height: 50px;          /* Igual que el ancho para formar un círculo */
-  border-radius: 50%;    /* Hace la imagen completamente redonda */
-  object-fit: cover;     /* Ajusta la imagen sin deformarla */
-}
-/*=================================DISEÑO DE LA SECCION DE BUSQUEDA=================================*/
-
-form{
-  background:var(--color_sec);
-  border-radius: 10px;
-  text-align: center;
-  padding: 10px;
+nav a:last-child {
+    border-bottom: none;
 }
 
-fieldset{
-  color: var(--blanco);
-  border: none;
-  margin: 0;
-
+nav img { /* DISEÑO DE IMAGEN DE PERFIL */
+    width: 50px; /* Tamaño de la imagen (ajústalo a tu gusto) */
+    height: 50px; /* Igual que el ancho para formar un círculo */
+    border-radius: 50%; /* Hace la imagen completamente redonda */
+    object-fit: cover; /* Ajusta la imagen sin deformarla */
 }
 
-button {
-  background-color: var(--blanco);
-  color:var(--color_sec);               
-  border-radius: 10px;          
-  padding: 10px 20px;           
-  font-size: 16px;              
-  font-weight: bold;
-  cursor: pointer;              /* Cambia el cursor al pasar por encima */
-  transition: all 0.3s ease;    /* Animación suave */
+/*=================================DISEÑO DE BOTONES Y CAMPOS DE ENTRADA=================================*/
+
+button { /* DISEÑO DE LA SECCION DE BUSQUEDA/BOTONES */
+    background-color: var(--blanco);
+    color: var(--color_sec);
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer; /* Cambia el cursor al pasar por encima */
+    transition: all 0.3s ease; /* Animación suave */
 }
 
 /* Efecto al pasar el cursor */
 button:hover {
-  transform: scale(1.05);       /* Ligero aumento */
+    transform: scale(1.05); /* Ligero aumento */
 }
 
 /* Efecto al presionar el botón */
 button:active {
-  transform: scale(0.97);
+    transform: scale(0.97);
 }
 
-/*=================================DISEÑO DEL LA SECCION DE LISTADO=================================*/
+/*=================================DISEÑO PRINCIPAL DE LOS FORMULARIOS=================================*/
+
+form{
+    max-width: 500px;
+    margin: 0 auto;
+    color: var(--blanco);
+    background: var(--color_sec);
+    border-radius:10px;
+    padding: 4%;
+    text-align: center;
+}
+
+form h2 {
+    color: var(--blanco);
+    padding-bottom: 3px;
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative; /* permite que el borde se ajuste al ancho del texto */
+    border-bottom: 1.5px solid var(--blanco); /* línea debajo */
+}
+
+form label{
+    display: block; /* Hace que el label esté encima del input */
+    text-align: left; /* Alinea el texto del label a la izquierda */
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+label.required::after {
+    content: "*";
+    color: red;
+    margin-left: 5px;
+}
+
+form input{
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+input:focus {
+    background-color: var(--blanco);
+    border-color: #000;
+    outline: none;
+}
+
+form select {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: var(--blanco);
+    font-size: 1.1rem;
+    appearance: none;
+}
+
+textarea {
+    resize: none;
+    width: 100%; /* Para que el input ocupe todo el ancho del formulario */
+    padding: 6px;
+}
+
+fieldset{
+    color: var(--blanco);
+    border: none;
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+/*=================================DISEÑO DE LOS RADIO BUTTON DE LOS FORMULARIOS=================================*/
+
+/* EXCEPCIÓN: los radio buttons no deben tener ese ancho ni ese padding */
+form input[type="radio"] {
+    width: auto;
+    padding: 0;
+    margin: 0 5px 0 15px; /* Espaciado entre opciones */
+    accent-color: #000; /* Color del botón (puedes cambiarlo) */
+    cursor: pointer;
+    vertical-align: middle; /* Asegura alineación */
+}
+
+/* EXCEPCIÓN: los label que acompañan a un radio button deben ir en línea */
+form input[type="radio"] + label {
+    display: inline;
+    margin-right: 5px;
+    cursor: pointer;
+    font-weight: normal;
+}
+
+
+/*=================================DISEÑO DEL LA SECCION DE LISTADO (ARTÍCULOS)=================================*/
+
+#listado {
+    display: block;
+}
+
+#listado article {
+    margin-bottom: 1rem;
+}
+
 article{
-  background: var(--color_sec);
-  border-radius: 10px;
-  text-align: center;
+    background: var(--color_sec);
+    border-radius: 10px;
+    text-align: center;
 }
 
-article h2, h3{
-  color: white;
+article h2, article h3{
+    color: white;
 }
 
 article p{
-  color: white;
-}
-
-
-h3 {
-  padding: 10px;
-  margin-top: 0;
-}
-
-
-img {              /*IMAGEN DE LOS ARTICULOS*/
-  display: block;      
-  width: 100%;         
-  height: auto;        
-  border-radius: 10px; 
+    color: white;
 }
 
 article a {
-  text-decoration:none;
-  color: var(--blanco);
-  background: none;
-  display: flex;
-  align-items: center;         /* Centra verticalmente imagen y texto */
-  justify-content: center;     /* Centra todo el contenido del enlace */
-  width: 100%;
-  gap: 8px;                    /* Espacio entre la imagen y el texto */
-  text-align: center;
-  padding: 0;
-  font-size: 18px;
-  border-radius: 10px;
-}
-
-nav a:last-child {
-  border-bottom: none;
-}
-
-/*=================================DISEÑO DEL PIE DE PAGINA=================================*/
-
-footer {
-  color: var(--blanco);
-  background: var(--color_sec);
-  display: block;
-}
-
-body{
-  background: var(--color_principal);
-  color:  var(--color_sec);
-  width: 100%;
-  max-width: 1300px;
-  margin: 10px auto;
-  padding: 0 10px;
+    text-decoration:none;
+    color: var(--blanco);
+    background: none;
+    display: flex;
+    align-items: center; /* Centra verticalmente imagen y texto */
+    justify-content: center; /* Centra todo el contenido del enlace */
+    width: 100%;
+    gap: 8px; /* Espacio entre la imagen y el texto */
+    text-align: center;
+    padding: 0;
+    font-size: 18px;
+    border-radius: 10px;
 }
 
 
 /*=================================DISEÑO DE LA TABLA=================================*/
+
 table, tr, th, td {
-  border: 1px solid black;
-  color:#000;
+    border: 1px solid black;
+    color:#000;
 }
+
 td {
-  padding: 4px 10px; /* da un poco de espacio interno */
-  border: 1px solid #ccc; /* opcional: para que se vea mejor */
-  text-align: left;
+    padding: 4px 10px; /* da un poco de espacio interno */
+    border: 1px solid #ccc; /* opcional: para que se vea mejor */
+    text-align: left;
 }
 
-/*=================================DISEÑO DE FORMULARIO DE FOLLETO=================================*/
-.form-folleto{
-  max-width: 500px; 
-  margin: 0 auto;
-  color: var(--blanco);
-}
 
-textarea {
-  resize: none;
-  width: 100%;            /* Para que el input ocupe todo el ancho del formulario */
-  padding: 6px;
-}
-.form-folleto input{
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  padding: 10px;
-  width: 100%;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-/* EXCEPCIÓN: los radio buttons no deben tener ese ancho ni ese padding */
-.form-folleto input[type="radio"] {
-  width: auto;
-  padding: 0;
-  margin: 0 5px 0 15px; /* Espaciado entre opciones */
-  accent-color: #000;   /* Color del botón (puedes cambiarlo) */
-  cursor: pointer;
-}
-
-input:focus {
-  background-color: var(--blanco); 
-  border-color: #000;
-  outline: none;
-}
-
-.form-folleto label{
-  display: block;         /* Hace que el label esté encima del input */
-  text-align: left;       /* Alinea el texto del label a la izquierda */
-  margin-bottom: 10px;     
-}
-
-/* EXCEPCIÓN: los label que acompañan a un radio button deben ir en línea */
-.form-folleto input[type="radio"] + label {
-  display: inline;
-  margin-right: 5px;
-  cursor: pointer;
-  font-weight: normal;
-}
-.form-folleto select {
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  padding: 10px;
-  width: 100%;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: var(--blanco); 
-  font-size: 1rem;             /* mismo tamaño de texto */
-  appearance: none;            /* quita el estilo del sistema */
-}
-
-label.required::after {
-  content: "*";
-  color: red;
-  margin-left: 5px; 
-}
-
-footer p{
-  color: white;
-}
-
-/* ==================== RADIO BUTTONS ==================== */
-.form-folleto fieldset {
-  border: none;
-  margin-bottom: 20px;
-  padding: 0;
-}
-
-.form-folleto legend {
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-
-.form-folleto input[type="radio"] {
-  vertical-align: middle; /* Alinea con el texto */
-}
-
-/* Opcional: mejora visual del color del radio */
-.form-folleto input[type="radio"] {
-  accent-color: #000; /* Cambia el color al negro o tu color de marca */
-}
-
-/*para la pagina de resultado de busqueda con los filtros para recargar la pagina cuando se modifique la busqueda*/
+/*=================================DISEÑO DE RESULTADOS DE BÚSQUEDA (GRID LAYOUT)=================================*/
 
 main.resultados {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto auto; /* Filtros arriba, listado abajo */
-  gap: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto; /* Filtros arriba, listado abajo */
+    gap: 1.5rem;
 }
 
 #filtros {
-  grid-column: 1;
-  grid-row: 1;
-  position: static;
-  max-width: 100%;
+    grid-column: 1;
+    grid-row: 1;
+    position: static;
+    max-width: 100%;
 }
 
 main.resultados #listado {
-  grid-column: 1;
-  grid-row: 2;
+    grid-column: 1;
+    grid-row: 2;
 }
 
+
+/*=================================DISEÑO DEL PIE DE PAGINA=================================*/
+
+footer {
+    color: var(--blanco);
+    text-align: center;
+    background: var(--color_sec);
+    display: block;
+    margin-top:10px;
+    padding:10px;
+}
+
+
+/*=================================MEDIA QUERIES=================================*/
+
 /* PARA TABLET */
-@media screen and (min-width: 481px) and (max-width: 1024){
-    #listado article img {
-        width: 100%;
-        height: 250px;
-        object-fit: cover;
+@media screen and (min-width: 481px) and (max-width: 1024px){
+    /* --- Diseño de Artículos en Listado (2 columnas) --- */
+    #listado {
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        gap: 1rem;
+        max-width: 800px;
+        margin: 0 auto;
     }
 
     #listado article {
@@ -333,19 +331,18 @@ main.resultados #listado {
         justify-content: space-between;
     }
 
+    #listado article img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
+
     #listado h2 {
         grid-column: 1 / -1;
         text-align: center;
     }
-
-    #listado {
-        display: grid;
-        grid-template-columns: repeat(2,1fr);
-        gap: 1rem;
-        max-width: 800px;
-        margin: 0 auto;
-    }
     
+    /* --- Formularios (Búsqueda/Login) --- */
     #busqueda, #login {
         display: flex;
         flex-direction: column;
@@ -358,6 +355,7 @@ main.resultados #listado {
         max-width: 400px;
     }
 
+    /* --- Navegación y Header --- */
     nav {
         display: flex;
         justify-content: center;
@@ -368,99 +366,36 @@ main.resultados #listado {
         align-items: center;
         text-align: center;
     }
+    
+    /* --- Resultados de Búsqueda (Listado 2/3, Filtros 1/3) --- */
+    main.resultados {
+        display: grid;
+        grid-template-columns: 2fr 1fr; /* 2/3 listado, 1/3 filtros */
+        gap: 2rem;
+        align-items: start;
+    }
 
-  main.resultados {
-    display: grid;
-    grid-template-columns: 2fr 1fr; /* 2/3 listado, 1/3 filtros */
-    gap: 2rem;
-    align-items: start;
-  }
+    main.resultados #listado {
+        grid-column: 1;
+        grid-row: 1 / -1;
+        display: block;
+    }
 
-  main.resultados #listado {
-    grid-column: 1;
-    grid-row: 1 / -1;
-    display: block;
-  }
-
-  #filtros {
-    grid-column: 2;
-    grid-row: 1 / -1;
-    position: sticky;
-    top: 1rem;
-  }
+    #filtros {
+        grid-column: 2;
+        grid-row: 1 / -1;
+        position: sticky;
+        top: 1rem;
+    }
 }
 
-/* PARA ORDENADOR */
-@media screen and (min-width:1025px) {
-    #listado article img {
-        width: 100%;
-        height: 250px;
-        object-fit: cover;
-    }
-
-    #listado article {
-        min-height: 400px;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-
-    #listado h2 {
-        grid-column: 1 / -1;
-        text-align: center; 
-    }
-
-    #listado {
-        display: grid;
-        grid-template-columns: repeat(3,1fr);
-        gap: 1.5rem;
-        max-width: 2000px;
-        margin: 0 auto;
-    }
-
-    #login {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    #login form {
-        width: 100%;
-        max-width: 400px;
-    }
-
-    nav {
-        display: flex;
-        align-items: stretch;
-        flex-direction: row;
-        justify-content: flex-end;
-    }
-
-    nav a {
-        width: auto;
-        padding: 8px 15px;
-        font-size: 15px;
-    }
-
-    nav img {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-
-    main {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-
+/*=================================PARA ORDENADOR (Desktop)=================================*/
+@media screen and (min-width: 1025px) {
+    /* --- Diseño del Header (Grid) --- */
     header {
         display: grid;
         grid-template-columns: 1fr auto; /* columna izq = título, col der = nav */
-        grid-template-rows: auto auto;/* primera fila h1+nav, segunda fila eslogan */
+        grid-template-rows: auto auto; /* primera fila h1+nav, segunda fila eslogan */
         align-items: center;
     }
 
@@ -484,25 +419,89 @@ main.resultados #listado {
         margin: 0.5rem 0 0;
         text-align: left;
     }
-  
-  main.resultados {
-    display: grid;
-    grid-template-columns: 3fr 1fr; /* más espacio para listado */
-    gap: 2rem;
-    align-items: start;
-  }
 
-  main.resultados #listado {
-    grid-column: 1;
-    grid-row: 1 / -1;
-    display: block;
-  }
+    /* --- Navegación --- */
+    nav {
+        display: flex;
+        align-items: stretch;
+        flex-direction: row;
+        justify-content: flex-end;
+    }
 
-  #filtros {
-    grid-column: 2;
-    grid-row: 1 / -1;
-    position: sticky;
-    top: 1rem;
-    align-self: start;
-  }
+    nav a {
+        width: auto;
+        padding: 8px 15px;
+        font-size: 15px;
+        margin-bottom: 0; /* Eliminar margen inferior en desktop */
+    }
+
+    nav img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    /* --- Listado de Artículos (3 columnas) --- */
+    #listado {
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        gap: 1.5rem;
+        max-width: 2000px;
+        margin: 0 auto;
+    }
+
+    #listado article {
+        min-height: 400px;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    #listado article img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
+
+    #listado h2 {
+        grid-column: 1 / -1;
+        text-align: center;
+    }
+
+    /* --- Formularios (Login) --- */
+    #login {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    #login form {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    /* --- Resultados de Búsqueda (Listado 3/4, Filtros 1/4) --- */
+    main.resultados {
+        display: grid;
+        grid-template-columns: 3fr 1fr; /* más espacio para listado */
+        gap: 2rem;
+        align-items: start;
+    }
+
+    main.resultados #listado {
+        grid-column: 1;
+        grid-row: 1 / -1;
+        display: block;
+    }
+
+    #filtros {
+        grid-column: 2;
+        grid-row: 1 / -1;
+        position: sticky;
+        top: 1rem;
+        align-self: start;
+    }
 }
