@@ -263,6 +263,11 @@ article a {
 
 
 /*=================================DISEÑO DE LA TABLA=================================*/
+table {
+  margin: 0 auto; /* centra horizontalmente */
+  border-collapse: collapse; /* opcional: mejora el aspecto */
+}
+
 
 table, tr, th, td {
     border: 1px solid black;
