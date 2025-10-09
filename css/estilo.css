@@ -369,22 +369,25 @@ main.resultados #listado {
         text-align: center;
     }
 
-    main.resultados {
-      grid-template-columns: 2fr 1fr;
-      gap: 2rem;
-    }
+  main.resultados {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* 2/3 listado, 1/3 filtros */
+    gap: 2rem;
+    align-items: start;
+  }
 
-    #filtros {
-      grid-column: 2;
-      grid-row: 1;
-      position: sticky;/*cuando scrolee se siga viendolo*/
-      top: 1rem;
-    }
+  main.resultados #listado {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    display: block;
+  }
 
-    main.resultados #listado {
-      grid-column: 1;
-      grid-row: 1;
-    }
+  #filtros {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    position: sticky;
+    top: 1rem;
+  }
 }
 
 /* PARA ORDENADOR */
@@ -483,19 +486,21 @@ main.resultados #listado {
     }
   
   main.resultados {
-    grid-template-columns: 3fr 1fr;/* Listado 3 partes, filtros 1 parte */
+    display: grid;
+    grid-template-columns: 3fr 1fr; /* más espacio para listado */
     gap: 2rem;
     align-items: start;
   }
 
   main.resultados #listado {
     grid-column: 1;
-    grid-row: 1;
+    grid-row: 1 / -1;
+    display: block;
   }
 
   #filtros {
     grid-column: 2;
-    grid-row: 1;
+    grid-row: 1 / -1;
     position: sticky;
     top: 1rem;
     align-self: start;
