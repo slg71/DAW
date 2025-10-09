@@ -399,19 +399,16 @@ footer p{
     }
 
     nav a {
-      width: auto;
-      padding: 10px 20px;
-      margin-bottom: 0;
+        width: auto;
+        padding: 8px 15px;
+        font-size: 15px;
     }
 
     nav img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: var(--color_sec);
-      padding: 5px;
-      box-sizing: content-box;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        object-fit: cover;
     }
 
     main {
@@ -421,28 +418,30 @@ footer p{
     }
 
     header {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
+        display: grid;
+        grid-template-columns: 1fr auto; /* columna izq = título, col der = nav */
+        grid-template-rows: auto auto;/* primera fila h1+nav, segunda fila eslogan */
         align-items: center;
-        flex-wrap: wrap;
     }
 
     header h1 {
-        order: 1;
+        grid-column: 1;
+        grid-row: 1;
         margin: 0;
+        text-align: left;
     }
 
     header nav {
-        order: 2;
+        grid-column: 2;
+        grid-row: 1;
         display: flex;
-        gap: 1.5rem;
+        gap: 1rem;
     }
 
-    header p {
-        order: 3;
-        flex-basis: 100%;
-        margin-top: 0.5rem;
+    header p#eslogan {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        margin: 0.5rem 0 0;
         text-align: left;
     }
 }
