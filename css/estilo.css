@@ -157,14 +157,14 @@ img {              /*IMAGEN DE LOS ARTICULOS*/
 article a {
   text-decoration:none;
   color: var(--blanco);
-  background: var(--color_sec);
+  background: none;
   display: flex;
   align-items: center;         /* Centra verticalmente imagen y texto */
   justify-content: center;     /* Centra todo el contenido del enlace */
   width: 100%;
   gap: 8px;                    /* Espacio entre la imagen y el texto */
   text-align: center;
-  padding: 5px 0;
+  padding: 0;
   font-size: 18px;
   border-radius: 10px;
 }
@@ -296,9 +296,29 @@ footer p{
   accent-color: #000; /* Cambia el color al negro o tu color de marca */
 }
 
+/*para la pagina de resultado de busqueda con los filtros para recargar la pagina cuando se modifique la busqueda*/
+
+main.resultados {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto; /* Filtros arriba, listado abajo */
+  gap: 1.5rem;
+}
+
+#filtros {
+  grid-column: 1;
+  grid-row: 1;
+  position: static;
+  max-width: 100%;
+}
+
+main.resultados #listado {
+  grid-column: 1;
+  grid-row: 2;
+}
 
 /* PARA TABLET */
-@media screen and (min-width: 481px){
+@media screen and (min-width: 481px) and (max-width: 1024){
     #listado article img {
         width: 100%;
         height: 250px;
@@ -347,6 +367,23 @@ footer p{
         flex-direction: column;
         align-items: center;
         text-align: center;
+    }
+
+    main.resultados {
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+    }
+
+    #filtros {
+      grid-column: 2;
+      grid-row: 1;
+      position: sticky;/*cuando scrolee se siga viendolo*/
+      top: 1rem;
+    }
+
+    main.resultados #listado {
+      grid-column: 1;
+      grid-row: 1;
     }
 }
 
@@ -444,4 +481,23 @@ footer p{
         margin: 0.5rem 0 0;
         text-align: left;
     }
+  
+  main.resultados {
+    grid-template-columns: 3fr 1fr;/* Listado 3 partes, filtros 1 parte */
+    gap: 2rem;
+    align-items: start;
+  }
+
+  main.resultados #listado {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  #filtros {
+    grid-column: 2;
+    grid-row: 1;
+    position: sticky;
+    top: 1rem;
+    align-self: start;
+  }
 }
