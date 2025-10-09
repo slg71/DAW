@@ -1,4 +1,5 @@
 /*=================================BASE Y VARIABLES=================================*/
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
 
 :root{
     --color_sec: #474c18; /* #2596be*/
@@ -8,6 +9,10 @@
 
 *{
     box-sizing:border-box;
+    font-family: "Figtree", sans-serif;
+    font-optical-sizing: auto;
+    font-weight:bold;
+    font-style: normal;
 }
 
 body{
@@ -17,10 +22,15 @@ body{
     max-width: 1300px;
     margin: 10px auto;
     padding: 0 10px;
+
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 main {
     display: block;
+    flex-grow: 1;
 }
 
 /* --- Tipografía y Elementos Comunes --- */
@@ -52,6 +62,38 @@ img { /* IMAGEN GENERAL */
     height: auto;
     border-radius: 10px;
 }
+
+
+/*=================================DISEÑO DEL ELEMENTO INFORMACIÓN SIMPLE=================================*/
+
+#bloque {
+    max-width: 500px;
+    margin: 0 auto;
+    color: var(--blanco);
+    background: var(--color_sec);
+    border-radius:10px;
+    padding: 4%;
+    text-align: center;
+}
+
+#bloque p {
+    color: var(--blanco);
+    font-size: 1.1rem;
+}
+
+#bloque a {
+    text-decoration: none;
+    color: var(--color_sec);
+    background: var(--blanco);
+    display: flex;
+    align-items: center; /* Centra verticalmente imagen y texto */
+    justify-content: center; /* Centra todo el contenido del enlace */
+    text-align: center;
+    padding: 10px 0;
+    font-size: 18px;
+    border-radius: 10px;
+}
+
 
 /*=================================DISEÑO DEL HEADER Y NAVEGACIÓN=================================*/
 
@@ -135,6 +177,7 @@ form{
     border-radius:10px;
     padding: 4%;
     text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 form h2 {
@@ -236,6 +279,24 @@ article{
     background: var(--color_sec);
     border-radius: 10px;
     text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    cursor: pointer; /* Cambia el cursor al pasar por encima */
+    transition: all 0.3s ease; /* Animación suave */
+}
+
+/* Efecto al pasar el cursor */
+article:hover {
+    transform: scale(1.01); /* Ligero aumento */
+}
+
+/*cuando estamos en la pagina de anuncio no hay animacion*/
+#anuncio article:hover {
+    transform: scale(1);/*se anula*/
+}
+
+/* Efecto al presionar el articulo */
+article:active {
+    transform: scale(0.97);
 }
 
 article h2, article h3{
@@ -261,6 +322,13 @@ article a {
     border-radius: 10px;
 }
 
+
+/*=================================DISEÑO DEL LA SECCION DE LISTADO (MENSAJES)=================================*/
+
+#mismensajes article{
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+}
 
 /*=================================DISEÑO DE LA TABLA=================================*/
 table {
@@ -310,8 +378,13 @@ footer {
     text-align: center;
     background: var(--color_sec);
     display: block;
-    margin-top:10px;
+    margin-top:auto;
     padding:10px;
+    border-radius: 10px;
+}
+
+footer p {
+    color: var(--blanco);
 }
 
 
@@ -445,6 +518,14 @@ footer {
         height: 30px;
         border-radius: 50%;
         object-fit: cover;
+    }
+
+    #usuariomenu nav {
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        gap: 0.5rem;
+        max-width: 2000px;
+        margin: 0 auto;
     }
 
     /* --- Listado de Artículos (3 columnas) --- */
