@@ -1,0 +1,479 @@
+/*=================================BASE Y VARIABLES=================================*/
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
+
+:root{
+    --color_principal: #1f1a17;
+    --color_sec: #a68a67;
+    --color_destacado: #ddbaa1;
+    --blanco: #f5f5f5;
+}
+
+*{
+    box-sizing:border-box;
+    font-family: "Figtree", sans-serif;
+    font-weight:bold;
+    font-style: normal;
+}
+
+body {
+    background: linear-gradient(rgba(20, 15, 12, 0.95), rgba(20, 15, 12, 0.95)), url(../img/fondo.jpg) center/cover fixed no-repeat;
+    color: var(--color_sec);
+    width: 100%;
+    max-width: 1300px;
+    margin: 10px auto;
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    display: block;
+    flex-grow: 1;
+}
+
+/* --- Tipografía y Elementos Comunes --- */
+
+h1 {
+    font-size: clamp(2rem, 7vw, 3.5rem);
+    margin: 5px 0;
+    color: var(--color_destacado);
+}
+
+h2, h3 {
+    color: var(--color_destacado);
+    text-align: center;
+}
+
+p {
+    color: var(--blanco);
+}
+
+img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+
+/*=================================DISEÑO DEL ELEMENTO INFORMACIÓN SIMPLE=================================*/
+
+#bloque {
+    max-width: 500px;
+    margin: 0 auto;
+    background: #2a2320;
+    color: var(--blanco);
+    border-radius:10px;
+    padding: 4%;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+}
+
+#bloque p {
+    color: var(--color_sec);
+}
+
+#bloque a {
+    text-decoration: none;
+    color: var(--color_principal);
+    background: var(--color_destacado);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 18px;
+    border-radius: 10px;
+    transition: 0.3s ease;
+}
+
+#bloque a:hover {
+    background: var(--color_sec);
+    color: var(--blanco);
+}
+
+
+/*=================================HEADER Y NAV=================================*/
+
+header {
+    position: relative;
+    text-align: center;
+}
+
+#eslogan {
+    color: var(--blanco);
+    font-size: clamp(1rem, 4vw, 1.5rem);
+    margin-bottom: 15px;
+}
+
+nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--blanco);
+    background: #2f2622;
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 8px;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 18px;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    transition: 0.3s ease;
+}
+
+nav a:hover {
+    background: var(--color_destacado);
+    color: var(--color_principal);
+}
+
+nav img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+
+/*=================================BOTONES=================================*/
+
+button {
+    background-color: var(--color_destacado);
+    color: var(--color_principal);
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+button:hover {
+    transform: scale(1.05);
+    background-color: var(--color_sec);
+    color: var(--blanco);
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+
+/*=================================FORMULARIOS=================================*/
+
+form{
+    max-width: 500px;
+    margin: 0 auto;
+    background: #2a2320;
+    color: var(--blanco);
+    border-radius:10px;
+    padding: 4%;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+form h2 {
+    color: var(--color_destacado);
+    border-bottom: 1.5px solid var(--color_destacado);
+}
+
+form label {
+    display: block;
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+form input, form select, textarea {
+    box-sizing: border-box;
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #1a1715;
+    color: var(--blanco);
+}
+
+input:focus {
+    border-color: var(--color_destacado);
+    outline: none;
+}
+
+form select {
+    appearance: none;
+}
+
+form input[type="radio"] {
+    accent-color: var(--color_destacado);
+}
+
+
+/*=================================ARTÍCULOS=================================*/
+
+article{
+    background: #2a2320;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    transition: 0.3s ease;
+}
+
+article:hover {
+    transform: scale(1.01);
+}
+
+article h2, article h3{
+    color: var(--color_destacado);
+}
+
+article p {
+    color: var(--blanco);
+}
+
+article a {
+    text-decoration:none;
+    color: var(--color_destacado);
+    font-size: 18px;
+}
+
+
+/*=================================TABLAS=================================*/
+
+table, tr, th, td {
+    border: 1px solid #555;
+    color: var(--blanco);
+    background-color: #1c1815;
+}
+
+
+/*=================================FOOTER=================================*/
+
+footer {
+    color: var(--blanco);
+    text-align: center;
+    background: #2a2320;
+    margin-top: 10px;
+    padding:10px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+footer p {
+    color: var(--color_destacado);
+}
+
+
+
+/*=================================MEDIA QUERIES=================================*/
+
+/* PARA TABLET */
+@media screen and (min-width: 481px) and (max-width: 1024px){
+    /* --- Diseño de Artículos en Listado (2 columnas) --- */
+    #listado {
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        gap: 1rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    #listado article {
+        min-height: 400px;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    #listado article img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
+
+    #listado h2 {
+        grid-column: 1 / -1;
+        text-align: center;
+    }
+    
+    /* --- Formularios (Búsqueda/Login) --- */
+    #busqueda, #login {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    #busqueda form, #login form {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    /* --- Navegación y Header --- */
+    nav {
+        display: flex;
+        justify-content: center;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    /* --- Resultados de Búsqueda (Listado 2/3, Filtros 1/3) --- */
+    main.resultados {
+        display: grid;
+        grid-template-columns: 2fr 1fr; /* 2/3 listado, 1/3 filtros */
+        gap: 2rem;
+        align-items: start;
+    }
+
+    main.resultados #listado {
+        grid-column: 1;
+        grid-row: 1 / -1;
+        display: block;
+    }
+
+    #filtros {
+        grid-column: 2;
+        grid-row: 1 / -1;
+        position: sticky;
+        top: 1rem;
+    }
+}
+
+/*=================================PARA ORDENADOR (Desktop)=================================*/
+@media screen and (min-width: 1025px) {
+    /* --- Diseño del Header (Grid) --- */
+    header {
+        display: grid;
+        grid-template-columns: 1fr auto; /* columna izq = título, col der = nav */
+        grid-template-rows: auto auto; /* primera fila h1+nav, segunda fila eslogan */
+        align-items: center;
+    }
+
+    header h1 {
+        grid-column: 1;
+        grid-row: 1;
+        margin: 0;
+        text-align: left;
+    }
+
+    header nav {
+        grid-column: 2;
+        grid-row: 1;
+        display: flex;
+        gap: 1rem;
+    }
+
+    header p#eslogan {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        margin: 0.5rem 0 0;
+        text-align: left;
+    }
+
+    /* --- Navegación --- */
+    nav {
+        display: flex;
+        align-items: stretch;
+        flex-direction: row;
+        justify-content: flex-end;
+    }
+
+    nav a {
+        width: auto;
+        padding: 8px 15px;
+        font-size: 15px;
+        margin-bottom: 0; /* Eliminar margen inferior en desktop */
+    }
+
+    nav img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    #usuariomenu nav {
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        gap: 0.5rem;
+        max-width: 2000px;
+        margin: 0 auto;
+    }
+
+    /* --- Listado de Artículos (3 columnas) --- */
+    #listado {
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        gap: 1.5rem;
+        max-width: 2000px;
+        margin: 0 auto;
+    }
+
+    #listado article {
+        min-height: 400px;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    #listado article img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
+
+    #listado h2 {
+        grid-column: 1 / -1;
+        text-align: center;
+    }
+
+    /* --- Formularios (Login) --- */
+    #login {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    #login form {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    /* --- Resultados de Búsqueda (Listado 3/4, Filtros 1/4) --- */
+    main.resultados {
+        display: grid;
+        grid-template-columns: 3fr 1fr; /* más espacio para listado */
+        gap: 2rem;
+        align-items: start;
+    }
+
+    main.resultados #listado {
+        grid-column: 1;
+        grid-row: 1 / -1;
+        display: block;
+    }
+
+    #filtros {
+        grid-column: 2;
+        grid-row: 1 / -1;
+        position: sticky;
+        top: 1rem;
+        align-self: start;
+    }
+}

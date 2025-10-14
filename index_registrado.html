@@ -6,6 +6,7 @@
     <title>index_registrado</title>
     <link rel="stylesheet" href="./css/estilo.css">
     <link rel="alternate stylesheet" type="text/css" href="./css/contraste.css" title="Estilo de alto contraste" />
+    <link rel="alternate stylesheet" href="./css/noche.css" title="Estilo modo noche"/>
     <link rel="stylesheet" href="./css/fontello.css"> <!-- link que vincula la carpeta paraponer iconos -->
 </head>
 <body>
@@ -25,9 +26,10 @@
         <section id="busqueda">
             <h2>Búsqueda rápida</h2>
             <form action="resultado.html" method="get">
-                <label for="buscar">Introduce una Ciudad</label>
-                <input type="text" id="buscar" name="buscar" placeholder="Ciudad...">
-                
+                <fieldset>
+                    <legend>Datos de búsqueda</legend>
+                    <input type="text" id="buscar" name="buscar" placeholder="Ciudad...">
+                </fieldset>
                 <button type="submit"><i class="icon-search"></i>Buscar</button>
             </form>
         </section>
