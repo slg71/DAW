@@ -6,6 +6,8 @@
     <title>Mensaje</title>
     <link rel="stylesheet" href="./css/estilo.css">
     <link rel="alternate stylesheet" type="text/css" href="./css/contraste.css" title="Estilo de alto contraste" />
+    <link rel="alternate stylesheet" type="text/css" href="./css/letra_y_contraste.css" title="Alto contraste y letra grande" />
+    <link rel="alternate stylesheet" type="text/css" href="./css/letra_grande.css" title="Aumentar Letra" />
     <link rel="stylesheet" href="./css/fontello.css"> <!-- link que vincula la carpeta paraponer iconos -->
 </head>
 <body>
@@ -23,14 +25,14 @@
     <main>
         <form action="enviarmensaje.html" method="post">
             <h2>Enviar mensaje a: usuario_ejemplo</h2>
-            <label for="tipo_mensaje">Tipo de mensaje:</label><br><br>
+            <label for="tipo_mensaje">Tipo de mensaje:</label>
             <select id="tipo_mensaje" name="tipo_mensaje">
                 <option value="informacion">Más información</option>
                 <option value="cita">Solicitar una cita</option>
                 <option value="oferta">Comunicar una oferta</option>
             </select><br><br>
 
-            <label for="mensaje">Escribe tu mensaje:</label><br><br>
+            <label for="mensaje">Escribe tu mensaje:</label>
             <textarea id="mensaje" name="mensaje" rows="6" cols="50" placeholder="Escribe aquí tu mensaje..."></textarea><br><br>
 
             <button type="submit">Enviar mensaje</button>
