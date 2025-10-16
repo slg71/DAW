@@ -33,6 +33,26 @@ main {
     flex-grow: 1;
 }
 
+.saltar {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background: var(--blanco);
+    color: var(--color_sec);
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    z-index: 9999;
+    
+    transform: translateY(-200%);
+    transition: transform 0.3s ease;
+}
+
+.saltar:focus {
+    transform: translateY(0);
+}
+
 /* --- Tipografía y Elementos Comunes --- */
 
 h1 {
