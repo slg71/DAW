@@ -1,3 +1,4 @@
+ @import url('estilo.css');
  @import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible&display=swap');
 *{
     box-sizing:border-box;
@@ -16,14 +17,6 @@
 body{
     background: var(--color_fondo);
     color: var(--color_letra);
-    width: 100%;
-    max-width: 1300px;
-    margin: 10px auto;
-    padding: 0 10px;
-
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
 }
 
 p {
@@ -31,89 +24,61 @@ p {
 }
 
 #bloque {
-    max-width: 500px;
-    margin: 0 auto;
     color: var(--blanco);
     background: var(--color_sec);
-    border-radius:10px;
-    padding: 4%;
-    text-align: center;
 }
 
 #eslogan { /* DISEÑO DEL ESLOGAN */
     color: var(--color_letra);
-    font-size: clamp(1rem, 4vw, 1.5rem);
-    margin-bottom: 15px;
-    margin-top: 0%;
 }
-nav { /* DISEÑO DEL NAVEGADOR */
-    display: flex;
-    flex-direction: column; /* Coloca los enlaces uno debajo del otro */
-    align-items: center;
-    padding: 10px 0;
-}
+
 nav a {
     text-decoration: none;
     color: var(--color_fondo);
     background: var(--color_letra);
-    display: flex;
-    align-items: center; /* Centra verticalmente imagen y texto */
-    justify-content: center; /* Centra todo el contenido del enlace */
-    width: 100%;
-    gap: 8px; /* Espacio entre la imagen y el texto */
-    text-align: center;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    font-size: 18px;
-    border-radius: 10px;
-    margin-bottom: 5px;
 }
 
+/*=================================DISEÑO DEL ELEMENTO INFORMACIÓN SIMPLE=================================*/
+
+#bloque {
+    color: var(--color_fondo);
+    background: var(--color_letra);
+}
+
+#bloque p {
+    color: var(--color_fondo);
+}
+
+#bloque a {
+    color: var(--color_letra);
+    background: var(--color_fondo);
+}
+
+/*=================================DISEÑO DE LA TABLA=================================*/
+
+
+th, td {
+    /* Aplica el borde de 5px a las celdas de encabezado y datos */
+    border: 5px solid #ffc700;
+    color: var(--color_letra);
+}
 
 /*=================================DISEÑO PRINCIPAL DE LOS FORMULARIOS=================================*/
 
 form{
-    max-width: 500px;
-    margin: 0 auto;
     color: var(--color_fondo);
     background: var(--color_letra);
-    border-radius:10px;
-    padding: 4%;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 form h2 {
     color: var(--color_fondo);
-    font-weight: bold;
-    padding-bottom: 3px;
-    text-align: center;
-    margin-bottom: 20px;
-    position: relative; /* permite que el borde se ajuste al ancho del texto */
-    border-bottom: 1.5px solid var(--blanco); /* línea debajo */
-}
-
-form label{
-    display: block; /* Hace que el label esté encima del input */
-    text-align: left; /* Alinea el texto del label a la izquierda */
-    margin-bottom: 10px;
-    font-size: 1.1rem;
+    border-bottom: 1.5px solid var(--color_fondo); /* línea debajo */
 }
 
 label.required::after {
     content: "*";
     color: red;
     margin-left: 5px;
-}
-
-form input{
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    padding: 10px;
-    width: 100%;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
 }
 
 input:focus {
@@ -123,29 +88,13 @@ input:focus {
 }
 
 form select {
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    padding: 10px;
-    width: 100%;
-    margin-bottom: 10px;
     border: 1px solid var(--color_fondo);
-    border-radius: 5px;
     background-color: var(--blanco);
-    font-size: 1.1rem;
-    appearance: none;
-}
 
-textarea {
-    resize: none;
-    width: 100%; /* Para que el input ocupe todo el ancho del formulario */
-    padding: 6px;
 }
 
 fieldset{
     color: var(--blanco);
-    border: none;
-    margin: 0;
-    font-size: 1.1rem;
 }
 
 
@@ -153,17 +102,12 @@ fieldset{
 
 footer {
     color: var(--color_fondo);
-    text-align: center;
     background: var(--color_letra);
-    display: block;
-    margin-top: 10px;
-    padding:10px;
-    border-radius: 10px;
+
 }
 
 footer p {
-    color: var(--blanco);
-    margin:0;
+    color: var(--color_fondo);
 }
 
 /*=================================DISEÑO DE BOTONES Y CAMPOS DE ENTRADA=================================*/
@@ -171,21 +115,28 @@ footer p {
 button { /* DISEÑO DE LA SECCION DE BUSQUEDA/BOTONES */
     background-color: var(--color_fondo);
     color: var(--color_letra);
-    border-radius: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer; /* Cambia el cursor al pasar por encima */
-    transition: all 0.3s ease; /* Animación suave */
 }
 
-/* Efecto al pasar el cursor */
-button:hover {
-    transform: scale(1.05); 
-    font-weight: bold;
+/*=================================DISEÑO DEL LA SECCION DE LISTADO (ARTÍCULOS)=================================*/
+
+#listado {
+    display: block;
 }
 
-/* Efecto al presionar el botón */
-button:active {
-    transform: scale(0.97);
+article{
+    background: var(--color_letra);
+}
+
+
+article h2, article h3{
+    color: var(--color_fondo);
+}
+
+article p{
+    color: var(--color_fondo);
+}
+
+article a {
+    color: var(--blanco);
+    background: none;
 }

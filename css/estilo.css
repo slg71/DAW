@@ -305,6 +305,10 @@ article p{
     color: white;
 }
 
+article button {
+    margin:10px;
+}
+
 article a {
     text-decoration:none;
     color: var(--blanco);
@@ -330,19 +334,22 @@ article a {
 
 /*=================================DISEÑO DE LA TABLA=================================*/
 table {
-  margin: 0 auto; /* centra horizontalmente */
-  border-collapse: collapse; /* opcional: mejora el aspecto */
+    margin: 0 auto;
+    border-collapse: collapse;
+    /* NO NECESITAS border AQUÍ SI LO PONES EN LAS CELDAS GRACIAS A border-collapse */
 }
 
-
-table, tr, th, td {
-    border: 1px solid black;
-    color:#000;
+th, td {
+    /* Aplica el borde de 5px a las celdas de encabezado y datos */
+    border: 5px solid var(--color_sec);
+    color: #000;
+    padding: 4px 10px; /* Mantenemos el padding aquí para simplificar */
+    text-align: left;
 }
 
 td {
-    padding: 4px 10px; /* da un poco de espacio interno */
-    border: 1px solid #ccc; /* opcional: para que se vea mejor */
+    /* Solo se deja el padding y el text-align si es necesario */
+    padding: 4px 10px; 
     text-align: left;
 }
 
