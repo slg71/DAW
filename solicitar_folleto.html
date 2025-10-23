@@ -54,7 +54,7 @@
     <h2>Tabla de posibles costes</h2>
     <!-- no está alineado en el centro-->
     <p>
-        <button type="button" id="btn-toggle-tabla">Mostrar tabla de costes</button>
+      <button type="button" id="btn-toggle-tabla">Mostrar tabla de costes</button>
     </p>
     <section id="contenedor-tabla-costes">
         <!-- La tabla se generará aquí con JavaScript -->
@@ -65,19 +65,19 @@
     <p>Rellene el siguiente formulario aportando todos los detalles para confeccionar su folleto publicitario.</p>
     <p>Los campos marcados con un asterisco (*) son obligatorios</p>
 
-    <form class="form-folleto" action="respuesta_folleto.html" method="get">
+    <form id= "form-folleto" class="form-folleto" action="respuesta_folleto.html" method="get">
       <label for="texto_adicional">Texto Adicional</label>
-      <textarea id="texto_adicional" name="texto_adicional" maxlength="400" placeholder="Informacion adicional a la que tiene el propio anuncio"></textarea>
+      <textarea id="texto_adicional" name="texto_adicional"  placeholder="Informacion adicional a la que tiene el propio anuncio"></textarea>
       
       <label for="nombre" class="required">Nombre</label>
-      <input type="text" id="nombre" name="nombre" maxlength="200" placeholder="su nombre" required>
+      <input type="text" id="nombre" name="nombre" placeholder="su nombre">
       
       <label for="email" class="required">Email</label>
-      <input type="email" id="email" name="email" maxlength="200" placeholder="suemail@gmail.com" required>
+      <input type="email" id="email" name="email" placeholder="suemail@gmail.com">
       
       
       <label for="direccion" class="required" >Dirección</label>
-      <input type="text" id="direccion" name="direccion" placeholder="calle" required>
+      <input type="text" id="direccion" name="direccion" placeholder="calle" >
       
       <label for="numero" class="required" >Numero</label>
       <input type="text" id="numero" name="numero">
@@ -105,19 +105,22 @@
         
       
       <label for="telefono">Teléfono</label>
-      <input type="tel" id="telefono" name="telefono" pattern="[0-9]{9}" placeholder="Ej: ### ## ## ##">
+      <input type="tel" id="telefono" name="telefono" placeholder="Ej: ### ## ## ##">
         
       <label for="color">Color de la Portada</label>
       <input type="color" id="color" name="color" value="#FF0000" >
-        
-      <label for="copias">Número de Copias</label>
-      <input type="number" id="copias" name="copias" min="1" max="99" value="1">
-        
+
+      <label for="paginas">Número de Páginas</label>
+      <input type="number" id="paginas" name="paginas" min="1" max="15" value="1">
+
+      <label for="fotos">Número de Fotos</label>
+      <input type="number" id="fotos" name="fotos" min="1" max="50" value="3">
+
       <label for="impresion">Impresión</label>
       <input type="number" id="impresion" name="impresion" min="150" max="900" step="150" value="150">
         
       <label for="anuncio" class="required">Anuncio</label>
-      <select id="anuncio" name="anuncio" required>
+      <select id="anuncio" name="anuncio">
         <option value="">--Seleccione un anuncio--</option>
         <option value="piso">Piso en alquiler</option>
         <option value="casa">Casa en venta</option>

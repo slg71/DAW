@@ -1,24 +1,56 @@
-// Función de ayuda rápida para obtener elementos por ID
 function $(id) {
     return document.getElementById(id);
 }
 
+const MAPA_LOCALIDADES = {
+    'alicante': 'Alicante',
+    'valencia': 'Valencia',
+    'albacete': 'Albacete',
+    'barcelona': 'Barcelona',
+    '': '---'
+};
+const MAPA_PROVINCIAS = {
+    'sanvi': 'San Vicente del Raspeig',
+    'elche': 'Elche',
+    'alicanteP': 'Alicante', 
+    'sanjuan': 'San Juan',
+    '': '---'
+};
+const MAPA_ANUNCIOS = {
+    'piso': 'Piso en alquiler',
+    'casa': 'Casa en venta',
+    'garage': 'Garaje disponible',
+    'oficina': 'Oficina en alquiler',
+    '': '--Seleccione un anuncio--'
+};
+
+
 // Esperar a que el documento esté completamente cargado
 document.addEventListener("DOMContentLoaded", function() {
-    // Selecciona el formulario de login si existe
+    // Formulario de login
     const formLogin = document.querySelector("#login form");
     if (formLogin) {
         formLogin.addEventListener("submit", validarLogin);
     }
 
-    // Selecciona el formulario de registro si existe
+    // Formulario de registro
     const formReg = document.querySelector("#registro form");
     if (formReg) {
         formReg.addEventListener("submit", validarRegistro);
     }
 
-    // Inicializar tabla de costes si estamos en la página correcta
+    // Formulario de solicitud de folleto
+    const formFolleto = document.querySelector("#form-folleto");
+    if (formFolleto) {
+        formFolleto.addEventListener("submit", validarFolleto);
+    }
+
     inicializarTablaCostes();
+
+    // PROCESAR RESPUESTA SI ESTAMOS EN LA PÁGINA DE RESPUESTA
+    if (document.title.includes("Respuesta Solicitud Folleto")) {
+        procesarRespuestaFolleto();
+    }
 });
 
 /*=================================VALIDACIÓN FORMULARIOS=================================*/
@@ -251,20 +283,81 @@ function validarRegistro(event) {
     }
 }
 
-/*=================================TABLA DE COSTES FOLLETO=================================*/
-//lo q está marcado con     /*==========FALTA==========*/
-//es lo q me falta por hacer
 
-// Función que calcula el coste de las páginas usando sistema de bloques
-// Recibe: número de páginas
-// Devuelve: coste calculado según las tarifas por bloques
+/*==================FUNCION PARA SOLICITAR FOLLETO====================*/
+
+function validarFolleto(event) {
+    const camposObligatorios = ["nombre", "email", "direccion", "numero", "cp", "localidad", "provincia", "anuncio"];
+    let valido = true;
+    let mensaje = "";
+
+    camposObligatorios.forEach(id => $(id).style.border = "");
+
+    //campos vacíos
+    camposObligatorios.forEach(id => {
+        const valor = $(id).value.trim();
+        if (valor === "") {
+            mensaje += `- El campo '${id}' es obligatorio.\n`;
+            $(id).style.border = "2px solid red";
+            valido = false;
+        }
+    });
+
+    //email
+    const email = $("email").value.trim();
+    if (email !== "") {
+        const emailRegex = new RegExp(
+            "^(?!\\.)[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*@" +
+            "(?=.{1,255}$)([A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+" +
+            "[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?$"
+        );
+
+        if (!emailRegex.test(email)) {
+            mensaje += "- La dirección de email no tiene un formato válido.\n";
+            $("email").style.border = "2px solid red";
+            valido = false;
+        }
+
+        const partes = email.split("@");
+        const parteLocal = partes[0] || "";
+        const dominio = partes[1] || "";
+
+        if (parteLocal.length > 64) {
+            mensaje += "- La parte local del email no puede tener más de 64 caracteres.\n";
+            $("email").style.border = "2px solid red";
+            valido = false;
+        }
+        if (dominio.length > 255) {
+            mensaje += "- El dominio del email no puede tener más de 255 caracteres.\n";
+            $("email").style.border = "2px solid red";
+            valido = false;
+        }
+    }
+
+    const nombre = $("nombre").value.trim();
+    if (nombre !== "") {
+        const nombreRegex = /^[A-Za-z][A-Za-z0-9]{2,14}$/;
+        if (!nombreRegex.test(nombre)) {
+            mensaje += "- El nombre solo puede contener letras y números, no puede comenzar con un número y debe tener entre 3 y 15 caracteres.\n";
+            $("nombre").style.border = "2px solid red";
+            valido = false;
+        }
+    }
+
+    if (!valido) {
+        alert("Por favor, corrige los siguientes errores:\n\n" + mensaje);
+        event.preventDefault();
+    } else {
+        alert("Formulario enviado correctamente. Redirigiendo a la página de respuesta...");
+    }
+}
+
+
+
+/*=================================TABLA DE COSTES FOLLETO=================================*/
+
 function calcularCostePaginas(numPaginas) {
     let coste = 0;
-    
-    //las tarifas:
-    // - Páginas 1-4: 2€ cada una
-    // - Páginas 5-10: 1.8€ cada una
-    // - Páginas 11+: 1.6€ cada una
     
     if (numPaginas <= 4) {
         coste = numPaginas * 2;
@@ -277,130 +370,232 @@ function calcularCostePaginas(numPaginas) {
     return coste;
 }
 
-// Función que calcula el coste total del folleto
-// Recibe: número de páginas, número de fotos, si es color (true/false), resolución (300 o 600)
-// Devuelve: coste total formateado con 2 decimales
+
 function calcularCosteFolleto(numPaginas, numFotos, esColor, resolucion) {
-    let coste = 10; // Coste base (procesamiento y envío)
+    // Coste base de procesamiento y envio
+    let coste = 10; 
     
-    //coste de páginas usando la función calcularCostePaginas()
+    // Coste de páginas
     coste += calcularCostePaginas(numPaginas);
     
-    //Si es color, añadir 0.5€ por cada foto
+    // Coste de color 0.5€ por fotos a color
     if (esColor) {
-        coste += 0.5*numFotos;
+        coste += 0.5 * numFotos;
     }
     
-    //Si resolución > 300, añadir 0.2€ por cada foto
+    // Coste de resolución > 300 dpi añade 0.2€ por foto
     if (resolucion > 300) {
-        coste += 0.2*numFotos;
+        coste += 0.2 * numFotos;
     }
     
-    return coste.toFixed(2); // Devuelve con 2 decimales
+    return coste.toFixed(2); 
 }
 
-// Función que crea toda la tabla
+
 function crearTablaCostes() {
-    // Arrays con los valores que aparecerán en la tabla
-    const paginas = [1, 5, 10, 15];//del enunciado
-    const fotos = [3, 5, 8];//igual
+    
+    // datos de la tabla del enunciado
+    const filasTabla = [];
+    for (let i = 1; i <= 15; i++) {
+        filasTabla.push({
+            paginas: i,
+            fotos: i * 3
+        });
+    }
+
     const colores = [
         { texto: "Blanco y Negro", valor: false },
         { texto: "Color", valor: true }
     ];
     const resoluciones = [
-        { texto: "150-300 dpi", valor: 300 },
-        { texto: "> 300 dpi", valor: 600 }
+        { texto: "150-300 dpi", valor: 300 }, 
+        { texto: "450-900 dpi", valor: 600 } 
     ];
     
-    // Crear el elemento <table>
+    //crear la tabla
     const tabla = document.createElement("table");
     
-    // Crear y añadir el título de la tabla (<caption>)
     const caption = document.createElement("caption");
-    caption.textContent = "Tabla de posibles costes de un folleto";
     tabla.appendChild(caption);
     
-    // Crear <thead> con la fila de encabezados
     const thead = document.createElement("thead");
     const filaEncabezado = document.createElement("tr");
     
-    // Array con los textos de los encabezados
-    const encabezados = ["Nº Páginas", "Nº Fotos", "B/N - Color", "Resolución", "Coste"];
+    const encabezados = ["Número de páginas", "Número de fotos", "Blanco y negro", "Color"];
 
-    /*==========FALTA==========*/
-    // Recorrer el array encabezados y crear un <th> por cada uno
-    // Para cada encabezado:
-    //   1. Crear elemento th con document.createElement("th")
-    //   2. Asignar el texto con textContent
-    //   3. Añadirlo a filaEncabezado con appendChild()
+    let thVacio = document.createElement("th");
+    thVacio.setAttribute("rowspan", "2");
+    thVacio.textContent = encabezados[0];
+    filaEncabezado.appendChild(thVacio);
+
+    thVacio = document.createElement("th");
+    thVacio.setAttribute("rowspan", "2");
+    thVacio.textContent = encabezados[1];
+    filaEncabezado.appendChild(thVacio);
     
+    for (const color of colores) {
+        const thColor = document.createElement("th");
+        thColor.setAttribute("colspan", resoluciones.length); 
+        thColor.textContent = color.texto;
+        filaEncabezado.appendChild(thColor);
+    }
+
     thead.appendChild(filaEncabezado);
+    
+    
+    const filaEncabezadoResolucion = document.createElement("tr");
+    for (let i = 0; i < colores.length; i++) {
+        for (const resolucion of resoluciones) {
+            const thResolucion = document.createElement("th");
+            thResolucion.textContent = resolucion.texto;
+            filaEncabezadoResolucion.appendChild(thResolucion);
+        }
+    }
+    thead.appendChild(filaEncabezadoResolucion);
     tabla.appendChild(thead);
     
-    // Crear <tbody> donde irán todas las filas de datos
     const tbody = document.createElement("tbody");
     
-    /*==========FALTA==========*/
-    // Crear 4 bucles anidados (uno por cada parámetro)
-    // rollo como este for pero ns si está bien
-    // for (let i = 0; i < paginas.length; i++) {
-    //     for (let j = 0; j < fotos.length; j++) {
-    //         for (let k = 0; k < colores.length; k++) {
-    //             for (let m = 0; m < resoluciones.length; m++) {
-    //                 
-    //                 aqui deberia hacer esto:
-    //                 1. Crear una fila nueva: document.createElement("tr")
-    //                 2. Crear 5 celdas <td> (páginas, fotos, color, resolución, coste)
-    //                 3. Para cada celda:
-    //                    - Crear con document.createElement("td")
-    //                    - Asignar textContent con el valor correspondiente
-    //                    - Añadirla a la fila con appendChild()
-    //                 4. Para la última celda (coste):
-    //                    - Llamar a calcularCosteFolleto() con los valores actuales
-    //                    - Añadir " €" al final
-    //                 5. Añadir la fila completa al tbody
-    //             }
-    //         }
-    //     }
-    // }
+    for (const filaData of filasTabla) {
+        const numPaginas = filaData.paginas;
+        const numFotos = filaData.fotos;
+        
+        const fila = document.createElement("tr");
+        
+        // numero de paginas
+        let tdPaginas = document.createElement("td");
+        tdPaginas.textContent = numPaginas;
+        fila.appendChild(tdPaginas);
+
+        // numero de fotos
+        let tdFotos = document.createElement("td");
+        tdFotos.textContent = numFotos;
+        fila.appendChild(tdFotos);
+        
+        // Colores Blanco y Negro / Color
+        for (const color of colores) {
+            const esColor = color.valor;
+            
+            // Resoluciones de 300 dpi a 600 dpi
+            for (const resolucion of resoluciones) {
+                const valorResolucion = resolucion.valor;
+                
+                const costeCalculado = calcularCosteFolleto(numPaginas, numFotos, esColor, valorResolucion);
+                
+                const tdCoste = document.createElement("td");
+                
+                tdCoste.textContent = costeCalculado + " €";
+            
+                fila.appendChild(tdCoste);
+            }
+        }
+
+        tbody.appendChild(fila);
+    }
     
     tabla.appendChild(tbody);
     return tabla;
 }
 
-// Función que muestra u oculta la tabla al pulsar el botón
 function toggleTablaCostes() {
     const contenedor = $("contenedor-tabla-costes");
+    const boton = $("btn-toggle-tabla");
     
-    // Si está oculta, la mostramos
     if (contenedor.style.display === "none" || contenedor.style.display === "") {
         contenedor.style.display = "block";
-        $("btn-toggle-tabla").textContent = "Ocultar tabla de costes";
+        boton.textContent = "Ocultar tabla de costes";
     } else {
-        // Si está visible, la ocultamos
         contenedor.style.display = "none";
-        $("btn-toggle-tabla").textContent = "Mostrar tabla de costes";
+        boton.textContent = "Mostrar tabla de costes";
     }
 }
 
-// Función que se ejecuta al cargar la página (si existe el botón)
 function inicializarTablaCostes() {
     const boton = $("btn-toggle-tabla");
     
-    // Solo ejecutar si estamos en la página del folleto (existe el botón)
     if (boton) {
-        // Asociar la función toggle al click del botón
         boton.addEventListener("click", toggleTablaCostes);
         
         const contenedor = $("contenedor-tabla-costes");
         if (contenedor) {
-            // Crear la tabla y añadirla al contenedor
             const tabla = crearTablaCostes();
             contenedor.appendChild(tabla);
             
-            // Empezar con la tabla oculta
             contenedor.style.display = "none";
         }
     }
+}
+
+
+/*=================================RESPUESTA SOLICITUD FOLLETO=================================*/
+
+function actualizarCeldaRespuesta(filaIndex, valor) {
+    const tabla = document.querySelector('main table');
+    if (tabla) {
+        // La celda de valor es la segunda (índice 1) de la fila
+        const fila = tabla.rows[filaIndex];
+        if (fila && fila.cells.length > 1) {
+            fila.cells[1].textContent = valor;
+        }
+    }
+}
+
+
+function procesarRespuestaFolleto() {
+
+    const params = new URLSearchParams(window.location.search);
+
+    const nombre = params.get('nombre') || 'N/A';
+    const email = params.get('email') || 'N/A';
+    
+    // Dirección
+    const direccion = params.get('direccion') || '';
+    const numero = params.get('numero') || '';
+    const cp = params.get('cp') || '';
+    const dirCompleta = `${direccion}${direccion && numero ? ' Nº ' + numero : ''}${cp ? ' CP ' + cp : ''}`.trim() || 'N/A';
+
+    
+    const localidad = MAPA_LOCALIDADES[params.get('localidad')] || 'N/A';
+    const provincia = MAPA_PROVINCIAS[params.get('provincia')] || 'N/A';
+
+    const telefono = params.get('telefono') || 'N/A';
+    const textoAdicional = params.get('texto_adicional') || 'Ninguno';
+    
+    
+    const paginasPorFolleto = parseInt(params.get('paginas')) || 1; 
+    const fotosPorFolleto = parseInt(params.get('fotos')) || 1;     
+    const copias = 1;
+    const impresionRes = parseInt(params.get('impresion')) || 150;
+    
+    const anuncio = MAPA_ANUNCIOS[params.get('anuncio')] || 'N/A';
+    const fechaRec = params.get('fecha_rec') || 'N/A';
+
+    const impresionColorVal = params.get('impresion_color') === 'color';
+    const impresionColorText = impresionColorVal ? 'Sí (Color)' : 'No (Blanco y Negro)';
+
+    const imprimirPrecioVal = params.get('imprimir_precio') === 'si';
+    const imprimirPrecioText = imprimirPrecioVal ? 'Sí' : 'No';
+    
+    const costeTotal = calcularCosteFolleto(
+        paginasPorFolleto * copias, 
+        fotosPorFolleto * copias, 
+        impresionColorVal, 
+        impresionRes
+    );
+    
+    actualizarCeldaRespuesta(0, nombre);
+    actualizarCeldaRespuesta(1, email);
+    actualizarCeldaRespuesta(2, dirCompleta);
+    actualizarCeldaRespuesta(3, localidad);
+    actualizarCeldaRespuesta(4, provincia);
+    actualizarCeldaRespuesta(5, telefono);
+    actualizarCeldaRespuesta(6, textoAdicional);
+    actualizarCeldaRespuesta(7, paginasPorFolleto.toString()); 
+    actualizarCeldaRespuesta(8, fotosPorFolleto.toString());   
+    actualizarCeldaRespuesta(9, impresionRes + ' dpi');        
+    actualizarCeldaRespuesta(10, anuncio);                     
+    actualizarCeldaRespuesta(11, fechaRec);                    
+    actualizarCeldaRespuesta(12, impresionColorText);          
+    actualizarCeldaRespuesta(13, imprimirPrecioText);          
+    actualizarCeldaRespuesta(14, costeTotal + ' €'); 
 }
