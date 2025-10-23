@@ -1,52 +1,47 @@
 /* =============================IMPORTAR LOS ESTILOS DE ALTO CONTRASTE=============================*/
 @import url('contraste.css');
 
+/* @import url('letra_grande.css') */
 
-/* Aumenta el tamaño base para texto general (párrafos, labels, etc.) */
 body, p, a, button, input, select, textarea, label {
-    font-size: 1.6rem !important; /* Aumentado a 1.6rem (~25.6px) */
+    font-size: 1.6rem !important; 
 }
 
-/* Aumenta los títulos de la tabla */
 th, td {
     font-size: 1.6rem !important;
 }
 
-/* Aumenta la navegación */
 nav a {
-    font-size: 2.0rem !important; /* Aumentado a 2.0rem */
-    padding: 20px 0 !important; /* Más relleno para mejor interacción */
+    font-size: 2.0rem !important;
+    padding: 20px 0 !important; 
 }
 
-/* Aumenta los encabezados */
+
 h1 {
-    font-size: clamp(2.5rem, 9vw, 4.0rem) !important; /* Aumentado el tope máximo */
+    font-size: clamp(2.5rem, 9vw, 4.0rem) !important;
 }
 
 h2 {
-    font-size: clamp(2.2rem, 7vw, 3.5rem) !important; /* Aumentado */
-    /* Ajustamos el h2 del formulario que tiene un borde debajo */
-    border-bottom-width: 4px !important; /* Hacemos la línea de abajo más gruesa */
+    font-size: clamp(2.2rem, 7vw, 3.5rem) !important;
+    border-bottom-width: 4px !important;
 }
-
 h3 {
-    font-size: clamp(2.0rem, 6vw, 3.0rem) !important; /* Aumentado */
+    font-size: clamp(2.0rem, 6vw, 3.0rem) !important; 
 }
 
-/* Ajusta elementos específicos que tienen tamaños definidos */
 #bloque p {
-    font-size: 2.0rem !important; /* Aumentado para mayor prominencia */
+    font-size: 2.0rem !important; 
 }
 
 article h2, article h3, form h2 {
-    font-size: 2.5rem !important; /* Títulos de artículos más prominentes */
+    font-size: 2.5rem !important; 
 }
 
 button {
-    font-size: 1.6rem !important; /* Botones más grandes */
-    padding: 18px 30px !important; /* Más padding para que el botón sea más visible */
+    font-size: 1.6rem !important;
+    padding: 18px 30px !important;
 }
 
 footer p {
-    font-size: 1.5rem !important; /* Aumentado a 1.5rem */
+    font-size: 1.5rem !important;
 }

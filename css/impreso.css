@@ -48,7 +48,10 @@ main {
     transform: translateY(0);
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/leigh
 /*=================================ELEMENTOS A OCULTAR=================================*/
 /*ocultar login? por ahora no*/
 nav, button, #busqueda, #filtros, video, audio, iframe, canvas, script {
