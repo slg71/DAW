@@ -53,6 +53,73 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
+/*=================================MODAL=================================*/
+function crearModal() {
+    const modal = document.createElement("dialog");
+
+    const texto = document.createElement("p");
+    const boton = document.createElement("button");
+    boton.textContent = "Aceptar";
+
+    boton.addEventListener("click", () => modal.close());
+
+    modal.appendChild(texto);
+    modal.appendChild(boton);
+    document.body.appendChild(modal);
+
+    // Función global para usar en lugar de alert()
+    window.mostrarModal = function (mensaje) {
+        texto.textContent = mensaje;
+        modal.showModal();
+    };
+}
+
+document.addEventListener("DOMContentLoaded", crearModal);
+
+/*=================================MARCADOR DE CAMPOS Y ERRORES=================================*/
+function marcarError(campo) {
+    $(campo).style.border = "2px solid red";
+}
+
+function resetearMarcador(campo) {
+    $(campo).style.border = "";
+}
+
+function mostrarErrorCampo(idCampo, mensaje) {
+    const campo = $(idCampo);
+
+    // Si ya existe un mensaje previo, lo borramos
+    const prevError = campo.nextElementSibling;
+    if (prevError && prevError.classList.contains("error-campo")) {
+        prevError.remove();
+    }
+
+    // Crear un nuevo span para el error
+    const error = document.createElement("span");
+    error.className = "error-campo";
+    error.textContent = mensaje;
+
+    // Insertarlo después del campo
+    campo.insertAdjacentElement("afterend", error);
+
+    // También marcar borde rojo
+    marcarError(idCampo);
+}
+
+function limpiarErroresCampo(idCampo) {
+    const campo = $(idCampo);
+
+    // Borrar borde rojo
+    resetearMarcador(idCampo);
+
+    // Borrar span de error si existe
+    const prevError = campo.nextElementSibling;
+    if (prevError && prevError.classList.contains("error-campo")) {
+        prevError.remove();
+    }
+}
+
+
 /*=================================VALIDACIÓN FORMULARIOS=================================*/
 
 /*==================funcion login====================*/
@@ -67,32 +134,40 @@ function validarLogin(event) {
     let mensaje = "";
 
     //reiniciar estilos de bordes de campos por error
-    $("usuario").style.border = "";
-    $("pwd").style.border = "";
+    // $("usuario").style.border = "";
+    // $("pwd").style.border = "";
+    limpiarErroresCampo("usuario");
+    limpiarErroresCampo("pwd");
 
     //usuario
     if (usuario === "") {
-        mensaje += "- El campo 'Usuario' no puede estar vacío.\n";
-        $("usuario").style.border = "2px solid red";
+        // mensaje += "- El campo 'Usuario' no puede estar vacío.\n";
+        // // $("usuario").style.border = "2px solid red";
+        // marcarError("usuario");
+        mostrarErrorCampo("usuario", "El campo 'Usuario' no puede estar vacío.");
         valido = false;
-    } else if (usuario.length < 8) {
-        mensaje += "- El usuario debe tener al menos 8 caracteres.\n";
-        $("usuario").style.border = "2px solid red";
-        valido = false;
-    }
+    } 
+    // else if (usuario.length < 3 || usuario.length > 16) {
+    //     mensaje += "- El usuario debe tener al menos 8 caracteres.\n";
+    //     // $("usuario").style.border = "2px solid red";
+    //     valido = false;
+    // }
 
     //contraseña
     if (pwd === "") {
-        mensaje += "- El campo 'Contraseña' no puede estar vacío.\n";
-        $("pwd").style.border = "2px solid red";
+        // mensaje += "- El campo 'Contraseña' no puede estar vacío.\n";
+        // // $("pwd").style.border = "2px solid red";
+        // marcarError("pwd");
+        mostrarErrorCampo("pwd", "El campo 'Contraseña' no puede estar vacío.");
         valido = false;
     }
 
     if (!valido) {
-        alert("Por favor, corrige los siguientes errores:\n\n" + mensaje);
+        // alert("Por favor, corrige los siguientes errores:\n\n" + mensaje);
+        mostrarModal("Por favor, corrige los siguientes errores:\n\n" + mensaje);
         event.preventDefault(); //pa no enviarlo
     } else {
-        alert("Inicio de sesión correcto. Redirigiendo a Inicio...");
+        mostrarModal("Inicio de sesión correcto. Redirigiendo a Inicio...");
     }
 }
 
@@ -116,25 +191,38 @@ function validarRegistro(event) {
     let mensaje = "";
 
     //reiniciar estilos de bordes de campos por error
-    $("usuario").style.border = "";
-    $("pwd").style.border = "";
-    $("pwd2").style.border = "";
-    $("sexo").style.border = "";
-    $("nac").style.border = "";
-    $("ciudad").style.border = "";
-    $("pais").style.border = "";
-    $("email").style.border = "";
-    $("foto").style.border = "";
+    // $("usuario").style.border = "";
+    // $("pwd").style.border = "";
+    // $("pwd2").style.border = "";
+    // $("sexo").style.border = "";
+    // $("nac").style.border = "";
+    // $("ciudad").style.border = "";
+    // $("pais").style.border = "";
+    // $("email").style.border = "";
+    // $("foto").style.border = "";
+    limpiarErroresCampo("usuario");
+    limpiarErroresCampo("pwd");
+    limpiarErroresCampo("pwd2");
+    limpiarErroresCampo("sexo");
+    limpiarErroresCampo("nac");
+    limpiarErroresCampo("ciudad");
+    limpiarErroresCampo("pais");
+    limpiarErroresCampo("email");
+    limpiarErroresCampo("foto");
 
     //usuario
     if (usuario === "") {
-        mensaje += "- El campo 'Usuario' no puede estar vacío.\n";
-        $("usuario").style.border = "2px solid red";
+        // mensaje += "- El campo 'Usuario' no puede estar vacío.\n";
+        // // $("usuario").style.border = "2px solid red";
+        // marcarError("usuario");
+        mostrarErrorCampo("usuario","El campo 'Usuario' no puede estar vacío.");
         valido = false;
     } else {
         if (usuario.length < 3 || usuario.length > 15) {
-            mensaje += "- El nombre de usuario debe tener entre 3 y 15 caracteres.\n";
-            $("usuario").style.border = "2px solid red";
+            // mensaje += "- El nombre de usuario debe tener entre 3 y 15 caracteres.\n";
+            // // $("usuario").style.border = "2px solid red";
+            // marcarError("usuario");
+            mostrarErrorCampo("usuario","El nombre de usuario debe tener entre 3 y 15 caracteres.");
             valido = false;
         }
         //todas las letras y numeros para compararlo en usuario
@@ -142,16 +230,20 @@ function validarRegistro(event) {
         const numeros = "0123456789";
 
         if (numeros.includes(usuario.charAt(0))) {
-            mensaje += "- El usuario no puede comenzar con un número.\n";
-            $("usuario").style.border = "2px solid red";
+            // mensaje += "- El usuario no puede comenzar con un número.\n";
+            // // $("usuario").style.border = "2px solid red";
+            // marcarError("usuario");
+            mostrarErrorCampo("usuario","El usuario no puede comenzar con un número.");
             valido = false;
         }
 
         for (let i = 0; i < usuario.length; i++) {
             const caracter = usuario.charAt(i);
             if (!letras.includes(caracter) && !numeros.includes(caracter)) {
-                mensaje += "- El usuario solo puede contener letras o números.\n";
-                $("usuario").style.border = "2px solid red";
+                // mensaje += "- El usuario solo puede contener letras o números.\n";
+                // // $("usuario").style.border = "2px solid red";
+                // marcarError("usuario");
+                mostrarErrorCampo("usuario","El usuario solo puede contener letras o números.");
                 valido = false;
             }
         }
@@ -159,13 +251,17 @@ function validarRegistro(event) {
 
     //contraseña
     if (pwd === "") {
-        mensaje += "- El campo 'Contraseña' no puede estar vacío.\n";
-        $("pwd").style.border = "2px solid red";
+        // mensaje += "- El campo 'Contraseña' no puede estar vacío.\n";
+        // // $("pwd").style.border = "2px solid red";
+        // marcarError("pwd");
+        mostrarErrorCampo("pwd","El campo 'Contraseña' no puede estar vacío.");
         valido = false;
     } else {
         if (pwd.length < 6 || pwd.length > 15) {
-            mensaje += "- La contraseña debe tener entre 6 y 15 caracteres.\n";
-            $("pwd").style.border = "2px solid red";
+            // mensaje += "- La contraseña debe tener entre 6 y 15 caracteres.\n";
+            // // $("pwd").style.border = "2px solid red";
+            // marcarError("pwd");
+            mostrarErrorCampo("pwd","La contraseña debe tener entre 6 y 15 caracteres.");
             valido = false;
         }
 
@@ -185,50 +281,66 @@ function validarRegistro(event) {
         }
 
         if (!caracteresValidos) {
-            mensaje += "- La contraseña solo puede contener letras, números, guion o guion bajo.\n";
-            $("pwd").style.border = "2px solid red";
+            // mensaje += "- La contraseña solo puede contener letras, números, guion o guion bajo.\n";
+            // // $("pwd").style.border = "2px solid red";
+            // marcarError("pwd");
+            mostrarErrorCampo("pwd","La contraseña solo puede contener letras, números, guion o guion bajo.");
             valido = false;
         }
 
         if (!tieneMayus || !tieneMinus || !tieneNum) {
-            mensaje += "- La contraseña debe tener al menos una mayúscula, una minúscula y un número.\n";
-            $("pwd").style.border = "2px solid red";
+            // mensaje += "- La contraseña debe tener al menos una mayúscula, una minúscula y un número.\n";
+            // // $("pwd").style.border = "2px solid red";
+            // marcarError("pwd");
+            mostrarErrorCampo("pwd","La contraseña debe tener al menos una mayúscula, una minúscula y un número.");
             valido = false;
         }
     }
 
     //repetir contraseña
     if (pwd2 === "") {
-        mensaje += "- Debes repetir la contraseña.\n";
-        $("pwd2").style.border = "2px solid red";
+        // mensaje += "- Debes repetir la contraseña.\n";
+        // // $("pwd2").style.border = "2px solid red";
+        // marcarError("pwd2");
+        mostrarErrorCampo("pwd2","Debes repetir la contraseña.");
         valido = false;
     } else if (pwd !== pwd2) {
-        mensaje += "- Las contraseñas no coinciden.\n";
-        $("pwd2").style.border = "2px solid red";
+        // mensaje += "- Las contraseñas no coinciden.\n";
+        // // $("pwd2").style.border = "2px solid red";
+        // marcarError("pwd2");
+        mostrarErrorCampo("pwd2","Las contraseñas no coinciden.");
         valido = false;
     }
 
     //email
     if (email === "") {
-        mensaje += "- El campo 'Dirección de email' no puede estar vacío.\n";
-        $("email").style.border = "2px solid red";
+        // mensaje += "- El campo 'Dirección de email' no puede estar vacío.\n";
+        // // $("email").style.border = "2px solid red";
+        // marcarError("email");
+        mostrarErrorCampo("email","El campo 'Dirección de email' no puede estar vacío.");
         valido = false;
     } else {
         if (!email.includes("@") || email.startsWith("@") || email.endsWith("@")) {
-            mensaje += "- El email debe tener el formato parte-local@dominio.\n";
-            $("email").style.border = "2px solid red";
+            // mensaje += "- El email debe tener el formato parte-local@dominio.\n";
+            // // $("email").style.border = "2px solid red";
+            // marcarError("email");
+            mostrarErrorCampo("email","El email debe tener el formato parte-local@dominio.");
             valido = false;
         } else {
             const partes = email.split("@");//dividirlo en dos donde haya @
             const local = partes[0];//primera parte
             const dominio = partes[1];//seguunda
             if (local.length < 1 || dominio.length < 1) {
-                mensaje += "- El email debe tener una parte local y un dominio válidos.\n";
-                $("email").style.border = "2px solid red";
+                // mensaje += "- El email debe tener una parte local y un dominio válidos.\n";
+                // // $("email").style.border = "2px solid red";
+                // marcarError("email");
+                mostrarErrorCampo("email","El email debe tener una parte local y un dominio válidos.");
                 valido = false;
             } else if (email.length > 254) {
-                mensaje += "- La dirección de email no puede superar los 254 caracteres.\n";
-                $("email").style.border = "2px solid red";
+                // mensaje += "- La dirección de email no puede superar los 254 caracteres.\n";
+                // // $("email").style.border = "2px solid red";
+                // marcarError("email");
+                mostrarErrorCampo("email","La dirección de email no puede superar los 254 caracteres.");
                 valido = false;
             }
         }
@@ -236,23 +348,29 @@ function validarRegistro(event) {
 
     //sexo
     if (sexo === "") {
-        mensaje += "- Debes seleccionar un sexo.\n";
-        $("sexo").style.border = "2px solid red";
+        // mensaje += "- Debes seleccionar un sexo.\n";
+        // // $("sexo").style.border = "2px solid red";
+        // marcarError("sexo");
+        mostrarErrorCampo("sexo","Debes seleccionar un sexo.");
         valido = false;
     }
 
     //fecha de nacimiento
     if (nac === "") {
-        mensaje += "- Debes indicar tu fecha de nacimiento.\n";
-        $("nac").style.border = "2px solid red";
+        // mensaje += "- Debes indicar tu fecha de nacimiento.\n";
+        // // $("nac").style.border = "2px solid red";
+        // marcarError("nac");
+        mostrarErrorCampo("nac","Debes indicar tu fecha de nacimiento.");
         valido = false;
     } else {
         const fechaNac = new Date(nac);
         const hoy = new Date();
 
         if (isNaN(fechaNac)) {
-            mensaje += "- La fecha de nacimiento no es válida.\n";
-            $("nac").style.border = "2px solid red";
+            // mensaje += "- La fecha de nacimiento no es válida.\n";
+            // // $("nac").style.border = "2px solid red";
+            // marcarError("nac");
+            mostrarErrorCampo("nac","La fecha de nacimiento no es válida.");
             valido = false;
         } else {
             // Calcular edad
@@ -260,8 +378,10 @@ function validarRegistro(event) {
             const mes = hoy.getMonth() - fechaNac.getMonth();
             if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) edad--;
             if (edad < 18) {
-                mensaje += "- Debes tener al menos 18 años.\n";
-                $("nac").style.border = "2px solid red";
+                // mensaje += "- Debes tener al menos 18 años.\n";
+                // // $("nac").style.border = "2px solid red";
+                // marcarError("nac");
+                mostrarErrorCampo("nac","Debes tener al menos 18 años.");
                 valido = false;
             }
         }
@@ -269,17 +389,20 @@ function validarRegistro(event) {
 
     //pais
     if (pais === "") {
-        mensaje += "- Debes seleccionar un país de residencia.\n";
-        $("pais").style.border = "2px solid red";
+        // mensaje += "- Debes seleccionar un país de residencia.\n";
+        // // $("pais").style.border = "2px solid red";
+        // marcarError("pais");
+        mostrarErrorCampo("pais","Debes seleccionar un país de residencia.");
         valido = false;
     }
 
     //final
     if (!valido) {
-        alert("Por favor, corrige los siguientes errores:\n\n" + mensaje);
+        // alert("Por favor, corrige los siguientes errores:\n\n" + mensaje);
+        mostrarModal("Por favor, corrige los siguientes errores:\n\n" + mensaje);
         event.preventDefault(); //pa no enviarlo
     } else {
-        alert("Inicio de sesión correcto. Redirigiendo a Inicio...");
+        mostrarModal("Inicio de sesión correcto. Redirigiendo a Inicio...");
     }
 }
 
@@ -297,8 +420,10 @@ function validarFolleto(event) {
     camposObligatorios.forEach(id => {
         const valor = $(id).value.trim();
         if (valor === "") {
-            mensaje += `- El campo '${id}' es obligatorio.\n`;
-            $(id).style.border = "2px solid red";
+            // mensaje += `- El campo '${id}' es obligatorio.\n`;
+            // // $(id).style.border = "2px solid red";
+            // marcarError(id);
+            mostrarErrorCampo(id,"El campo " + id + " es obligatorio.");
             valido = false;
         }
     });
@@ -313,8 +438,10 @@ function validarFolleto(event) {
         );
 
         if (!emailRegex.test(email)) {
-            mensaje += "- La dirección de email no tiene un formato válido.\n";
-            $("email").style.border = "2px solid red";
+            // mensaje += "- La dirección de email no tiene un formato válido.\n";
+            // // $("email").style.border = "2px solid red";
+            // marcarError("email");
+            mostrarErrorCampo("email","La dirección de email no tiene un formato válido.");
             valido = false;
         }
 
@@ -323,13 +450,17 @@ function validarFolleto(event) {
         const dominio = partes[1] || "";
 
         if (parteLocal.length > 64) {
-            mensaje += "- La parte local del email no puede tener más de 64 caracteres.\n";
-            $("email").style.border = "2px solid red";
+            // mensaje += "- La parte local del email no puede tener más de 64 caracteres.\n";
+            // // $("email").style.border = "2px solid red";
+            // marcarError("email");
+            mostrarErrorCampo("email","La parte local del email no puede tener más de 64 caracteres.");
             valido = false;
         }
         if (dominio.length > 255) {
-            mensaje += "- El dominio del email no puede tener más de 255 caracteres.\n";
-            $("email").style.border = "2px solid red";
+            // mensaje += "- El dominio del email no puede tener más de 255 caracteres.\n";
+            // // $("email").style.border = "2px solid red";
+            // marcarError("emai");
+            mostrarErrorCampo("email","El dominio del email no puede tener más de 255 caracteres.");
             valido = false;
         }
     }
@@ -338,17 +469,19 @@ function validarFolleto(event) {
     if (nombre !== "") {
         const nombreRegex = /^[A-Za-z][A-Za-z0-9]{2,14}$/;
         if (!nombreRegex.test(nombre)) {
-            mensaje += "- El nombre solo puede contener letras y números, no puede comenzar con un número y debe tener entre 3 y 15 caracteres.\n";
-            $("nombre").style.border = "2px solid red";
+            // mensaje += "- El nombre solo puede contener letras y números, no puede comenzar con un número y debe tener entre 3 y 15 caracteres.\n";
+            // // $("nombre").style.border = "2px solid red";
+            // marcarError("nombre");
+            mostrarErrorCampo("nombre","El nombre solo puede contener letras y números, no puede comenzar con un número y debe tener entre 3 y 15 caracteres.");
             valido = false;
         }
     }
 
     if (!valido) {
-        alert("Por favor, corrige los siguientes errores:\n\n" + mensaje);
+        mostrarModal("Por favor, corrige los siguientes errores:\n\n" + mensaje);
         event.preventDefault();
     } else {
-        alert("Formulario enviado correctamente. Redirigiendo a la página de respuesta...");
+        mostrarModal("Formulario enviado correctamente. Redirigiendo a la página de respuesta...");
     }
 }
 

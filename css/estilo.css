@@ -84,6 +84,48 @@ img { /* IMAGEN GENERAL */
 }
 
 
+/*=================================MODAL Y ERRORES=================================*/
+dialog {
+    border: none;
+    border-radius: 10px;
+    padding: 20px;
+    background: var(--color_sec);
+    color: var(--blanco);
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    max-width: 300px;
+}
+
+dialog::backdrop {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+dialog button {
+    background: var(--blanco);
+    color: var(--color_sec);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s ease;
+}
+
+dialog button:hover {
+    transform: scale(1.05);
+}
+
+dialog button:active {
+    transform: scale(0.97);
+}
+
+.error-campo {
+    display: block;
+    color: red;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+
 /*=================================DISEÑO DEL ELEMENTO INFORMACIÓN SIMPLE=================================*/
 
 #bloque {
