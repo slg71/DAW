@@ -51,6 +51,34 @@ document.addEventListener("DOMContentLoaded", function() {
     if (document.title.includes("Respuesta Solicitud Folleto")) {
         procesarRespuestaFolleto();
     }
+
+/*=================================ERROR EN URL - PHP=================================*/
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get('error');
+
+    if (error) {
+        let mensajeError = "";
+            
+        if (error === 'incorrect') {
+            mensajeError = "Este usuario no existe o la contraseña es incorrecta.";
+        } else if (error === 'empty') {
+            mensajeError = "Por favor, completa todos los campos.";
+        } else if (error === 'pwd_nocoinciden') {
+            mensajeError = "La contraseña y la repetición de contraseña no coinciden.";
+        }
+
+        if (mensajeError) {
+            // Usamos un pequeño retraso (500ms) para asegurar que tu
+            // función 'crearModal' se haya ejecutado y 'mostrarModal' esté disponible.
+            setTimeout(() => {
+                if (window.mostrarModal) {
+                    window.mostrarModal(mensajeError);
+                } else {
+                    alert(mensajeError); // Fallback por si acaso
+                }
+            }, 100); 
+        }
+    }
 });
 
 /*=================================MODAL=================================*/
@@ -163,12 +191,13 @@ function validarLogin(event) {
     }
 
     if (!valido) {
-        // alert("Por favor, corrige los siguientes errores:\n\n" + mensaje);
-        mostrarModal("Por favor, corrige los siguientes errores:\n\n" + mensaje);
+    // alert("Por favor, corrige los siguientes errores:\n\n" + mensaje);
+        // mostrarModal("Por favor, corrige los siguientes errores:\n\n" + mensaje);
         event.preventDefault(); //pa no enviarlo
-    } else {
-        mostrarModal("Inicio de sesión correcto. Redirigiendo a Inicio...");
-    }
+    } 
+    // else {
+    //     mostrarModal("Inicio de sesión correcto. Redirigiendo a Inicio...");
+    // }
 }
 
 
@@ -399,11 +428,12 @@ function validarRegistro(event) {
     //final
     if (!valido) {
         // alert("Por favor, corrige los siguientes errores:\n\n" + mensaje);
-        mostrarModal("Por favor, corrige los siguientes errores:\n\n" + mensaje);
+        // mostrarModal("Por favor, corrige los siguientes errores:\n\n" + mensaje);
         event.preventDefault(); //pa no enviarlo
-    } else {
-        mostrarModal("Inicio de sesión correcto. Redirigiendo a Inicio...");
     }
+    // else {
+    //     mostrarModal("Inicio de sesión correcto. Redirigiendo a Inicio...");
+    // }
 }
 
 
