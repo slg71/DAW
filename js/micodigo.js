@@ -65,6 +65,10 @@ document.addEventListener("DOMContentLoaded", function() {
             mensajeError = "Por favor, completa todos los campos.";
         } else if (error === 'pwd_nocoinciden') {
             mensajeError = "La contraseña y la repetición de contraseña no coinciden.";
+        }else if (error === 'sin_resultados') {
+            mensajeError = "No se encontraron anuncios con los criterios introducidos.";
+        } else if (error === 'incorrect') {
+            mensajeError = "Acceso no válido a la página de resultados.";
         }
 
         if (mensajeError) {

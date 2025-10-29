@@ -1,3 +1,119 @@
+<?php
+    if ($_SERVER["REQUEST_METHOD"] == "GET") {
+
+        $buscar = trim($_GET["buscar"] ?? ""); // viene del index
+        $tipo_anuncio = trim($_GET["tipo_anuncio"] ?? "");
+        $tipo_vivienda = trim($_GET["tipo_vivienda"] ?? "");
+        $ciudad = trim($_GET["ciudad"] ?? "");
+        $pais = trim($_GET["pais"] ?? "");
+        $precio_min = trim($_GET["precio_min"] ?? "");
+        $precio_max = trim($_GET["precio_max"] ?? "");
+        $fecha_publicacion = trim($_GET["fecha_publicacion"] ?? "");
+
+        if (
+            $buscar === "" &&
+            $tipo_anuncio === "" &&
+            $tipo_vivienda === "" &&
+            $ciudad === "" &&
+            $pais === "" &&
+            $precio_min === "" &&
+            $precio_max === "" &&
+            $fecha_publicacion === ""
+        ) {
+            header("Location: ../resultado.php?error=empty");
+            exit;
+        }
+
+        $anuncios = [
+            [
+                "id" => 1,
+                "titulo" => "Piso renovado en el centro",
+                "fecha" => "2025-09-23",
+                "ciudad" => "Madrid",
+                "pais" => "España",
+                "precio" => 250000,
+                "imagen" => "./img/piso.jpg"
+            ],
+            [
+                "id" => 2,
+                "titulo" => "Casa con jardín",
+                "fecha" => "2025-09-20",
+                "ciudad" => "Valencia",
+                "pais" => "España",
+                "precio" => 220000,
+                "imagen" => "./img/piso.jpg"
+            ],
+            [
+                "id" => 3,
+                "titulo" => "Apartamento moderno",
+                "fecha" => "2025-09-18",
+                "ciudad" => "Barcelona",
+                "pais" => "España",
+                "precio" => 200000,
+                "imagen" => "./img/piso.jpg"
+            ]
+        ];
+
+        $resultados = [];
+
+        foreach ($anuncios as $a) {
+            // Si viene la búsqueda rápida del index
+            if ($buscar && stripos($a["ciudad"], $buscar) === false) continue;
+
+            // Si viene desde el formulario avanzado
+            if ($ciudad && strcasecmp($a["ciudad"], $ciudad) !== 0) continue;
+            if ($pais && strcasecmp($a["pais"], $pais) !== 0) continue;
+            if ($precio_min && $a["precio"] < $precio_min) continue;
+            if ($precio_max && $a["precio"] > $precio_max) continue;
+
+            $resultados[] = $a;
+        }
+
+        // Si no hay resultados, redirigir con error
+        if (empty($resultados)) {
+            header("Location: ../resultado.php?error=sin_resultados");
+            exit;
+        }
+
+        // require_once "cabecera.php";
+        // require_once "inicio.php";
+
+        echo "<main class='resultados'>";
+        echo "<section id='listado'>";
+        echo "<h2>Resultado de Búsqueda</h2>";
+
+        foreach ($resultados as $r) {
+            echo "<article>";
+            echo "<a href='detalle.php?id=" . urlencode($r["id"]) . "'>";
+            echo "<img src='" . htmlspecialchars($r["imagen"]) . "' alt='Foto del anuncio'>";
+            echo "</a>";
+            echo "<h3>" . htmlspecialchars($r["titulo"]) . "</h3>";
+            echo "<p>Fecha: " . htmlspecialchars($r["fecha"]) . "</p>";
+            echo "<p>Ciudad: " . htmlspecialchars($r["ciudad"]) . "</p>";
+            echo "<p>País: " . htmlspecialchars($r["pais"]) . "</p>";
+            echo "<p>Precio: " . number_format($r["precio"], 0, ',', '.') . " €</p>";
+            echo "<form action='../mensaje.html' method='get'>";
+            echo "<button type='submit'>Mensaje</button>";
+            echo "</form>";
+            echo "</article>";
+        }
+
+        echo "</section>";
+        echo "</main>";
+
+        // require_once "pie.php";
+        exit;
+
+    } else {
+        // Si se accede directamente sin formulario
+        header("Location: ../index.html?error=incorrect");
+        exit;
+    }
+?>
+
+
+
+<!-- el html original:
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -10,7 +126,7 @@
   <link rel="alternate stylesheet" href="./css/noche.css" title="Estilo modo noche"/>
   <link rel="alternate stylesheet" type="text/css" href="./css/letra_y_contraste.css" title="Alto contraste y letra grande" />
   <link rel="alternate stylesheet" type="text/css" href="./css/letra_grande.css" title="Aumentar Letra" />
-  <link rel="stylesheet" href="./css/fontello.css"> <!-- link que vincula la carpeta paraponer iconos -->
+  <link rel="stylesheet" href="./css/fontello.css"> link que vincula la carpeta paraponer iconos
 </head>
 <body>
   <a href="#listado" class="saltar">Saltar al contenido principal</a>
@@ -144,4 +260,4 @@
   </footer>
   <script src="./js/micodigo.js"></script>
 </body>
-</html>
+</html> -->

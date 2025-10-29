@@ -28,7 +28,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     echo "<ul>";
     echo "<li>Usuario: " . htmlspecialchars($usuario) . "</li>";
     echo "<li>Contraseña: [***Oculta por seguridad***]</li>";
-    // Si hubieras recolectado más campos, se mostrarían aquí
     echo "</ul>";
 
     //plantilla
