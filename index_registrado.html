@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>index_registrado</title>
+    <title>PI - Pisos & Inmuebles</title>
     <link rel="stylesheet" href="./css/estilo.css">
     <link rel="alternate stylesheet" type="text/css" href="./css/contraste.css" title="Estilo de alto contraste" />
     <link rel="stylesheet" type="text/css" href="./css/impreso.css" media="print" /> 
     <link rel="alternate stylesheet" href="./css/noche.css" title="Estilo modo noche"/>
     <link rel="alternate stylesheet" type="text/css" href="./css/letra_y_contraste.css" title="Alto contraste y letra grande" />
     <link rel="alternate stylesheet" type="text/css" href="./css/letra_grande.css" title="Aumentar Letra" />
-    <link rel="stylesheet" href="./css/fontello.css"> <!-- link que vincula la carpeta paraponer iconos -->
+    <link rel="stylesheet" href="./css/fontello.css">
 </head>
 <body>
     <a href="#listado" class="saltar">Saltar al contenido principal</a>
@@ -20,16 +20,17 @@
         <p id="eslogan">Tu nuevo hogar te espera</p>
 
         <nav>
-          <a href="publicar.html"><i class="icon-upload"></i>Publicar anuncio</a>
-          <a href="MenuRegistradoUsu.html"><i class="icon-menu"></i>Menú de Usuario</a>
-          <a href="perfil.html"><img src="./img/perfil.jpg" alt="Foto de Perfil">Perfil</a>
-          <a href="index.html"><i class="icon-logout"></i>Cerrar sesión</a> <!--esto luego se emterá en perfil-->    
+            <a href="publicar.html"><i class="icon-upload"></i>Publicar anuncio</a>
+            <a href="MenuRegistradoUsu.html"><i class="icon-menu"></i>Menú de Usuario</a>
+            <a href="perfil.html"><img src="./img/perfil.jpg" alt="Foto de Perfil">Perfil</a>
+            <a href="index.html"><i class="icon-logout"></i>Cerrar sesión</a>
         </nav>
     </header>
 
     <main>
         <section id="busqueda">
             <h2>Búsqueda rápida</h2>
+            <!-- Según el enunciado, busca por ciudad -->
             <form action="./php/resultado.php" method="get">
                 <fieldset>
                     <legend>Datos de búsqueda</legend>
@@ -43,34 +44,34 @@
             <h2>Anuncios recientes</h2>
 
             <article>
-                <img src="./img/piso.jpg" alt="Foto principal">
-                <h3><a href="anuncio.html">Piso renovado en el centro</a></h3>
+                <img src="./img/piso.jpg" alt="Foto del anuncio 1">
+                <h3><a href="./php/detalle_anuncio.php?id=1">Piso renovado en el centro</a></h3>
             </article>
+
             <article>
-                <img src="./img/piso.jpg" alt="Foto principal">
-                <h3><a href="anuncio.html">Piso renovado en el centro</a></h3>
+                <img src="./img/piso.jpg" alt="Foto del anuncio 2">
+                <h3><a href="./php/detalle_anuncio.php?id=2">Casa con jardín</a></h3>
             </article>
+
             <article>
-                <img src="./img/piso.jpg" alt="Foto principal">
-                <h3><a href="anuncio.html">Piso renovado en el centro</a></h3>
+                <img src="./img/piso.jpg" alt="Foto del anuncio 3">
+                <h3><a href="./php/detalle_anuncio.php?id=1">Apartamento moderno</a></h3>
             </article>
+
             <article>
-                <img src="./img/piso.jpg" alt="Foto principal">
-                <h3><a href="anuncio.html">Piso renovado en el centro</a></h3>
+                <img src="./img/piso.jpg" alt="Foto del anuncio 4">
+                <h3><a href="./php/detalle_anuncio.php?id=2">Ático con terraza</a></h3>
             </article>
+
             <article>
-                <img src="./img/piso.jpg" alt="Foto principal">
-                <h3><a href="anuncio.html">Piso renovado en el centro</a></h3>
-            </article>
-            <article>
-                <img src="./img/piso.jpg" alt="Foto principal">
-                <h3><a href="anuncio.html">Piso renovado en el centro</a></h3>
+                <img src="./img/piso.jpg" alt="Foto del anuncio 5">
+                <h3><a href="./php/detalle_anuncio.php?id=1">Piso céntrico reformado</a></h3>
             </article>
         </section>
     </main>
 
     <footer>
-        © Leigh Garett & Maria Luisa Roca, Grupo 3 de Prácticas
+        <p>© Leigh Garett & Maria Luisa Roca, Grupo 3 de Prácticas</p>
     </footer>
 </body>
 </html>
