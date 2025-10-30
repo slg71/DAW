@@ -10,11 +10,11 @@ $id = isset($_POST["id"]) ? intval($_POST["id"]) : 0;
 // Comprobar si se ha enviado un archivo
 $tiene_foto = isset($_FILES["foto"]) && $_FILES["foto"]["name"] != "";
 
-// require_once("cabecera.inc");
-// require_once("inicio.inc");
+require_once("cabecera.inc");
+require_once("inicio.inc");
 ?>
 
-<main id="subida-foto">
+<main>
     <h2>Resultado de la subida</h2>
 
     <?php
@@ -34,5 +34,5 @@ $tiene_foto = isset($_FILES["foto"]) && $_FILES["foto"]["name"] != "";
 </main>
 
 <?php
-// require_once("pie.inc");
+require_once("pie.inc");
 ?>

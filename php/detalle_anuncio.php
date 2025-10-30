@@ -19,10 +19,10 @@ if ($id % 2 == 0) {
     $anuncio = $anuncio_impar;
 }
 
-// Incluir cabecera de la plantilla (DOCTYPE, <html>, <head>…)
+// // Incluir cabecera de la plantilla (DOCTYPE, <html>, <head>…)
 // require_once("cabecera.inc");
 
-// Incluir inicio (encabezado del sitio, menú, etc.)
+// // Incluir inicio (encabezado del sitio, menú, etc.)
 // require_once("inicio.inc");
 ?>
 

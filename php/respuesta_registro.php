@@ -1,4 +1,9 @@
 <?php
+// -------------------------------------------------------------
+// Página: respuesta_registro.php
+// -------------------------------------------------------------
+
+$title = "Usuario registro correctamente";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //pillo los valores
@@ -19,20 +24,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
 //plantilla
-// require_once "cabecera.php";
-// require_once "inicio.php";
+// require_once "cabecera.inc";
+// require_once "inicio.inc";
+?>
 
-    echo "<h2>¡Registro completado con éxito!</h2>";
-    echo "<p>Gracias por registrarte.</p>";
-    echo "<p>Tus datos de registro son:</p>";
-    echo "<ul>";
-    echo "<li>Usuario: " . htmlspecialchars($usuario) . "</li>";
-    echo "<li>Contraseña: [***Oculta por seguridad***]</li>";
-    echo "</ul>";
+<main id="bloque">
+    <h1>¡Registro completado con éxito!</h1>
+    <section>
+        <h2>Tus datos de registro son:</h2>
+        <ul>
+            <li>Usuario: <?php echo htmlspecialchars($usuario); ?></li>
+            <li>Contraseña: <?php echo htmlspecialchars($pwd); ?></li>
+            <p><a href="../index_registrado.html">Ir a Inicio</a></p>
+        </ul>
+    </section>
+</main>
 
-    //plantilla
-// require_once "pie.php";
-    exit;
+<?php
+    // Incluir pie de página
+    // require_once("pie.inc");
 }else {
     // Si se accede directamente al script sin enviar el formulario
     header("Location: ../registro.html");
