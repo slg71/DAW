@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="alternate stylesheet" href="./css/noche.css" title="Estilo modo noche"/>
     <link rel="alternate stylesheet" type="text/css" href="./css/letra_y_contraste.css" title="Alto contraste y letra grande" />
     <link rel="alternate stylesheet" type="text/css" href="./css/letra_grande.css" title="Aumentar Letra" />
-    <link rel="stylesheet" href="./css/fontello.css"> <!-- link que vincula la carpeta paraponer iconos -->
+    <link rel="stylesheet" href="./css/fontello.css"> link que vincula la carpeta paraponer iconos
 </head>
 <body>
     <a href="#bloque" class="saltar">Saltar al contenido principal</a>
