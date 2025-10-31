@@ -5,7 +5,7 @@
 
 // Título de la página
 $titulo_pagina = "Detalle del anuncio";
-include = "paginas_Estilo.php";
+include "paginas_Estilo.php";
 include "header.php";
 
 // Obtener ID del anuncio desde la URL
@@ -21,9 +21,6 @@ if ($id % 2 == 0) {
     $anuncio = $anuncio_impar;
 }
 
-
-include = "paginas_Estilo.php";
-include "header.php";
 ?>
 
 <main id="anuncio">

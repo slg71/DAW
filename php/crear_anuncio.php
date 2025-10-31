@@ -12,7 +12,7 @@ include "header.php";
 <main>
     <h1>Publica tu Anuncio</h1>
     
-    <form action="procesar_anuncio.php" method="POST">
+    <form action="mis_anuncios.php" method="POST">
         
 
         <label for="titulo">Título del anuncio:</label>
