@@ -43,7 +43,7 @@ include "paginas_Estilo.php";
 include "header.php";
 ?>
 
-<main id="ver-anuncio">
+<main id="bloque">
     <?php if ($a != null): ?>
         <section>
             <h2><?php echo htmlspecialchars($a["titulo"]); ?></h2>
