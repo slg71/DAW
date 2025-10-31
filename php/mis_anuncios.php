@@ -50,7 +50,7 @@ include "header.php";
         <?php foreach ($anuncios as $anuncio): ?>
         
         <article>
-            <a href="anuncio.php?id=<?php echo $anuncio['id']; ?>">
+            <a href="ver_anuncio.php?id=<?php echo $anuncio['id']; ?>">
               <img src="<?php echo htmlspecialchars($anuncio['foto']); ?>" alt="Foto principal: <?php echo htmlspecialchars($anuncio['titulo']); ?>">
             </a>
             

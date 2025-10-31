@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     $title = "Mensaje enviado al anunciante";
-    include = "paginas_Estilo.php";
+    include "paginas_Estilo.php";
     include "header.php";
     ?>
 
