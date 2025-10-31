@@ -3,8 +3,7 @@
 // Página: resultado.php
 // -------------------------------------------------------------
 
-// Título de la página
-$title = "Resultado de Búsqueda";
+$titulo_pagina = "Resultado de Búsqueda";
 
 // Obtener parámetros GET
 $buscar = isset($_GET["buscar"]) ? trim($_GET["buscar"]) : "";
@@ -32,7 +31,7 @@ $anuncios = array(
         "ciudad" => "Alicante",
         "pais" => "España",
         "precio" => 900,
-        "imagen" => "./img/piso2.jpg"
+        "imagen" => "../img/piso.jpg"
     ),
     array(
         "id" => 2,
@@ -41,7 +40,7 @@ $anuncios = array(
         "ciudad" => "Valencia",
         "pais" => "España",
         "precio" => 220000,
-        "imagen" => "./img/piso1.jpg"
+        "imagen" => "../img/piso.jpg"
     ),
     array(
         "id" => 3,
@@ -50,7 +49,7 @@ $anuncios = array(
         "ciudad" => "Madrid",
         "pais" => "España",
         "precio" => 180000,
-        "imagen" => "./img/piso3.jpg"
+        "imagen" => "../img/piso.jpg"
     )
 );
 
@@ -95,10 +94,11 @@ if (!$hay_busqueda) {
 }
 
 // -------------------------------------------------------------
-// Incluir plantillas (cabecera, inicio y pie)
+// Incluir plantillas 
 // -------------------------------------------------------------
-// require_once("cabecera.inc");
-// require_once("inicio.inc");
+
+include "paginas_Estilo.php";
+include "header.php";
 ?>
 
 <main class="resultados">
@@ -190,5 +190,5 @@ if (!$hay_busqueda) {
 </main>
 
 <?php
-// require_once("pie.inc");
+include "footer.php";
 ?>

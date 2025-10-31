@@ -441,328 +441,328 @@ function validarRegistro(event) {
 }
 
 
-/*==================FUNCION PARA SOLICITAR FOLLETO====================*/
+// /*==================FUNCION PARA SOLICITAR FOLLETO====================*/
 
-function validarFolleto(event) {
-    const camposObligatorios = ["nombre", "email", "direccion", "numero", "cp", "localidad", "provincia", "anuncio"];
-    let valido = true;
-    let mensaje = "";
+// function validarFolleto(event) {
+//     const camposObligatorios = ["nombre", "email", "direccion", "numero", "cp", "localidad", "provincia", "anuncio"];
+//     let valido = true;
+//     let mensaje = "";
 
-    camposObligatorios.forEach(id => $(id).style.border = "");
+//     camposObligatorios.forEach(id => $(id).style.border = "");
 
-    //campos vacíos
-    camposObligatorios.forEach(id => {
-        const valor = $(id).value.trim();
-        if (valor === "") {
-            // mensaje += `- El campo '${id}' es obligatorio.\n`;
-            // // $(id).style.border = "2px solid red";
-            // marcarError(id);
-            mostrarErrorCampo(id,"El campo " + id + " es obligatorio.");
-            valido = false;
-        }
-    });
+//     //campos vacíos
+//     camposObligatorios.forEach(id => {
+//         const valor = $(id).value.trim();
+//         if (valor === "") {
+//             // mensaje += `- El campo '${id}' es obligatorio.\n`;
+//             // // $(id).style.border = "2px solid red";
+//             // marcarError(id);
+//             mostrarErrorCampo(id,"El campo " + id + " es obligatorio.");
+//             valido = false;
+//         }
+//     });
 
-    //email
-    const email = $("email").value.trim();
-    if (email !== "") {
-        const emailRegex = new RegExp(
-            "^(?!\\.)[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*@" +
-            "(?=.{1,255}$)([A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+" +
-            "[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?$"
-        );
+//     //email
+//     const email = $("email").value.trim();
+//     if (email !== "") {
+//         const emailRegex = new RegExp(
+//             "^(?!\\.)[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*@" +
+//             "(?=.{1,255}$)([A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+" +
+//             "[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?$"
+//         );
 
-        if (!emailRegex.test(email)) {
-            // mensaje += "- La dirección de email no tiene un formato válido.\n";
-            // // $("email").style.border = "2px solid red";
-            // marcarError("email");
-            mostrarErrorCampo("email","La dirección de email no tiene un formato válido.");
-            valido = false;
-        }
+//         if (!emailRegex.test(email)) {
+//             // mensaje += "- La dirección de email no tiene un formato válido.\n";
+//             // // $("email").style.border = "2px solid red";
+//             // marcarError("email");
+//             mostrarErrorCampo("email","La dirección de email no tiene un formato válido.");
+//             valido = false;
+//         }
 
-        const partes = email.split("@");
-        const parteLocal = partes[0] || "";
-        const dominio = partes[1] || "";
+//         const partes = email.split("@");
+//         const parteLocal = partes[0] || "";
+//         const dominio = partes[1] || "";
 
-        if (parteLocal.length > 64) {
-            // mensaje += "- La parte local del email no puede tener más de 64 caracteres.\n";
-            // // $("email").style.border = "2px solid red";
-            // marcarError("email");
-            mostrarErrorCampo("email","La parte local del email no puede tener más de 64 caracteres.");
-            valido = false;
-        }
-        if (dominio.length > 255) {
-            // mensaje += "- El dominio del email no puede tener más de 255 caracteres.\n";
-            // // $("email").style.border = "2px solid red";
-            // marcarError("emai");
-            mostrarErrorCampo("email","El dominio del email no puede tener más de 255 caracteres.");
-            valido = false;
-        }
-    }
+//         if (parteLocal.length > 64) {
+//             // mensaje += "- La parte local del email no puede tener más de 64 caracteres.\n";
+//             // // $("email").style.border = "2px solid red";
+//             // marcarError("email");
+//             mostrarErrorCampo("email","La parte local del email no puede tener más de 64 caracteres.");
+//             valido = false;
+//         }
+//         if (dominio.length > 255) {
+//             // mensaje += "- El dominio del email no puede tener más de 255 caracteres.\n";
+//             // // $("email").style.border = "2px solid red";
+//             // marcarError("emai");
+//             mostrarErrorCampo("email","El dominio del email no puede tener más de 255 caracteres.");
+//             valido = false;
+//         }
+//     }
 
-    const nombre = $("nombre").value.trim();
-    if (nombre !== "") {
-        const nombreRegex = /^[A-Za-z][A-Za-z0-9]{2,14}$/;
-        if (!nombreRegex.test(nombre)) {
-            // mensaje += "- El nombre solo puede contener letras y números, no puede comenzar con un número y debe tener entre 3 y 15 caracteres.\n";
-            // // $("nombre").style.border = "2px solid red";
-            // marcarError("nombre");
-            mostrarErrorCampo("nombre","El nombre solo puede contener letras y números, no puede comenzar con un número y debe tener entre 3 y 15 caracteres.");
-            valido = false;
-        }
-    }
+//     const nombre = $("nombre").value.trim();
+//     if (nombre !== "") {
+//         const nombreRegex = /^[A-Za-z][A-Za-z0-9]{2,14}$/;
+//         if (!nombreRegex.test(nombre)) {
+//             // mensaje += "- El nombre solo puede contener letras y números, no puede comenzar con un número y debe tener entre 3 y 15 caracteres.\n";
+//             // // $("nombre").style.border = "2px solid red";
+//             // marcarError("nombre");
+//             mostrarErrorCampo("nombre","El nombre solo puede contener letras y números, no puede comenzar con un número y debe tener entre 3 y 15 caracteres.");
+//             valido = false;
+//         }
+//     }
 
-    if (!valido) {
-        mostrarModal("Por favor, corrige los siguientes errores:\n\n" + mensaje);
-        event.preventDefault();
-    } else {
-        mostrarModal("Formulario enviado correctamente. Redirigiendo a la página de respuesta...");
-    }
-}
+//     if (!valido) {
+//         mostrarModal("Por favor, corrige los siguientes errores:\n\n" + mensaje);
+//         event.preventDefault();
+//     } else {
+//         mostrarModal("Formulario enviado correctamente. Redirigiendo a la página de respuesta...");
+//     }
+// }
 
 
 
-/*=================================TABLA DE COSTES FOLLETO=================================*/
+// /*=================================TABLA DE COSTES FOLLETO=================================*/
 
-function calcularCostePaginas(numPaginas) {
-    let coste = 0;
+// function calcularCostePaginas(numPaginas) {
+//     let coste = 0;
     
-    if (numPaginas <= 4) {
-        coste = numPaginas * 2;
-    } else if (numPaginas <= 10) {
-        coste = (4 * 2) + ((numPaginas - 4) * 1.8);
-    } else {
-        coste = (4 * 2) + (6 * 1.8) + ((numPaginas - 10) * 1.6);
-    }
+//     if (numPaginas <= 4) {
+//         coste = numPaginas * 2;
+//     } else if (numPaginas <= 10) {
+//         coste = (4 * 2) + ((numPaginas - 4) * 1.8);
+//     } else {
+//         coste = (4 * 2) + (6 * 1.8) + ((numPaginas - 10) * 1.6);
+//     }
     
-    return coste;
-}
+//     return coste;
+// }
 
 
-function calcularCosteFolleto(numPaginas, numFotos, esColor, resolucion) {
-    // Coste base de procesamiento y envio
-    let coste = 10; 
+// function calcularCosteFolleto(numPaginas, numFotos, esColor, resolucion) {
+//     // Coste base de procesamiento y envio
+//     let coste = 10; 
     
-    // Coste de páginas
-    coste += calcularCostePaginas(numPaginas);
+//     // Coste de páginas
+//     coste += calcularCostePaginas(numPaginas);
     
-    // Coste de color 0.5€ por fotos a color
-    if (esColor) {
-        coste += 0.5 * numFotos;
-    }
+//     // Coste de color 0.5€ por fotos a color
+//     if (esColor) {
+//         coste += 0.5 * numFotos;
+//     }
     
-    // Coste de resolución > 300 dpi añade 0.2€ por foto
-    if (resolucion > 300) {
-        coste += 0.2 * numFotos;
-    }
+//     // Coste de resolución > 300 dpi añade 0.2€ por foto
+//     if (resolucion > 300) {
+//         coste += 0.2 * numFotos;
+//     }
     
-    return coste.toFixed(2); 
-}
+//     return coste.toFixed(2); 
+// }
 
 
-function crearTablaCostes() {
+// function crearTablaCostes() {
     
-    // datos de la tabla del enunciado
-    const filasTabla = [];
-    for (let i = 1; i <= 15; i++) {
-        filasTabla.push({
-            paginas: i,
-            fotos: i * 3
-        });
-    }
+//     // datos de la tabla del enunciado
+//     const filasTabla = [];
+//     for (let i = 1; i <= 15; i++) {
+//         filasTabla.push({
+//             paginas: i,
+//             fotos: i * 3
+//         });
+//     }
 
-    const colores = [
-        { texto: "Blanco y Negro", valor: false },
-        { texto: "Color", valor: true }
-    ];
-    const resoluciones = [
-        { texto: "150-300 dpi", valor: 300 }, 
-        { texto: "450-900 dpi", valor: 600 } 
-    ];
+//     const colores = [
+//         { texto: "Blanco y Negro", valor: false },
+//         { texto: "Color", valor: true }
+//     ];
+//     const resoluciones = [
+//         { texto: "150-300 dpi", valor: 300 }, 
+//         { texto: "450-900 dpi", valor: 600 } 
+//     ];
     
-    //crear la tabla
-    const tabla = document.createElement("table");
+//     //crear la tabla
+//     const tabla = document.createElement("table");
     
-    const caption = document.createElement("caption");
-    tabla.appendChild(caption);
+//     const caption = document.createElement("caption");
+//     tabla.appendChild(caption);
     
-    const thead = document.createElement("thead");
-    const filaEncabezado = document.createElement("tr");
+//     const thead = document.createElement("thead");
+//     const filaEncabezado = document.createElement("tr");
     
-    const encabezados = ["Número de páginas", "Número de fotos", "Blanco y negro", "Color"];
+//     const encabezados = ["Número de páginas", "Número de fotos", "Blanco y negro", "Color"];
 
-    let thVacio = document.createElement("th");
-    thVacio.setAttribute("rowspan", "2");
-    thVacio.textContent = encabezados[0];
-    filaEncabezado.appendChild(thVacio);
+//     let thVacio = document.createElement("th");
+//     thVacio.setAttribute("rowspan", "2");
+//     thVacio.textContent = encabezados[0];
+//     filaEncabezado.appendChild(thVacio);
 
-    thVacio = document.createElement("th");
-    thVacio.setAttribute("rowspan", "2");
-    thVacio.textContent = encabezados[1];
-    filaEncabezado.appendChild(thVacio);
+//     thVacio = document.createElement("th");
+//     thVacio.setAttribute("rowspan", "2");
+//     thVacio.textContent = encabezados[1];
+//     filaEncabezado.appendChild(thVacio);
     
-    for (const color of colores) {
-        const thColor = document.createElement("th");
-        thColor.setAttribute("colspan", resoluciones.length); 
-        thColor.textContent = color.texto;
-        filaEncabezado.appendChild(thColor);
-    }
+//     for (const color of colores) {
+//         const thColor = document.createElement("th");
+//         thColor.setAttribute("colspan", resoluciones.length); 
+//         thColor.textContent = color.texto;
+//         filaEncabezado.appendChild(thColor);
+//     }
 
-    thead.appendChild(filaEncabezado);
+//     thead.appendChild(filaEncabezado);
     
     
-    const filaEncabezadoResolucion = document.createElement("tr");
-    for (let i = 0; i < colores.length; i++) {
-        for (const resolucion of resoluciones) {
-            const thResolucion = document.createElement("th");
-            thResolucion.textContent = resolucion.texto;
-            filaEncabezadoResolucion.appendChild(thResolucion);
-        }
-    }
-    thead.appendChild(filaEncabezadoResolucion);
-    tabla.appendChild(thead);
+//     const filaEncabezadoResolucion = document.createElement("tr");
+//     for (let i = 0; i < colores.length; i++) {
+//         for (const resolucion of resoluciones) {
+//             const thResolucion = document.createElement("th");
+//             thResolucion.textContent = resolucion.texto;
+//             filaEncabezadoResolucion.appendChild(thResolucion);
+//         }
+//     }
+//     thead.appendChild(filaEncabezadoResolucion);
+//     tabla.appendChild(thead);
     
-    const tbody = document.createElement("tbody");
+//     const tbody = document.createElement("tbody");
     
-    for (const filaData of filasTabla) {
-        const numPaginas = filaData.paginas;
-        const numFotos = filaData.fotos;
+//     for (const filaData of filasTabla) {
+//         const numPaginas = filaData.paginas;
+//         const numFotos = filaData.fotos;
         
-        const fila = document.createElement("tr");
+//         const fila = document.createElement("tr");
         
-        // numero de paginas
-        let tdPaginas = document.createElement("td");
-        tdPaginas.textContent = numPaginas;
-        fila.appendChild(tdPaginas);
+//         // numero de paginas
+//         let tdPaginas = document.createElement("td");
+//         tdPaginas.textContent = numPaginas;
+//         fila.appendChild(tdPaginas);
 
-        // numero de fotos
-        let tdFotos = document.createElement("td");
-        tdFotos.textContent = numFotos;
-        fila.appendChild(tdFotos);
+//         // numero de fotos
+//         let tdFotos = document.createElement("td");
+//         tdFotos.textContent = numFotos;
+//         fila.appendChild(tdFotos);
         
-        // Colores Blanco y Negro / Color
-        for (const color of colores) {
-            const esColor = color.valor;
+//         // Colores Blanco y Negro / Color
+//         for (const color of colores) {
+//             const esColor = color.valor;
             
-            // Resoluciones de 300 dpi a 600 dpi
-            for (const resolucion of resoluciones) {
-                const valorResolucion = resolucion.valor;
+//             // Resoluciones de 300 dpi a 600 dpi
+//             for (const resolucion of resoluciones) {
+//                 const valorResolucion = resolucion.valor;
                 
-                const costeCalculado = calcularCosteFolleto(numPaginas, numFotos, esColor, valorResolucion);
+//                 const costeCalculado = calcularCosteFolleto(numPaginas, numFotos, esColor, valorResolucion);
                 
-                const tdCoste = document.createElement("td");
+//                 const tdCoste = document.createElement("td");
                 
-                tdCoste.textContent = costeCalculado + " €";
+//                 tdCoste.textContent = costeCalculado + " €";
             
-                fila.appendChild(tdCoste);
-            }
-        }
+//                 fila.appendChild(tdCoste);
+//             }
+//         }
 
-        tbody.appendChild(fila);
-    }
+//         tbody.appendChild(fila);
+//     }
     
-    tabla.appendChild(tbody);
-    return tabla;
-}
+//     tabla.appendChild(tbody);
+//     return tabla;
+// }
 
-function toggleTablaCostes() {
-    const contenedor = $("contenedor-tabla-costes");
-    const boton = $("btn-toggle-tabla");
+// function toggleTablaCostes() {
+//     const contenedor = $("contenedor-tabla-costes");
+//     const boton = $("btn-toggle-tabla");
     
-    if (contenedor.style.display === "none" || contenedor.style.display === "") {
-        contenedor.style.display = "block";
-        boton.textContent = "Ocultar tabla de costes";
-    } else {
-        contenedor.style.display = "none";
-        boton.textContent = "Mostrar tabla de costes";
-    }
-}
+//     if (contenedor.style.display === "none" || contenedor.style.display === "") {
+//         contenedor.style.display = "block";
+//         boton.textContent = "Ocultar tabla de costes";
+//     } else {
+//         contenedor.style.display = "none";
+//         boton.textContent = "Mostrar tabla de costes";
+//     }
+// }
 
-function inicializarTablaCostes() {
-    const boton = $("btn-toggle-tabla");
+// function inicializarTablaCostes() {
+//     const boton = $("btn-toggle-tabla");
     
-    if (boton) {
-        boton.addEventListener("click", toggleTablaCostes);
+//     if (boton) {
+//         boton.addEventListener("click", toggleTablaCostes);
         
-        const contenedor = $("contenedor-tabla-costes");
-        if (contenedor) {
-            const tabla = crearTablaCostes();
-            contenedor.appendChild(tabla);
+//         const contenedor = $("contenedor-tabla-costes");
+//         if (contenedor) {
+//             const tabla = crearTablaCostes();
+//             contenedor.appendChild(tabla);
             
-            contenedor.style.display = "none";
-        }
-    }
-}
+//             contenedor.style.display = "none";
+//         }
+//     }
+// }
 
 
-/*=================================RESPUESTA SOLICITUD FOLLETO=================================*/
+// /*=================================RESPUESTA SOLICITUD FOLLETO=================================*/
 
-function actualizarCeldaRespuesta(filaIndex, valor) {
-    const tabla = document.querySelector('main table');
-    if (tabla) {
-        // La celda de valor es la segunda (índice 1) de la fila
-        const fila = tabla.rows[filaIndex];
-        if (fila && fila.cells.length > 1) {
-            fila.cells[1].textContent = valor;
-        }
-    }
-}
+// function actualizarCeldaRespuesta(filaIndex, valor) {
+//     const tabla = document.querySelector('main table');
+//     if (tabla) {
+//         // La celda de valor es la segunda (índice 1) de la fila
+//         const fila = tabla.rows[filaIndex];
+//         if (fila && fila.cells.length > 1) {
+//             fila.cells[1].textContent = valor;
+//         }
+//     }
+// }
 
 
-function procesarRespuestaFolleto() {
+// function procesarRespuestaFolleto() {
 
-    const params = new URLSearchParams(window.location.search);
+//     const params = new URLSearchParams(window.location.search);
 
-    const nombre = params.get('nombre') || 'N/A';
-    const email = params.get('email') || 'N/A';
+//     const nombre = params.get('nombre') || 'N/A';
+//     const email = params.get('email') || 'N/A';
     
-    // Dirección
-    const direccion = params.get('direccion') || '';
-    const numero = params.get('numero') || '';
-    const cp = params.get('cp') || '';
-    const dirCompleta = `${direccion}${direccion && numero ? ' Nº ' + numero : ''}${cp ? ' CP ' + cp : ''}`.trim() || 'N/A';
+//     // Dirección
+//     const direccion = params.get('direccion') || '';
+//     const numero = params.get('numero') || '';
+//     const cp = params.get('cp') || '';
+//     const dirCompleta = `${direccion}${direccion && numero ? ' Nº ' + numero : ''}${cp ? ' CP ' + cp : ''}`.trim() || 'N/A';
 
     
-    const localidad = MAPA_LOCALIDADES[params.get('localidad')] || 'N/A';
-    const provincia = MAPA_PROVINCIAS[params.get('provincia')] || 'N/A';
+//     const localidad = MAPA_LOCALIDADES[params.get('localidad')] || 'N/A';
+//     const provincia = MAPA_PROVINCIAS[params.get('provincia')] || 'N/A';
 
-    const telefono = params.get('telefono') || 'N/A';
-    const textoAdicional = params.get('texto_adicional') || 'Ninguno';
+//     const telefono = params.get('telefono') || 'N/A';
+//     const textoAdicional = params.get('texto_adicional') || 'Ninguno';
     
     
-    const paginasPorFolleto = parseInt(params.get('paginas')) || 1; 
-    const fotosPorFolleto = parseInt(params.get('fotos')) || 1;     
-    const copias = 1;
-    const impresionRes = parseInt(params.get('impresion')) || 150;
+//     const paginasPorFolleto = parseInt(params.get('paginas')) || 1; 
+//     const fotosPorFolleto = parseInt(params.get('fotos')) || 1;     
+//     const copias = 1;
+//     const impresionRes = parseInt(params.get('impresion')) || 150;
     
-    const anuncio = MAPA_ANUNCIOS[params.get('anuncio')] || 'N/A';
-    const fechaRec = params.get('fecha_rec') || 'N/A';
+//     const anuncio = MAPA_ANUNCIOS[params.get('anuncio')] || 'N/A';
+//     const fechaRec = params.get('fecha_rec') || 'N/A';
 
-    const impresionColorVal = params.get('impresion_color') === 'color';
-    const impresionColorText = impresionColorVal ? 'Sí (Color)' : 'No (Blanco y Negro)';
+//     const impresionColorVal = params.get('impresion_color') === 'color';
+//     const impresionColorText = impresionColorVal ? 'Sí (Color)' : 'No (Blanco y Negro)';
 
-    const imprimirPrecioVal = params.get('imprimir_precio') === 'si';
-    const imprimirPrecioText = imprimirPrecioVal ? 'Sí' : 'No';
+//     const imprimirPrecioVal = params.get('imprimir_precio') === 'si';
+//     const imprimirPrecioText = imprimirPrecioVal ? 'Sí' : 'No';
     
-    const costeTotal = calcularCosteFolleto(
-        paginasPorFolleto * copias, 
-        fotosPorFolleto * copias, 
-        impresionColorVal, 
-        impresionRes
-    );
+//     const costeTotal = calcularCosteFolleto(
+//         paginasPorFolleto * copias, 
+//         fotosPorFolleto * copias, 
+//         impresionColorVal, 
+//         impresionRes
+//     );
     
-    actualizarCeldaRespuesta(0, nombre);
-    actualizarCeldaRespuesta(1, email);
-    actualizarCeldaRespuesta(2, dirCompleta);
-    actualizarCeldaRespuesta(3, localidad);
-    actualizarCeldaRespuesta(4, provincia);
-    actualizarCeldaRespuesta(5, telefono);
-    actualizarCeldaRespuesta(6, textoAdicional);
-    actualizarCeldaRespuesta(7, paginasPorFolleto.toString()); 
-    actualizarCeldaRespuesta(8, fotosPorFolleto.toString());   
-    actualizarCeldaRespuesta(9, impresionRes + ' dpi');        
-    actualizarCeldaRespuesta(10, anuncio);                     
-    actualizarCeldaRespuesta(11, fechaRec);                    
-    actualizarCeldaRespuesta(12, impresionColorText);          
-    actualizarCeldaRespuesta(13, imprimirPrecioText);          
-    actualizarCeldaRespuesta(14, costeTotal + ' €'); 
-}
+//     actualizarCeldaRespuesta(0, nombre);
+//     actualizarCeldaRespuesta(1, email);
+//     actualizarCeldaRespuesta(2, dirCompleta);
+//     actualizarCeldaRespuesta(3, localidad);
+//     actualizarCeldaRespuesta(4, provincia);
+//     actualizarCeldaRespuesta(5, telefono);
+//     actualizarCeldaRespuesta(6, textoAdicional);
+//     actualizarCeldaRespuesta(7, paginasPorFolleto.toString()); 
+//     actualizarCeldaRespuesta(8, fotosPorFolleto.toString());   
+//     actualizarCeldaRespuesta(9, impresionRes + ' dpi');        
+//     actualizarCeldaRespuesta(10, anuncio);                     
+//     actualizarCeldaRespuesta(11, fechaRec);                    
+//     actualizarCeldaRespuesta(12, impresionColorText);          
+//     actualizarCeldaRespuesta(13, imprimirPrecioText);          
+//     actualizarCeldaRespuesta(14, costeTotal + ' €'); 
+// }

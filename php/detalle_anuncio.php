@@ -4,7 +4,9 @@
 // ---------------------------------------------
 
 // Título de la página
-$title = "Detalle del anuncio";
+$titulo_pagina = "Detalle del anuncio";
+include = "paginas_Estilo.php";
+include "header.php";
 
 // Obtener ID del anuncio desde la URL
 $id = isset($_GET["id"]) ? intval($_GET["id"]) : 0;
@@ -19,11 +21,9 @@ if ($id % 2 == 0) {
     $anuncio = $anuncio_impar;
 }
 
-// // Incluir cabecera de la plantilla (DOCTYPE, <html>, <head>…)
-// require_once("cabecera.inc");
 
-// // Incluir inicio (encabezado del sitio, menú, etc.)
-// require_once("inicio.inc");
+include = "paginas_Estilo.php";
+include "header.php";
 ?>
 
 <main id="anuncio">
@@ -67,6 +67,7 @@ if ($id % 2 == 0) {
 </main>
 
 <?php
-// Incluir pie de página (footer y cierre de etiquetas)
-// require_once("pie.inc");
+
+include "footer.php";
+
 ?>

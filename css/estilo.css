@@ -588,6 +588,25 @@ footer p {
         object-fit: cover;
     }
 
+    #mis-anuncios article img {
+        width: 150px; 
+        height: auto;
+        border: 1px solid #ccc;
+    }
+
+    #mis-anuncios article {
+ 
+        max-width: 250px;
+        margin: 10px; 
+        padding: 10px;
+    }
+
+    #mis-anuncios #listado-anuncios {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    
     #usuariomenu nav {
         display: grid;
         grid-template-columns: repeat(3,1fr);
@@ -658,4 +677,6 @@ footer p {
         top: 1rem;
         align-self: start;
     }
+
+
 }

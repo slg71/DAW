@@ -1,74 +1,12 @@
 <?php
 // -------------------------------------------------------------
 // Página: solicitar_folleto.php
-// Propósito: Mostrar formulario y tabla de costes generada por PHP.
 // -------------------------------------------------------------
 
-// =============================================================
-// LÓGICA PHP DE TARIFAS Y CÁLCULO (Traducción de JavaScript)
-// =============================================================
+include "funciones_costes.php";
 
-/**
- * Calcula el coste base de las páginas.
- * Equivalente a la función JS calcularCostePaginas().
- * @param int $numPaginas Número de páginas.
- * @return float Coste total por número de páginas.
- */
-function calcular_coste_paginas($numPaginas) {
-    $coste = 0.0;
-    
-    // < 5 páginas (1 a 4) -> 2 € por página
-    if ($numPaginas <= 4) {
-        $coste = $numPaginas * 2.0;
-    // Entre 5 y 10 páginas (5 a 10) -> 1.8 € por página
-    } elseif ($numPaginas <= 10) {
-        // Coste de las primeras 4 páginas (4 * 2) + coste de las restantes (hasta 10)
-        $coste = (4 * 2.0) + (($numPaginas - 4) * 1.8);
-    // > 10 páginas (11 en adelante) -> 1.6 € por página
-    } else { 
-        // Coste de las primeras 4 (4 * 2) + coste de las siguientes 6 (6 * 1.8) + coste de las restantes
-        $coste = (4 * 2.0) + (6 * 1.8) + (($numPaginas - 10) * 1.6);
-    }
-    
-    return $coste;
-}
-
-
-/**
- * Función principal para calcular el coste unitario total del folleto.
- * Equivalente a la función JS calcularCosteFolleto().
- * @param int $numPaginas Número de páginas.
- * @param int $numFotos Número de fotos.
- * @param bool $esColor True si es a color, False si es blanco y negro.
- * @param int $resolucion Resolución en DPI.
- * @return float Coste unitario del folleto, formateado a 2 decimales.
- */
-function calcular_coste_folleto($numPaginas, $numFotos, $esColor, $resolucion) {
-    // Coste base de procesamiento y envio
-    $coste = 10.0; 
-    
-    // Coste de páginas
-    $coste += calcular_coste_paginas($numPaginas);
-    
-    // Coste de color (0.5€ por foto a color)
-    if ($esColor) {
-        $coste += 0.5 * $numFotos;
-    }
-    
-    // Coste de resolución (> 300 dpi añade 0.2€ por foto)
-    if ($resolucion > 300) {
-        $coste += 0.2 * $numFotos;
-    }
-    
-    return round($coste, 2); 
-}
-
-
-/**
- * Función para generar la tabla de costes de la Figura 2.
- * @return string HTML de la tabla de costes.
- */
-function generar_tabla_costes_php() {
+//tabla de costes
+function generar_tabla_costes() {
     $html = '<table class="tabla-costes-dinamica">';
     $html .= '<thead>';
     $html .= '<tr>';
@@ -85,29 +23,27 @@ function generar_tabla_costes_php() {
     
     $html .= '<tbody>';
     
-    // Generar filas de 1 a 15 páginas (la lógica del JS)
     for ($i = 1; $i <= 15; $i++) {
         $numPaginas = $i;
-        $numFotos = $i * 3; // Lógica del JS: fotos = paginas * 3
+        $numFotos = $i * 3; // lo mismo que fotos = paginas * 3
         
         $html .= '<tr>';
         $html .= '<td>' . $numPaginas . '</td>';
         $html .= '<td>' . $numFotos . '</td>';
         
-        // CÁLCULOS
+   
         
-        // BN, <= 300 dpi (false, 300)
+        // BN <= 300 dpi
         $coste_bn_300 = calcular_coste_folleto($numPaginas, $numFotos, false, 300);
-        // BN, > 300 dpi (false, 600)
+        // BN > 300 dpi
         $coste_bn_900 = calcular_coste_folleto($numPaginas, $numFotos, false, 600);
         
-        // Color, <= 300 dpi (true, 300)
+        // Color <= 300 dpi
         $coste_color_300 = calcular_coste_folleto($numPaginas, $numFotos, true, 300);
-        // Color, > 300 dpi (true, 600)
+        // Color > 300 dpi
         $coste_color_900 = calcular_coste_folleto($numPaginas, $numFotos, true, 600);
         
-        // IMPRESIÓN
-        // number_format para formato de moneda con coma decimal
+        // impresion
         $html .= '<td>' . number_format($coste_bn_300, 2, ',', '.') . ' €</td>';
         $html .= '<td>' . number_format($coste_bn_900, 2, ',', '.') . ' €</td>';
         $html .= '<td>' . number_format($coste_color_300, 2, ',', '.') . ' €</td>';
@@ -123,29 +59,21 @@ function generar_tabla_costes_php() {
 }
 
 // =============================================================
-// Estructura de la página
+// Estructura de la pagina Solicitar Folleto
 // =============================================================
 
-// Corregida la sintaxis del título y del include
 $titulo_pagina = "Solicitud folleto";
 include "paginas_Estilo.php";
 include "header.php";
 
 ?>
-    
-    <nav>
-        <a href="index_registrado.php">Inicio</a>
-        <a href="crear_anuncio.php">Publicar anuncio</a>
-        <a href="MenuRegistradoUsu.php">Menú de Usuario</a>
-    </nav>
-</header>
 
 <main>
-    <h2>Solicitud de impresión de folleto publicitario</h2>
-    <p>Mediante esta opción puedes solicitar la impresión y envío de uno de tus anuncios a todo color, toda resolución.</p>
+    <h2>Solicitud de impresion de folleto publicitario</h2>
+    <p>Mediante esta opcion puedes solicitar la impresion y envio de uno de tus anuncios a todo color, toda resolucion.</p>
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor.</p>
 
-    <!-- Sección de Tarifas Fijas -->
+
     <h2>Tarifas del folleto</h2>
     <table>
       <tr><td>Coste procesamiento y envío</td><td>10 €</td></tr>
@@ -159,23 +87,12 @@ include "header.php";
     </table>
 
 
-    <!-- Tabla de Costes Calculada por PHP (Implementación requerida) -->
-    <h2>Tabla de posibles costes (PHP)</h2>
-    <p>Esta tabla se calcula en el servidor usando la misma lógica que su versión en JavaScript.</p>
+
+    <h2>Tabla de posibles costes</h2>
     <section id="contenedor-tabla-costes-php">
-        <?php echo generar_tabla_costes_php(); ?>
+        <?php echo generar_tabla_costes(); ?>
     </section>
     
-    <!-- Tabla de Costes Calculada por JavaScript (Para comparación) -->
-    <h2>Tabla de posibles costes (JavaScript)</h2>
-    <p>
-      <button type="button" id="btn-toggle-tabla">Mostrar tabla de costes (JS)</button>
-    </p>
-    <section id="contenedor-tabla-costes-js">
-        <!-- La tabla se generara aquí con JavaScript -->
-    </section>
-
-    <!-- Formulario de solicitud -->
     <h2>Formulario de solicitud</h2>
     <p>Rellene el siguiente formulario aportando todos los detalles para confeccionar su folleto publicitario.</p>
     <p>Los campos marcados con un asterisco (*) son obligatorios</p>

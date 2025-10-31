@@ -3,8 +3,6 @@
 // Página: respuesta_registro.php
 // -------------------------------------------------------------
 
-$title = "Usuario registro correctamente";
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //pillo los valores
     $usuario = trim($_POST["usuario"] ?? "");
@@ -24,8 +22,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
 //plantilla
-// require_once "cabecera.inc";
-// require_once "inicio.inc";
+
+include "paginas_Estilo.php";
+include "header.php";
 ?>
 
 <main id="bloque">
@@ -41,8 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </main>
 
 <?php
-    // Incluir pie de página
-    // require_once("pie.inc");
+include "footer.php";
 }else {
     // Si se accede directamente al script sin enviar el formulario
     header("Location: ../registro.html");

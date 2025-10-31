@@ -2,7 +2,7 @@
 // -------------------------------------------------------------
 // Página: subir_foto.php
 // -------------------------------------------------------------
-$title = "Subir foto del anuncio";
+
 
 // Obtener el id del anuncio desde el formulario
 $id = isset($_POST["id"]) ? intval($_POST["id"]) : 0;
@@ -10,10 +10,16 @@ $id = isset($_POST["id"]) ? intval($_POST["id"]) : 0;
 // Comprobar si se ha enviado un archivo
 $tiene_foto = isset($_FILES["foto"]) && $_FILES["foto"]["name"] != "";
 
-require_once("cabecera.inc");
-require_once("inicio.inc");
+$titulo_pagina = "Subir foto del anuncio";
+include = "paginas_Estilo.php";
+include "header.php";
 ?>
-
+        <nav>
+            <a href="index_registrado.html">Inicio</a>
+            <a href="publicar.html">Publicar anuncio</a>
+            <a href="MenuRegistradoUsu.html">Menú de Usuario</a>
+        </nav>
+    </header>
 <main>
     <h2>Resultado de la subida</h2>
 
@@ -34,5 +40,5 @@ require_once("inicio.inc");
 </main>
 
 <?php
-require_once("pie.inc");
+include "footer.php";
 ?>

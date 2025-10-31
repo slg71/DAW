@@ -3,7 +3,6 @@
 // Página: mensaje_enviado.php
 // -------------------------------------------------------------
 
-$title = "Mensaje enviado al anunciante";
 
 // Comprobar si se ha enviado el formulario por POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -22,9 +21,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    // Incluir cabecera y menú
-    // require_once("cabecera.inc");
-    // require_once("inicio.inc");
+    $title = "Mensaje enviado al anunciante";
+    include = "paginas_Estilo.php";
+    include "header.php";
     ?>
 
     <main id="bloque">
@@ -38,8 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </main>
 
     <?php
-    // Incluir pie de página
-    // require_once("pie.inc");
+    include "footer.php";
 
 } else {
     // Si se accede directamente sin enviar el formulario

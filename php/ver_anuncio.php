@@ -3,7 +3,7 @@
 // -------------------------------------------------------------
 // Página: ver_anuncio.php
 // -------------------------------------------------------------
-$title = "Ver mi anuncio";
+
 
 // Simulamos que el usuario ha hecho clic en su propio anuncio
 // Se obtiene el ID mediante GET
@@ -38,9 +38,16 @@ if (isset($anuncios[$id])) {
     $a = null;
 }
 
-// require_once("cabecera.inc");
-// require_once("inicio.inc");
+$titulo_pagina = "Ver mi Anuncio";
+include "paginas_Estilo.php";
+include "header.php";
 ?>
+        <nav>
+            <a href="index_registrado.html">Inicio</a>
+            <a href="publicar.html">Publicar anuncio</a>
+            <a href="MenuRegistradoUsu.html">Menú de Usuario</a>
+        </nav>
+    </header>
 
 <main id="ver-anuncio">
     <?php if ($a != null): ?>
@@ -68,5 +75,5 @@ if (isset($anuncios[$id])) {
 </main>
 
 <?php
-// require_once("pie.inc");
+include "footer.php";
 ?>
