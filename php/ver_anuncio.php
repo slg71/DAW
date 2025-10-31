@@ -18,7 +18,7 @@ $anuncios = array(
         "pais" => "España",
         "precio" => 900,
         "descripcion" => "Bonito apartamento en el centro de Alicante, recién reformado.",
-        "imagen" => "./img/piso.jpg"
+        "imagen" => "./img/piso2.jpg"
     ),
     2 => array(
         "titulo" => "Piso moderno con terraza",
@@ -27,7 +27,7 @@ $anuncios = array(
         "pais" => "España",
         "precio" => 220000,
         "descripcion" => "Luminoso piso moderno con terraza amplia y buenas vistas.",
-        "imagen" => "./img/piso.jpg"
+        "imagen" => "./img/piso1.jpg"
     )
 );
 
@@ -42,8 +42,14 @@ $titulo_pagina = "Ver mi Anuncio";
 include "paginas_Estilo.php";
 include "header.php";
 ?>
+        <nav>
+            <a href="index_registrado.html">Inicio</a>
+            <a href="publicar.html">Publicar anuncio</a>
+            <a href="MenuRegistradoUsu.html">Menú de Usuario</a>
+        </nav>
+    </header>
 
-<main>
+<main id="ver-anuncio">
     <?php if ($a != null): ?>
         <section>
             <h2><?php echo htmlspecialchars($a["titulo"]); ?></h2>
