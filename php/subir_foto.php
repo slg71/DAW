@@ -14,12 +14,7 @@ $titulo_pagina = "Subir foto del anuncio";
 include = "paginas_Estilo.php";
 include "header.php";
 ?>
-        <nav>
-            <a href="index_registrado.html">Inicio</a>
-            <a href="publicar.html">Publicar anuncio</a>
-            <a href="MenuRegistradoUsu.html">Menú de Usuario</a>
-        </nav>
-    </header>
+
 <main>
     <h2>Resultado de la subida</h2>
 

@@ -18,7 +18,7 @@ $anuncios = array(
         "pais" => "España",
         "precio" => 900,
         "descripcion" => "Bonito apartamento en el centro de Alicante, recién reformado.",
-        "imagen" => "./img/piso2.jpg"
+        "imagen" => "./img/piso.jpg"
     ),
     2 => array(
         "titulo" => "Piso moderno con terraza",
@@ -27,7 +27,7 @@ $anuncios = array(
         "pais" => "España",
         "precio" => 220000,
         "descripcion" => "Luminoso piso moderno con terraza amplia y buenas vistas.",
-        "imagen" => "./img/piso1.jpg"
+        "imagen" => "./img/piso.jpg"
     )
 );
 

@@ -67,7 +67,7 @@ $imprimir_precio_texto = ($_POST['imprimir_precio'] ?? 'no') === 'si' ? 'Sí' : 
 $dir_completa = trim($direccion . ($direccion && $numero ? ' Nº ' . $numero : '') . ($cp ? ' CP ' . $cp : '')) ?: 'N/A';
 
 // =============================================================
-// GENERACIÓN DE LA PÁGINA DE RESPUESTA
+// HTML DE LA PÁGINA DE RESPUESTA
 // =============================================================
 
 $titulo_pagina = "Solicitud Registrada";
@@ -102,6 +102,7 @@ include "header.php";
         <p class="precio-total">
             Coste Total por <?php echo $copias; ?> copia<?php echo $copias > 1 ? 's' : ''; ?>: 
             <strong><?php echo number_format($coste_final, 2, ',', '.'); ?> €</strong>
+            <!--number_format(numero, decimales, separador_decimal, separador_miles)-->
         </p>
     </section>
     

@@ -23,7 +23,7 @@ function generar_tabla_costes() {
     
     $html .= '<tbody>';
     
-    for ($i = 1; $i <= 15; $i++) {
+    for ($i = 1; $i <= 15; $i++) {//15 lineas de tabla
         $numPaginas = $i;
         $numFotos = $i * 3; // lo mismo que fotos = paginas * 3
         
@@ -44,6 +44,7 @@ function generar_tabla_costes() {
         $coste_color_900 = calcular_coste_folleto($numPaginas, $numFotos, true, 600);
         
         // impresion
+        //number_format(numero, decimales, separador_decimal, separador_miles)
         $html .= '<td>' . number_format($coste_bn_300, 2, ',', '.') . ' €</td>';
         $html .= '<td>' . number_format($coste_bn_900, 2, ',', '.') . ' €</td>';
         $html .= '<td>' . number_format($coste_color_300, 2, ',', '.') . ' €</td>';
