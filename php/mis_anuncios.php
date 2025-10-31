@@ -49,13 +49,10 @@ include "header.php";
         <?php foreach ($anuncios as $anuncio): ?>
         
         <article>
-<<<<<<< HEAD
             <a href="anuncio.php?id=<?php echo $anuncio['id']; ?>">
                 <img src="<?php echo htmlspecialchars($anuncio['foto']); ?>" alt="Foto principal: <?php echo htmlspecialchars($anuncio['titulo']); ?>">
-=======
             <a href="ver_anuncio.php?id=<?php echo $anuncio['id']; ?>">
               <img src="<?php echo htmlspecialchars($anuncio['foto']); ?>" alt="Foto principal: <?php echo htmlspecialchars($anuncio['titulo']); ?>">
->>>>>>> 749280ecc08c21ce7d2041c04d8dce745f771d79
             </a>
 
             <h3><?php echo htmlspecialchars($anuncio['titulo']); ?></h3>
@@ -68,16 +65,13 @@ include "header.php";
 
             <div class="acciones-anuncio">
                 
-                <!-- NUEVO: Enlace para añadir foto. Pasa el ID del anuncio como parámetro. -->
                 <a href="form_subir_foto.php?anuncio_id=<?php echo $anuncio['id']; ?>" class="boton-agregar-foto">
                     Añadir Foto
                 </a>
 
-                <!-- Enlace para editar el anuncio (asumiendo que existe editar_anuncio.php) -->
                 <a href="editar_anuncio.php?id=<?php echo $anuncio['id']; ?>" class="boton-editar">
                     Editar
                 </a>
-                <!-- Formulario para Eliminar -->
                  <form action="gestion_anuncios.php" method="post" style="display:inline;">
                     <button type="submit" 
                             name="eliminar" 
