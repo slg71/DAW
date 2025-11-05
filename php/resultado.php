@@ -129,7 +129,7 @@ include "header.php";
             echo "<p>País: " . htmlspecialchars($r["pais"]) . "</p>\n";
             echo "<p>Precio: " . number_format($r["precio"], 0, ',', '.') . " €</p>\n";
 
-            echo "<form action='../mensaje.html' method='get'>\n";
+            echo "<form action='mensaje.php' method='get'>\n";
             echo "<button type='submit'>Mensaje</button>\n";
             echo "</form>\n";
 

@@ -1,4 +1,13 @@
 <?php
+session_start(); // Inicia o reanuda la sesión
+
+// Comprueba si la variable de sesión 'usuario_id' NO está definida
+if (!isset($_SESSION['usuario_id'])) {
+    // Si no lo está, redirige al usuario a la página de login
+    header('Location: login.php');
+    exit; // Detiene la ejecución del script
+}
+
 // ---------------------------------------------
 // Página: detalle.php
 // ---------------------------------------------
@@ -56,7 +65,7 @@ if ($id % 2 == 0) {
 
             <p><strong>Anunciante:</strong> <?php echo htmlspecialchars($anuncio["usuario"]); ?></p>
 
-            <form action="../mensaje.html" method="get">
+            <form action="mensaje.php" method="get">
                 <button type="submit">Enviar mensaje</button>
             </form>
         </article>

@@ -36,6 +36,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // Validar credenciales
     if (isset($usuarios_validos[$usuario]) && $usuarios_validos[$usuario] === $pwd) {
+        session_start();
+        // Guardamos los datos del usuario en la sesión
+        $_SESSION['usuario_id'] = $usuario;
         header("Location: inicio_registrado.php");
         exit;
     } else {

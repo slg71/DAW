@@ -1,4 +1,13 @@
 <?php
+session_start(); // Inicia o reanuda la sesión
+
+// Comprueba si la variable de sesión 'usuario_id' NO está definida
+if (!isset($_SESSION['usuario_id'])) {
+    // Si no lo está, redirige al usuario a la página de login
+    header('Location: login.php');
+    exit; // Detiene la ejecución del script
+}
+
 // -------------------------------------------------------------
 // Página: inicio_registrado.php (usuario autenticado simulado)
 // -------------------------------------------------------------
