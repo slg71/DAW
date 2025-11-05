@@ -1,20 +1,13 @@
 <?php
-session_start(); // Inicia o reanuda la sesión
+session_start();
 
-// Comprueba si la variable de sesión 'usuario_id' NO está definida
 if (!isset($_SESSION['usuario_id'])) {
-    // Si no lo está, redirige al usuario a la página de login
     header('Location: login.php');
-    exit; // Detiene la ejecución del script
+    exit;
 }
-
-// ======================================================
-// respuesta_registro.php — Validación múltiple como en JS
-// ======================================================
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    // Recoger los campos del formulario
     $usuario = trim($_POST["usuario"] ?? "");
     $pwd = trim($_POST["pwd"] ?? "");
     $pwd2 = trim($_POST["pwd2"] ?? "");
@@ -24,54 +17,65 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $pais = trim($_POST["pais"] ?? "");
     $email = trim($_POST["email"] ?? "");
 
-    // Array para acumular errores
     $errores = [];
 
-    // ============ Validaciones ============
-    if ($usuario === "" || $pwd === "" || $pwd2 === "" || $sexo === "" || $nac === "" || $ciudad === "" || $pais === "" || $email === "") {
-        $errores["general"] = "Debes rellenar todos los campos obligatorios.";
+    // ============ Validaciones (Lógica Corregida) ============
+
+    // --- Validación Usuario ---
+    if ($usuario === "") {
+        $errores["usuario"] = "El usuario es obligatorio.";
+    } elseif (strlen($usuario) < 3 || strlen($usuario) > 15) {
+        $errores["usuario"] = "El usuario debe tener entre 3 y 15 caracteres.";
+    } elseif (is_numeric($usuario[0])) {
+        $errores["usuario"] = "El usuario no puede comenzar con un número.";
+    } elseif (!preg_match("/^[a-zA-Z0-9]+$/", $usuario)) {
+        $errores["usuario"] = "El usuario solo puede contener letras y números.";
     }
 
-    if ($usuario !== "") {
-        if (strlen($usuario) < 3 || strlen($usuario) > 15) {
-            $errores["usuario"] = "El usuario debe tener entre 3 y 15 caracteres.";
-        } elseif (is_numeric($usuario[0])) {
-            $errores["usuario"] = "El usuario no puede comenzar con un número.";
-        } elseif (!preg_match("/^[a-zA-Z0-9]+$/", $usuario)) {
-            $errores["usuario"] = "El usuario solo puede contener letras y números.";
-        }
+    // --- Validación Contraseña (pwd) ---
+    if ($pwd === "") {
+        $errores["pwd"] = "La contraseña es obligatoria.";
+    } elseif (strlen($pwd) < 6 || strlen($pwd) > 15) {
+        $errores["pwd"] = "La contraseña debe tener entre 6 y 15 caracteres.";
+    } elseif (!preg_match("/^[A-Za-z0-9\-_]+$/", $pwd)) {
+        $errores["pwd"] = "La contraseña solo puede contener letras, números, guion o guion bajo.";
+    } elseif (!preg_match("/[A-Z]/", $pwd) || !preg_match("/[a-z]/", $pwd) || !preg_match("/[0-9]/", $pwd)) {
+        $errores["pwd"] = "La contraseña debe tener al menos una mayúscula, una minúscula y un número.";
     }
 
-    if ($pwd !== "") {
-        if (strlen($pwd) < 6 || strlen($pwd) > 15) {
-            $errores["pwd"] = "La contraseña debe tener entre 6 y 15 caracteres.";
-        } elseif (!preg_match("/^[A-Za-z0-9\-_]+$/", $pwd)) {
-            $errores["pwd"] = "La contraseña solo puede contener letras, números, guion o guion bajo.";
-        } elseif (!preg_match("/[A-Z]/", $pwd) || !preg_match("/[a-z]/", $pwd) || !preg_match("/[0-9]/", $pwd)) {
-            $errores["pwd"] = "La contraseña debe tener al menos una mayúscula, una minúscula y un número.";
-        }
-    }
-
+    // --- Validación Repetir Contraseña (pwd2) ---
     if ($pwd2 === "") {
         $errores["pwd2"] = "Debes repetir la contraseña.";
     } elseif ($pwd !== $pwd2) {
-        $errores["pwd2"] = "Las contraseñas no coinciden.";
-    }
-
-    if ($email !== "") {
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errores["email"] = "El email no tiene un formato válido.";
-        } elseif (strlen($email) > 254) {
-            $errores["email"] = "La dirección de email no puede superar los 254 caracteres.";
+        // Solo mostramos "no coinciden" si la primera contraseña (pwd)
+        // no tiene ya un error de formato.
+        if (!isset($errores["pwd"])) {
+            $errores["pwd2"] = "Las contraseñas no coinciden.";
         }
     }
+    
+    // --- Validación Email ---
+    if ($email === "") {
+        $errores["email"] = "El email es obligatorio.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errores["email"] = "El email no tiene un formato válido.";
+    } elseif (strlen($email) > 254) {
+        $errores["email"] = "La dirección de email no puede superar los 254 caracteres.";
+    }
 
+    // --- Validación Sexo ---
     $sexos_validos = ["hombre", "mujer", "otro"];
-    if ($sexo !== "" && !in_array($sexo, $sexos_validos)) {
+    if ($sexo === "") {
+        $errores["sexo"] = "Debes seleccionar un sexo.";
+    }
+    elseif (!in_array($sexo, $sexos_validos)) {
         $errores["sexo"] = "Debes seleccionar un sexo válido.";
     }
 
-    if ($nac !== "") {
+    // --- Validación Fecha Nacimiento ---
+    if ($nac === "") {
+        $errores["nac"] = "La fecha de nacimiento es obligatoria.";
+    } else {
         $fechaNac = DateTime::createFromFormat('Y-m-d', $nac);
         if (!$fechaNac) {
             $errores["nac"] = "La fecha de nacimiento no es válida.";
@@ -84,23 +88,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 
+    // --- Validación País ---
     if ($pais === "") {
         $errores["pais"] = "Debes seleccionar un país.";
     }
+    
+    // --- Validación Ciudad ---
+    if ($ciudad === "") {
+        $errores["ciudad"] = "La ciudad es obligatoria.";
+    }
 
-    // ============ Si hay errores ============
+
+    // ============ Si hay errores (Flashdata) ============
     if (!empty($errores)) {
-        // Serializamos los errores y datos en JSON y los pasamos en GET
-        $query = http_build_query([
-            "errores" => json_encode($errores),
+        
+        $_SESSION['errores_registro'] = $errores;
+        
+        $_SESSION['datos_form_registro'] = [
             "usuario" => $usuario,
             "email" => $email,
             "sexo" => $sexo,
             "pais" => $pais,
             "ciudad" => $ciudad,
             "nac" => $nac
-        ]);
-        header("Location: registro.php?$query");
+        ];
+        
+        header("Location: registro.php");
         exit;
     }
 

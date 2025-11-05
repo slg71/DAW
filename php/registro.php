@@ -3,27 +3,34 @@ $titulo_pagina = "Registro";
 include "paginas_Estilo.php";
 include "header_publico.php";
 
-// Si venimos redirigidos desde respuesta_registro.php con errores:
+// 1. Inicia la sesión
+session_start();
+
+// 2. Recuperamos los errores de la sesión (si existen)
 $errores = [];
-if (isset($_GET["errores"])) {
-    $errores = json_decode($_GET["errores"], true) ?? [];
+if (isset($_SESSION['errores_registro'])) {
+    $errores = $_SESSION['errores_registro'];
+    unset($_SESSION['errores_registro']);
 }
 
-// Recuperar valores previos del formulario (para no perderlos al recargar)
-$usuario = $_GET["usuario"] ?? "";
-$email   = $_GET["email"] ?? "";
-$sexo    = $_GET["sexo"] ?? "";
-$pais    = $_GET["pais"] ?? "";
-$ciudad  = $_GET["ciudad"] ?? "";
-$nac     = $_GET["nac"] ?? "";
+// 3. Recuperamos los datos del formulario de la sesión (si existen)
+$datos_previos = [];
+if (isset($_SESSION['datos_form_registro'])) {
+    $datos_previos = $_SESSION['datos_form_registro'];
+    unset($_SESSION['datos_form_registro']);
+}
+
+// 4. Asignamos los valores a variables
+$usuario = $datos_previos["usuario"] ?? "";
+$email   = $datos_previos["email"] ?? "";
+$sexo    = $datos_previos["sexo"] ?? "";
+$pais    = $datos_previos["pais"] ?? "";
+$ciudad  = $datos_previos["ciudad"] ?? "";
+$nac     = $datos_previos["nac"] ?? "";
 ?>
 
 <main id="registro">
     <h2>Registro</h2>
-
-    <?php if (isset($errores["general"])): ?>
-        <p class="error-campo"><?php echo htmlspecialchars($errores["general"]); ?></p>
-    <?php endif; ?>
 
     <form action="respuesta_registro.php" method="post" enctype="multipart/form-data" novalidate>
 
@@ -67,20 +74,23 @@ $nac     = $_GET["nac"] ?? "";
         <label for="ciudad">Ciudad de residencia</label>
         <input type="text" id="ciudad" name="ciudad" 
                value="<?php echo htmlspecialchars($ciudad); ?>">
+        <?php if (isset($errores["ciudad"])): ?>
+            <span class="error-campo"><?php echo htmlspecialchars($errores["ciudad"]); ?></span>
+        <?php endif; ?>
 
         <label for="pais">País de residencia</label>
         <select id="pais" name="pais">
             <option value="">---</option>
-            <option value="espana"    <?php if ($pais=="espana") echo "selected"; ?>>España</option>
-            <option value="uk"        <?php if ($pais=="uk") echo "selected"; ?>>Reino Unido</option>
-            <option value="italia"    <?php if ($pais=="italia") echo "selected"; ?>>Italia</option>
-            <option value="francia"   <?php if ($pais=="francia") echo "selected"; ?>>Francia</option>
-            <option value="usa"       <?php if ($pais=="usa") echo "selected"; ?>>Estados Unidos</option>
-            <option value="china"     <?php if ($pais=="china") echo "selected"; ?>>China</option>
-            <option value="japon"     <?php if ($pais=="japon") echo "selected"; ?>>Japón</option>
-            <option value="sk"        <?php if ($pais=="sk") echo "selected"; ?>>Corea del Sur</option>
-            <option value="india"     <?php if ($pais=="india") echo "selected"; ?>>India</option>
-            <option value="australia" <?php if ($pais=="australia") echo "selected"; ?>>Australia</option>
+            <option value="espana" <?php if ($pais=="espana") echo "selected"; ?>>España</option>
+            <option value="uk" <?php if ($pais=="espana") echo "selected"; ?>>Reino Unido</option>
+            <option value="italia" <?php if ($pais=="espana") echo "selected"; ?>>Italia</option>
+            <option value="francia" <?php if ($pais=="espana") echo "selected"; ?>>Francia</option>
+            <option value="usa" <?php if ($pais=="espana") echo "selected"; ?>>Estados Unidos</option>
+            <option value="china" <?php if ($pais=="espana") echo "selected"; ?>>China</option>
+            <option value="japon" <?php if ($pais=="espana") echo "selected"; ?>>Japón</option>
+            <option value="sk" <?php if ($pais=="espana") echo "selected"; ?>>Corea del Sur</option>
+            <option value="india" <?php if ($pais=="espana") echo "selected"; ?>>India</option>
+            <option value="australia" <?php if ($pais=="espana") echo "selected"; ?>>Australia</option>
         </select>
         <?php if (isset($errores["pais"])): ?>
             <span class="error-campo"><?php echo htmlspecialchars($errores["pais"]); ?></span>

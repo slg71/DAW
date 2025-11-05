@@ -16,21 +16,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // Validaciones básicas
     if ($usuario === "" || $pwd === "") {
-        header("Location: login.php?error=empty");
+        // 1. Inicia la sesión (si no está iniciada ya)
+        session_start();
+        
+        // 2. Guarda el mensaje de error en la sesión
+        $_SESSION['mensaje_error_login'] = "Campo de Usuario o contraseña vacío.";
+        
+        // 3. Redirige a login.php
+        header("Location: login.php");
         exit;
     }
 
     // Validación de formato de usuario
-    if (strlen($usuario) < 3 || strlen($usuario) > 15) {
-        header("Location: login.php?error=formato_usuario");
-        exit;
-    }
-    if (is_numeric($usuario[0])) {
-        header("Location: login.php?error=usuario_numero");
-        exit;
-    }
-    if (!preg_match("/^[a-zA-Z0-9]+$/", $usuario)) {
-        header("Location: login.php?error=usuario_invalido");
+    if (strlen($usuario) < 3 || strlen($usuario) > 15 || is_numeric($usuario[0]) || !preg_match("/^[a-zA-Z0-9]+$/", $usuario)) {
+        session_start();
+        
+        $_SESSION['mensaje_error_login'] = "Formato de Usuario inválido.";
+        
+        header("Location: login.php");
         exit;
     }
 
@@ -42,7 +45,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         header("Location: inicio_registrado.php");
         exit;
     } else {
-        header("Location: login.php?error=incorrect");
+        session_start();
+        
+        $_SESSION['mensaje_error_login'] = "Datos de Usuario inválidos.";
+        
+        header("Location: login.php");
         exit;
     }
 
