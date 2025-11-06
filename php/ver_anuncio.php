@@ -31,31 +31,28 @@ include "header.php";
             <h2><?php echo htmlspecialchars($a["titulo"]); ?></h2>
             <img src="<?php echo htmlspecialchars($a["imagen"]); ?>" alt="Foto principal">
             
-            <div class="info-basica">
                 <p><strong>Tipo:</strong> <?php echo htmlspecialchars($a["tipo_anuncio"]); ?> / <?php echo htmlspecialchars($a["tipo_vivienda"]); ?></p>
                 <p><strong>Ubicación:</strong> <?php echo htmlspecialchars($a["ciudad"]); ?>, <?php echo htmlspecialchars($a["pais"]); ?></p>
                 <p><strong>Precio:</strong> <?php echo number_format($a["precio"], 0, ',', '.'); ?> €</p>
-            </div>
 
-            <div class="caracteristicas">
                 <h3>Características</h3>
                 <ul>
                     <li>Superficie: <?php echo $a["superficie"]; ?> m²</li>
                     <li>Habitaciones: <?php echo $a["habitaciones"]; ?></li>
                     <li>Baños: <?php echo $a["banos"]; ?></li>
                 </ul>
-            </div>
 
-            <div class="descripcion">
+
+
                 <h3>Descripción</h3>
                 <p><?php echo htmlspecialchars($a["descripcion"]); ?></p>
-            </div>
+
         </section>
 
-        <section class="acciones-anuncio" style="margin-top: 20px;">
+        <section>
             <h3>Gestionar Anuncio</h3>
-            <a href="añadir_foto.php?anuncio_id=<?php echo $id; ?>"><button>Añadir Foto</button></a>
-            <a href="mis_anuncios.php"><button>Volver a Mis Anuncios</button></a>
+            <a href="añadir_foto.php?anuncio_id=<?php echo $id; ?>">Añadir Foto</a>
+            <a href="mis_anuncios.php">Volver a Mis Anuncios</a>
         </section>
         
     <?php else: ?>

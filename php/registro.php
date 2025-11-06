@@ -1,8 +1,4 @@
 <?php
-$titulo_pagina = "Registro";
-include "paginas_Estilo.php";
-include "header.php";
-
 // 1. Inicia la sesión
 session_start();
 
@@ -27,6 +23,10 @@ $sexo    = $datos_previos["sexo"] ?? "";
 $pais    = $datos_previos["pais"] ?? "";
 $ciudad  = $datos_previos["ciudad"] ?? "";
 $nac     = $datos_previos["nac"] ?? "";
+
+$titulo_pagina = "Registro";
+include "paginas_Estilo.php";
+include "header.php";
 ?>
 
 <main id="registro">

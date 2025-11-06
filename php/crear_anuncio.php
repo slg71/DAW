@@ -19,7 +19,7 @@ include "header.php";
 ?>
     
 <main>
-    <h1>Publica tu Anuncio</h1>
+    <h2>Publica tu Anuncio</h2>
     
     <form action="mis_anuncios.php" method="POST">
         

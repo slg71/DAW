@@ -1,7 +1,4 @@
 <?php
-$titulo_pagina = "Iniciar Sesión";
-include "paginas_Estilo.php";
-include "header.php";
 
 // // Capturar posibles errores individuales
 // $error = $_GET["error"] ?? "";
@@ -11,6 +8,9 @@ include "header.php";
 // 1. Inicia la sesión al principio de la página
 session_start();
 
+$titulo_pagina = "Iniciar Sesión";
+include "paginas_Estilo.php";
+include "header.php";
 ?>
 
 <main id="login">
@@ -25,9 +25,8 @@ session_start();
         <input type="password" id="pwd" name="pwd" 
             value="<?php echo htmlspecialchars($_COOKIE['recordar_pass'] ?? ''); ?>">
 
-        <label>
+        <label>Recordarme
             <input type="checkbox" name="recordar" <?php echo isset($_COOKIE['recordar_usuario']) ? 'checked' : ''; ?>>
-            Recordarme
         </label>
 
         <?php 

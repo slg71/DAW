@@ -69,10 +69,10 @@ include "header.php";
                placeholder="Título descriptivo (opcional)">
 
         <button type="submit">Añadir Foto</button>
-        <a href="mis_anuncios.php" class="boton-secundario">Cancelar</a>
+        <a href="mis_anuncios.php">Cancelar</a>
     </form>
 
-    <section class="info-adicional">
+    <section>
         <h3>Información importante</h3>
         <ul>
             <li>El texto alternativo es obligatorio para la accesibilidad web</li>

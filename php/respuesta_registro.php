@@ -1,11 +1,6 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['usuario_id'])) {
-    header('Location: login.php');
-    exit;
-}
-
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $usuario = trim($_POST["usuario"] ?? "");
@@ -126,6 +121,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <h2>Registro completado con éxito</h2>
             <p>Bienvenido/a, <strong><?php echo htmlspecialchars($usuario); ?></strong>.</p>
             <p>Tu cuenta ha sido registrada correctamente.</p>
+
+            <a href="login.php">¡Inicia sesión ahora!</a>
         </section>
     </main>
     <?php
