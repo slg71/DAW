@@ -1,28 +1,12 @@
 <?php
 $titulo_pagina = "Iniciar Sesión";
 include "paginas_Estilo.php";
-include "header_publico.php";
+include "header.php";
 
 // // Capturar posibles errores individuales
 // $error = $_GET["error"] ?? "";
 // $errores = [];
-
-// switch ($error) {
-//     case "empty":
-//         $errores["usuario"] = "El campo 'Usuario' no puede estar vacío.";
-//         $errores["pwd"] = "El campo 'Contraseña' no puede estar vacío.";
-//         break;
-//     case "usuario_vacio":
-//         $errores["usuario"] = "El campo 'Usuario' no puede estar vacío.";
-//         break;
-//     case "pwd_vacio":
-//         $errores["pwd"] = "El campo 'Contraseña' no puede estar vacío.";
-//         break;
-//     case "incorrect":
-//         $errores["usuario"] = "Usuario o contraseña incorrectos.";
-//         $errores["pwd"] = "Usuario o contraseña incorrectos.";
-//         break;
-// }
+// ... (código comentado, se omite por brevedad)
 
 // 1. Inicia la sesión al principio de la página
 session_start();
@@ -46,11 +30,17 @@ session_start();
             Recordarme
         </label>
 
-        <?php if (isset($_SESSION['mensaje_error_login'])): ?>
-            <span class="error-campo"><?php
+        <?php 
+        // Lógica de visualización de errores (resuelto el conflicto)
+        if (isset($_SESSION['mensaje_error_login'])): 
+        ?>
+            <span class="error-campo">
+                <?php
                 echo $_SESSION['mensaje_error_login'];
-                unset($_SESSION['mensaje_error_login']);
-            ?></span>
+                // 4. Bórralo de la sesión para que no vuelva a salir en la próxima carga
+                unset($_SESSION['mensaje_error_login']); 
+                ?>
+            </span>
         <?php endif; ?>
 
         <button type="submit">Confirmar</button>
