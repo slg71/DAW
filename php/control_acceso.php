@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if ($usuario_valido) {
-        // ÉXITO: Redirigir a la página de usuario registrado
+        // EXITO: Redirigir a la página de usuario registrado
         header("Location: ../index_registrado.html");
         exit;
     } else {
