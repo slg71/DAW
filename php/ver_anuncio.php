@@ -1,11 +1,17 @@
 <?php
-// SE LLEGA DESDE MIS_ANUNCIOS.PHP
+session_start(); // Inicia o reanuda la sesión
+
+// Comprueba si la variable de sesión 'usuario_id' NO está definida
+if (!isset($_SESSION['usuario_id'])) {
+    // Si no lo está, redirige al usuario a la página de login
+    header('Location: login.php');
+    exit; // Detiene la ejecución del script
+}
+
 // -------------------------------------------------------------
 // Página: ver_anuncio.php
 // -------------------------------------------------------------
 
-
-// Simulamos que el usuario ha hecho clic en su propio anuncio
 // Se obtiene el ID mediante GET
 $id = isset($_GET["id"]) ? intval($_GET["id"]) : 0;
 
@@ -18,7 +24,14 @@ $anuncios = array(
         "pais" => "España",
         "precio" => 900,
         "descripcion" => "Bonito apartamento en el centro de Alicante, recién reformado.",
-        "imagen" => "./img/piso2.jpg"
+        "imagen" => "./img/piso2.jpg",
+        "tipo_anuncio" => "Alquiler",
+        "tipo_vivienda" => "Apartamento",
+        "superficie" => 75,
+        "habitaciones" => 2,
+        "banos" => 1,
+        "planta" => 3,
+        "ano_construccion" => 2020
     ),
     2 => array(
         "titulo" => "Piso moderno con terraza",
@@ -27,7 +40,14 @@ $anuncios = array(
         "pais" => "España",
         "precio" => 220000,
         "descripcion" => "Luminoso piso moderno con terraza amplia y buenas vistas.",
-        "imagen" => "./img/piso1.jpg"
+        "imagen" => "./img/piso1.jpg",
+        "tipo_anuncio" => "Venta",
+        "tipo_vivienda" => "Piso",
+        "superficie" => 95,
+        "habitaciones" => 3,
+        "banos" => 2,
+        "planta" => 5,
+        "ano_construccion" => 2018
     )
 );
 
@@ -42,35 +62,61 @@ $titulo_pagina = "Ver mi Anuncio";
 include "paginas_Estilo.php";
 include "header.php";
 ?>
-        <nav>
-            <a href="index_registrado.html">Inicio</a>
-            <a href="publicar.html">Publicar anuncio</a>
-            <a href="MenuRegistradoUsu.html">Menú de Usuario</a>
-        </nav>
-    </header>
 
-<main id="ver-anuncio">
+<main id="bloque">
     <?php if ($a != null): ?>
-        <section>
+        <section class="detalle-anuncio">
             <h2><?php echo htmlspecialchars($a["titulo"]); ?></h2>
-            <img src="<?php echo htmlspecialchars($a["imagen"]); ?>" alt="Foto principal del anuncio">
-            <p><strong>Fecha:</strong> <?php echo htmlspecialchars($a["fecha"]); ?></p>
-            <p><strong>Ubicación:</strong> <?php echo htmlspecialchars($a["ciudad"]); ?>, <?php echo htmlspecialchars($a["pais"]); ?></p>
-            <p><strong>Precio:</strong> <?php echo number_format($a["precio"], 0, ',', '.'); ?> €</p>
-            <p><strong>Descripción:</strong> <?php echo htmlspecialchars($a["descripcion"]); ?></p>
+            
+            <img src="<?php echo htmlspecialchars($a["imagen"]); ?>" 
+                 alt="Foto principal del anuncio: <?php echo htmlspecialchars($a["titulo"]); ?>">
+            
+            <div class="info-basica">
+                <p><strong>Tipo de anuncio:</strong> <?php echo htmlspecialchars($a["tipo_anuncio"]); ?></p>
+                <p><strong>Tipo de vivienda:</strong> <?php echo htmlspecialchars($a["tipo_vivienda"]); ?></p>
+                <p><strong>Fecha de publicación:</strong> <?php echo htmlspecialchars($a["fecha"]); ?></p>
+                <p><strong>Ubicación:</strong> <?php echo htmlspecialchars($a["ciudad"]); ?>, <?php echo htmlspecialchars($a["pais"]); ?></p>
+                <p><strong>Precio:</strong> <?php echo number_format($a["precio"], 0, ',', '.'); ?> €</p>
+            </div>
+
+            <div class="caracteristicas">
+                <h3>Características</h3>
+                <ul>
+                    <li><strong>Superficie:</strong> <?php echo $a["superficie"]; ?> m²</li>
+                    <li><strong>Habitaciones:</strong> <?php echo $a["habitaciones"]; ?></li>
+                    <li><strong>Baños:</strong> <?php echo $a["banos"]; ?></li>
+                    <li><strong>Planta:</strong> <?php echo $a["planta"]; ?></li>
+                    <li><strong>Año de construcción:</strong> <?php echo $a["ano_construccion"]; ?></li>
+                </ul>
+            </div>
+
+            <div class="descripcion">
+                <h3>Descripción</h3>
+                <p><?php echo htmlspecialchars($a["descripcion"]); ?></p>
+            </div>
         </section>
 
-        <section id="fotos">
-            <h3>Añadir nueva foto al anuncio</h3>
-            <form action="subir_foto.php" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="id" value="<?php echo $id; ?>">
-                <label for="foto">Seleccionar archivo:</label>
-                <input type="file" id="foto" name="foto" accept="image/*" required>
-                <button type="submit">Subir foto</button>
-            </form>
+        <section class="acciones-anuncio">
+            <h3>Gestionar Fotos</h3>
+            <p>Puedes añadir más fotos a este anuncio para hacerlo más atractivo.</p>
+            
+            <a href="añadir_foto.php?anuncio_id=<?php echo $id; ?>" class="boton-primario">
+                Añadir Foto al Anuncio
+            </a>
+            
+            <a href="mis_anuncios.php" class="boton-secundario">
+                Volver a Mis Anuncios
+            </a>
         </section>
+        
+        <section class="galeria-miniaturas">
+            <h3>Fotos del anuncio</h3>
+            <p><em>(En esta práctica aún no se implementa la visualización de fotos adicionales)</em></p>
+        </section>
+        
     <?php else: ?>
-        <p>No se encontró el anuncio solicitado.</p>
+        <p class="error">No se encontró el anuncio solicitado.</p>
+        <a href="mis_anuncios.php">Volver a Mis Anuncios</a>
     <?php endif; ?>
 </main>
 
