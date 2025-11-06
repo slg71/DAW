@@ -20,7 +20,7 @@ include "header.php";
 // anuncios ficticios 
 $anuncios = [
     [
-        'foto' => './img/piso2.jpg',
+        'foto' => '../img/piso.jpg',
         'titulo' => 'Apartamento céntrico renovado',
         'ciudad' => 'Alicante',
         'pais' => 'España',
@@ -29,7 +29,7 @@ $anuncios = [
         'id' => 1
     ],
     [
-        'foto' => './img/piso1.jpg',
+        'foto' => '../img/piso.jpg',
         'titulo' => 'Piso moderno con terraza',
         'ciudad' => 'Valencia',
         'pais' => 'España',

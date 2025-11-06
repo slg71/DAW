@@ -65,7 +65,6 @@ include "header.php";
         </article>
     </section>
 </main>
-
 <?php include "footer.php"; ?>
 </body>
 </html>

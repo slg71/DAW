@@ -15,7 +15,7 @@
             <a href="salir.php"><i class="icon-logout"></i>Cerrar sesión</a>
         <?php
         } else {
-            // Enlaces que solo ve el usuario NO REGISTRADO/PÚBLICO
+            // Enlaces que solo ve el usuario NO REGISTRADO/PUBLICO
         ?>
             <a href="registro.php">Registro</a>
             <a href="login.php"><i class="icon-login"></i>Iniciar Sesión</a>
