@@ -1,7 +1,7 @@
 <?php
 $titulo_pagina = "Registro";
 include "paginas_Estilo.php";
-include "header_publico.php";
+include "header.php";
 
 // 1. Inicia la sesión
 session_start();

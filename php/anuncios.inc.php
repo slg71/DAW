@@ -22,9 +22,9 @@ $anuncio_par = array(
         "anio" => 2020
     ),
     "fotos" => array(
-        "./img/piso.jpg",
-        "./img/piso.jpg",
-        "./img/piso.jpg"
+        "../img/piso.jpg",
+        "../img/piso.jpg",
+        "../img/piso.jpg"
     ),
     "usuario" => "maria"
 );
@@ -47,9 +47,9 @@ $anuncio_impar = array(
         "anio" => 2018
     ),
     "fotos" => array(
-        "./img/piso.jpg",
-        "./img/piso.jpg",
-        "./img/piso.jpg"
+        "../img/piso.jpg",
+        "../img/piso.jpg",
+        "../img/piso.jpg"
     ),
     "usuario" => "leigh"
 );

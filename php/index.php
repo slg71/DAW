@@ -4,7 +4,7 @@
 // -------------------------------------------------------------
 $titulo_pagina = "Inicio - PI Pisos & Inmuebles";
 include "paginas_Estilo.php";
-include "header_publico.php";
+include "header.php";
 ?>
 
 <main>

@@ -1,7 +1,7 @@
 <?php
 $titulo_pagina = "Iniciar Sesión";
 include "paginas_Estilo.php";
-include "header_publico.php";
+include "header.php";
 
 // // Capturar posibles errores individuales
 // $error = $_GET["error"] ?? "";
@@ -48,7 +48,6 @@ session_start();
                 echo "</span>";
                 
                 // 4. Bórralo de la sesión para que no vuelva a salir
-                // Esto es lo que lo convierte en "flashdata"
                 unset($_SESSION['mensaje_error_login']); 
             ?></span>
         <?php endif; ?>
