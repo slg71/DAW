@@ -1,5 +1,5 @@
 <?php
-// 1. Iniciar sesión para que el header funcione bien (mostrar menús adecuados)
+// 1. Iniciar sesion para que el header funcione bien 
 session_start();
 
 $titulo_pagina = "Últimos Anuncios Visitados";
@@ -41,7 +41,7 @@ require_once("anuncios.inc.php");
                 }
             }
 
-            // Si por alguna razón no se cargaron los datos, saltamos este ID
+            // si por alguna razon no se cargan los datos saltamos este ID
             if ($datos_anuncio === null) continue;
             ?>
 

@@ -5,7 +5,7 @@
         <a href="ultimos_anuncios.php"><i class="icon-search"></i>Últimos anuncios</a>
 
         <?php
-        // Comprobamos si la variable de sesión 'usuario_id' está establecida.
+        // Comprobamos si la variable de sesión 'usuario_id' esta 
         if (isset($_SESSION['usuario_id'])) {
         ?>
             <a href="inicio_registrado.php"><i class="icon-home"></i>Inicio</a>

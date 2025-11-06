@@ -2,18 +2,16 @@
 include "sesion_control.php"; // Control central de sesión y cookies
 $titulo_pagina = "Menú Usuario - Pisos & Inmuebles";
 include "paginas_Estilo.php";
-// include "header.php";
 ?>
 
 <link rel="stylesheet" href="<?php echo $_SESSION['estilo']; ?>">
 
 <main id="usuariomenu">
   <?php
-    // Saludo dinámico según la hora
+
     $hora = date("H");
     $usuario = ucfirst($_SESSION['usuario_id']);
 
-    // Franjas horarias ajustadas (ya estaban correctas según el enunciado)
     if ($hora >= 6 && $hora <= 11) {
         echo "<h2>Buenos días, $usuario.</h2>";
     } elseif ($hora >= 12 && $hora <= 15) {

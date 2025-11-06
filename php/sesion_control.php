@@ -1,11 +1,10 @@
 <?php
 // ==========================================================
-// sesion_control.php — Gestión unificada de sesión y cookies (CORREGIDO FINAL)
+// sesion_control.php 
 // ==========================================================
 
 session_start();
 
-// Lista de usuarios válidos (con su estilo asignado)
 $usuarios_con_estilo = [
     "leigh" => ["pwd" => "1234", "estilo" => "contraste.css"],
     "hugo"  => ["pwd" => "abcd", "estilo" => "letra_grande.css"],
@@ -13,16 +12,15 @@ $usuarios_con_estilo = [
     "saray" => ["pwd" => "1111", "estilo" => "estilo.css"],
     "prueba"=> ["pwd" => "9876", "estilo" => "estilo.css"] 
 ];
-$cookie_lifetime = time() + (90 * 24 * 60 * 60);
+$cookie_lifetime = time() + (90 * 24 * 60 * 60); // 90 dias
 
-// Se inicializa con el mensaje por defecto
 $ultima_visita = "Esta es tu primera visita con la opción 'Recordarme'."; 
 
 // ----------------------------------------------------------
-// LÓGICA DE RECUPERACIÓN DE SESIÓN POR COOKIES (Recordarme)
+// RECUPERACION POR COOKIES - recuerdame
 // ----------------------------------------------------------
 
-$session_restored_by_cookie = false; // Flag para saber si se restauró por cookie
+$session_restored_by_cookie = false; 
 
 if (!isset($_SESSION['usuario_id'])) {
     if (isset($_COOKIE['recordar_usuario']) && isset($_COOKIE['recordar_pass'])) {
@@ -36,15 +34,14 @@ if (!isset($_SESSION['usuario_id'])) {
             $_SESSION['estilo'] = $usuarios_con_estilo[$usuario_cookie]['estilo'];
             $session_restored_by_cookie = true;
             
-            // Gestionar la Última Visita de Recuerdo
+            // ultima visita a la pagina
             if (isset($_COOKIE['last_visit_recordar'])) {
-                // 1. El valor ACTUAL de la cookie es la ÚLTIMA visita a mostrar
+                // el valor actual es la ultima visita 
                 $ultima_visita = $_COOKIE['last_visit_recordar'];
                 
-                // 2. Almacenar en sesión para que sea visible en TODAS las páginas de esta sesión
                 $_SESSION['last_visit_time_to_show'] = $ultima_visita;
                 
-                // 3. Actualizar la cookie last_visit_recordar con la HORA ACTUAL (para la próxima visita)
+                // actualizar la cookie last_visit_recordar con la hora actual
                 $current_time = date("c"); 
                 setcookie("last_visit_recordar", $current_time, $cookie_lifetime, "/");
             }
@@ -52,10 +49,7 @@ if (!isset($_SESSION['usuario_id'])) {
     }
 }
 
-// ----------------------------------------------------------
-// LÓGICA PARA CARGAS SUBSECUENTES (EL FIX)
-// ----------------------------------------------------------
-// Si la sesión está activa y ya tenemos una hora de última visita registrada en la sesión actual, la usamos.
+// si la sesion ya esta activa usamos esa hora de inicio
 if (isset($_SESSION['usuario_id']) && isset($_SESSION['last_visit_time_to_show'])) {
     $ultima_visita = $_SESSION['last_visit_time_to_show'];
 }
@@ -64,7 +58,6 @@ if (isset($_SESSION['usuario_id']) && isset($_SESSION['last_visit_time_to_show']
 // ----------------------------------------------------------
 // FORMATO DE FECHA Y HORA
 // ----------------------------------------------------------
-
 if ($ultima_visita !== "Esta es tu primera visita con la opción 'Recordarme'.") {
     try {
         $fecha = new DateTime($ultima_visita);
@@ -75,15 +68,10 @@ if ($ultima_visita !== "Esta es tu primera visita con la opción 'Recordarme'.")
     }
 }
 
-// ----------------------------------------------------------
-// GESTIÓN DE ESTILO Y CONTROL DE ACCESO
-// ----------------------------------------------------------
-
 if (!isset($_SESSION['estilo'])) {
     $_SESSION['estilo'] = "estilo.css"; 
 }
 
-// Si sigue sin haber sesión (ni por login ni por cookie), redirigir al login
 if (!isset($_SESSION['usuario_id'])) {
     header("Location: login.php");
     exit;

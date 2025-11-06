@@ -1,9 +1,8 @@
 <?php
 // ======================================================
-// control_acceso.php — Validación de inicio de sesión (FINAL)
+// control_acceso.php — Validacion de inicio de sesion
 // ======================================================
 
-// Lista de usuarios válidos (con su estilo asignado)
 $usuarios_con_estilo = [
     "leigh" => ["pwd" => "1234", "estilo" => "contraste.css"],
     "hugo"  => ["pwd" => "abcd", "estilo" => "letra_grande.css"],
@@ -12,8 +11,8 @@ $usuarios_con_estilo = [
     "prueba"=> ["pwd" => "9876", "estilo" => "estilo.css"] 
 ];
 
-// Tiempo de vida de la cookie de "Recordarme" (90 días)
-$cookie_lifetime = time() + (90 * 24 * 60 * 60);
+
+$cookie_lifetime = time() + (90 * 24 * 60 * 60);//90 dias
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     session_start();
@@ -22,28 +21,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $pwd     = trim($_POST["pwd"] ?? "");
     $recordar = isset($_POST["recordar"]); 
 
-    // ... (Validaciones básicas)
-
     // Validar credenciales
     if (isset($usuarios_con_estilo[$usuario]) && $usuarios_con_estilo[$usuario]['pwd'] === $pwd) {
-        // Credenciales correctas → crear sesión
+        // si las credenciales son correctas iniciamos sesion
         $_SESSION['usuario_id'] = $usuario;
         $_SESSION['estilo'] = $usuarios_con_estilo[$usuario]['estilo'];
 
         // ------------------------------------------------------------------
-        // LÓGICA DE "RECORDARME" Y ÚLTIMA VISITA
+        // RECUERDAME Y ULTIMA VISITA
         // ------------------------------------------------------------------
         if ($recordar) {
             $last_visit_antes = $_COOKIE["last_visit_recordar"] ?? null; 
             
-            // Almacenamos el valor a mostrar en una variable de SESIÓN PERSISTENTE
+            // sesion continua
             if($last_visit_antes) {
                 $_SESSION['last_visit_time_to_show'] = $last_visit_antes; 
             } else {
                 $_SESSION['last_visit_time_to_show'] = date("c");
             }
             
-            // Lógica de 90 días: NO actualizar cookies si ya existen
+            // no actualizar cookies si ya existen
             $recordar_existente = (isset($_COOKIE["recordar_usuario"]) && $_COOKIE["recordar_usuario"] === $usuario);
 
             if (!$recordar_existente) {
@@ -51,16 +48,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 setcookie("recordar_pass", $pwd, $cookie_lifetime, "/");
             }
             
-            // Actualizamos la cookie last_visit_recordar con la hora actual
+            // actualizar la cookie last_visit_recordar con la hora actual
             $current_time = date("c");
             setcookie("last_visit_recordar", $current_time, $cookie_lifetime, "/");
 
         } else {
-            // Borrar cookies si no marcó
             setcookie("recordar_usuario", '', time() - 3600, '/');
             setcookie("recordar_pass", '', time() - 3600, '/');
             setcookie("last_visit_recordar", '', time() - 3600, '/');
-            // Si el usuario no marcó recordar, eliminamos el mensaje de última visita
+            // si no quiere que lo recordemos lo olvidamos
             unset($_SESSION['last_visit_time_to_show']); 
         }
 
