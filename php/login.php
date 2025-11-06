@@ -33,27 +33,29 @@ session_start();
     <h2>Iniciar sesión</h2>
 
     <form action="control_acceso.php" method="post" novalidate>
-        
         <label for="usuario">Usuario</label>
-        <input type="text" id="usuario" name="usuario" value="<?php echo htmlspecialchars($_GET['usuario'] ?? ''); ?>">
+        <input type="text" id="usuario" name="usuario" 
+            value="<?php echo htmlspecialchars($_GET['usuario'] ?? ($_COOKIE['recordar_usuario'] ?? '')); ?>">
 
         <label for="pwd">Contraseña</label>
-        <input type="password" id="pwd" name="pwd">
+        <input type="password" id="pwd" name="pwd" 
+            value="<?php echo htmlspecialchars($_COOKIE['recordar_pass'] ?? ''); ?>">
+
+        <label>
+            <input type="checkbox" name="recordar" <?php echo isset($_COOKIE['recordar_usuario']) ? 'checked' : ''; ?>>
+            Recordarme
+        </label>
 
         <?php if (isset($_SESSION['mensaje_error_login'])): ?>
             <span class="error-campo"><?php
-                // 3. Muestra el mensaje
-                echo "<span class='error-campo'>";
                 echo $_SESSION['mensaje_error_login'];
-                echo "</span>";
-                
-                // 4. Bórralo de la sesión para que no vuelva a salir
-                // Esto es lo que lo convierte en "flashdata"
-                unset($_SESSION['mensaje_error_login']); 
+                unset($_SESSION['mensaje_error_login']);
             ?></span>
         <?php endif; ?>
+
         <button type="submit">Confirmar</button>
     </form>
+
 </main>
 
 <?php include "footer.php"; ?>

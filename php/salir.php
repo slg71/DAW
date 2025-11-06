@@ -1,19 +1,22 @@
 <?php
-session_start(); // Inicia para poder acceder a la sesión
-
-// 1. Borra todas las variables de sesión
+session_start();
 $_SESSION = array();
 
-// 2. Borra las cookies de "Recordarme" (poniendo fecha pasada) [cite: 146, 247]
+// borrar cookies y tmb las de la ult visita
 if (isset($_COOKIE['recordar_usuario'])) {
     setcookie('recordar_usuario', '', time() - 3600, '/');
     setcookie('recordar_pass', '', time() - 3600, '/');
+    setcookie('last_visit_recordar', '', time() - 3600, '/'); 
 }
 
-// 3. Destruye la sesión
+//borrar las cookies de estilo
+if (isset($_COOKIE['estilo'])) {
+    setcookie('estilo', '', time() - 3600, '/');
+}
+
 session_destroy();
 
-// 4. Redirige al inicio
+
 header('Location: index.php');
 exit;
 ?>
