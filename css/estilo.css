@@ -230,7 +230,30 @@ button:active {
 }
 
 /*=================================DISEÑO PRINCIPAL DE LOS FORMULARIOS=================================*/
+/* Estilo específico para la sección Recordarme del formulario de LOGIN */
+.form-login .checkbox-recordar {
+    /* Mantiene "Recordarme []" en una línea y lo centra */
+    display: block; 
+    text-align: center;
+    margin-bottom: 5px; /* Espacio antes del botón */
+}
 
+.form-login button[type="submit"] {
+    display: block; 
+    width: 50%; /* Puedes ajustar el porcentaje */
+    max-width: 250px; 
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+}
+
+/* Opcional: Ajustar el input dentro del label para eliminar su margin-bottom */
+.checkbox-recordar input[type="checkbox"] {
+    width: auto; /* Para que el checkbox no intente ocupar el 100% del ancho */
+    margin-bottom: 0; /* Anula el margin-bottom: 10px del input general */
+    margin-left: 5px; /* Espacio entre la palabra "Recordarme" y el checkbox */
+    vertical-align: middle; /* Alinea el checkbox verticalmente con el texto */
+}
 form{
     max-width: 500px;
     margin: 0 auto;

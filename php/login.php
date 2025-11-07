@@ -25,7 +25,7 @@ include "header.php";
         <input type="password" id="pwd" name="pwd" 
             value="<?php echo htmlspecialchars($_COOKIE['recordar_pass'] ?? ''); ?>">
 
-        <label>Recordarme
+        <label class="checkbox-recordar">Recordarme
             <input type="checkbox" name="recordar" <?php echo isset($_COOKIE['recordar_usuario']) ? 'checked' : ''; ?>>
         </label>
 
@@ -42,7 +42,9 @@ include "header.php";
             </span>
         <?php endif; ?>
 
-        <button type="submit">Confirmar</button>
+        <form action="control_acceso.php" method="post" novalidate class="form-login">
+            <button type="submit">Confirmar</button> 
+        </form>
     </form>
 
 </main>
