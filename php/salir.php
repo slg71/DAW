@@ -15,7 +15,7 @@ if (isset($_COOKIE['estilo'])) {
 }
 
 session_destroy();
-
+//rompre el array e igualar a cero
 
 header('Location: index.php');
 exit;

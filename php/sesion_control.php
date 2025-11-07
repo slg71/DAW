@@ -11,7 +11,7 @@ $usuarios_con_estilo = [
     "maria" => ["pwd" => "pass", "estilo" => "letra_y_contraste.css"],
     "saray" => ["pwd" => "1111", "estilo" => "estilo.css"],
     "prueba"=> ["pwd" => "9876", "estilo" => "estilo.css"] 
-];
+];//METER LOS ESTILOS EN COOKIES 
 $cookie_lifetime = time() + (90 * 24 * 60 * 60); // 90 dias
 
 $ultima_visita = "Esta es tu primera visita con la opción 'Recordarme'."; 

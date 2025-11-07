@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+//PONER LOS FALSHDATA PARAMETROS
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $usuario = trim($_POST["usuario"] ?? "");

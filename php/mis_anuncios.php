@@ -8,6 +8,8 @@ if (!isset($_SESSION['usuario_id'])) {
     exit; // Detiene la ejecución del script
 }
 
+//DESPLEGABLE DE ANUNCIOS PARA ELEGIR Y SUBIR FOTO
+
 // -------------------------------------------------------------
 // Página: mis_anuncios.php
 // -------------------------------------------------------------
