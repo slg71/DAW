@@ -1,8 +1,9 @@
 <?php
 session_start();
-//PONER LOS FALSHDATA PARAMETROS
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
+    // --- Recolección de datos (sin cambios) ---
     $usuario = trim($_POST["usuario"] ?? "");
     $pwd = trim($_POST["pwd"] ?? "");
     $pwd2 = trim($_POST["pwd2"] ?? "");
@@ -14,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $errores = [];
 
-    // ============ Validaciones (Lógica Corregida) ============
+    // ============ Validaciones (Lógica sin cambios) ============
 
     // --- Validación Usuario ---
     if ($usuario === "") {
@@ -42,8 +43,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($pwd2 === "") {
         $errores["pwd2"] = "Debes repetir la contraseña.";
     } elseif ($pwd !== $pwd2) {
-        // Solo mostramos "no coinciden" si la primera contraseña (pwd)
-        // no tiene ya un error de formato.
         if (!isset($errores["pwd"])) {
             $errores["pwd2"] = "Las contraseñas no coinciden.";
         }
@@ -94,25 +93,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
 
-    // ============ Si hay errores (Flashdata) ============
+    // ============ ¡CAMBIO AQUÍ! (Flashdata) ============
+    // Si hay errores, guardamos todo en la "estructura secundaria" _flash
+    
     if (!empty($errores)) {
         
-        $_SESSION['errores_registro'] = $errores;
-        
-        $_SESSION['datos_form_registro'] = [
-            "usuario" => $usuario,
-            "email" => $email,
-            "sexo" => $sexo,
-            "pais" => $pais,
-            "ciudad" => $ciudad,
-            "nac" => $nac
+        $_SESSION['_flash'] = [
+            'errors' => $errores,
+            'old_input' => [
+                "usuario" => $usuario,
+                "email"   => $email,
+                "sexo"    => $sexo,
+                "pais"    => $pais,
+                "ciudad"  => $ciudad,
+                "nac"     => $nac
+            ]
         ];
         
         header("Location: registro.php");
         exit;
     }
 
-    // ============ Si todo está bien ============
+    // ============ Si todo está bien (sin cambios) ============
+    
+    // Mostramos la página de éxito
     include "paginas_Estilo.php";
     include "header.php";
     ?>
@@ -127,7 +131,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </main>
     <?php
     include "footer.php";
+
 } else {
+    // Si no es POST, redirigimos (sin cambios)
     header("Location: registro.php");
     exit;
 }

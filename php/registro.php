@@ -2,21 +2,18 @@
 // 1. Inicia la sesión
 session_start();
 
-// 2. Recuperamos los errores de la sesión (si existen)
-$errores = [];
-if (isset($_SESSION['errores_registro'])) {
-    $errores = $_SESSION['errores_registro'];
-    unset($_SESSION['errores_registro']);
-}
+// 2. Recuperamos los "flash data" (la estructura secundaria)
+// Obtenemos la estructura completa que guardamos en el otro archivo
+$flash_data = $_SESSION['_flash'] ?? [];
 
-// 3. Recuperamos los datos del formulario de la sesión (si existen)
-$datos_previos = [];
-if (isset($_SESSION['datos_form_registro'])) {
-    $datos_previos = $_SESSION['datos_form_registro'];
-    unset($_SESSION['datos_form_registro']);
-}
+// 3. Borramos la estructura completa con UN SOLO unset()
+unset($_SESSION['_flash']);
 
-// 4. Asignamos los valores a variables
+// 4. Extraemos los datos de la estructura que acabamos de recuperar
+$errores = $flash_data['errors'] ?? [];
+$datos_previos = $flash_data['old_input'] ?? [];
+
+// 5. Asignamos los valores a variables (igual que antes, pero desde $datos_previos)
 $usuario = $datos_previos["usuario"] ?? "";
 $email   = $datos_previos["email"] ?? "";
 $sexo    = $datos_previos["sexo"] ?? "";
@@ -82,15 +79,15 @@ include "header.php";
         <select id="pais" name="pais">
             <option value="">---</option>
             <option value="espana" <?php if ($pais=="espana") echo "selected"; ?>>España</option>
-            <option value="uk" <?php if ($pais=="espana") echo "selected"; ?>>Reino Unido</option>
-            <option value="italia" <?php if ($pais=="espana") echo "selected"; ?>>Italia</option>
-            <option value="francia" <?php if ($pais=="espana") echo "selected"; ?>>Francia</option>
-            <option value="usa" <?php if ($pais=="espana") echo "selected"; ?>>Estados Unidos</option>
-            <option value="china" <?php if ($pais=="espana") echo "selected"; ?>>China</option>
-            <option value="japon" <?php if ($pais=="espana") echo "selected"; ?>>Japón</option>
-            <option value="sk" <?php if ($pais=="espana") echo "selected"; ?>>Corea del Sur</option>
-            <option value="india" <?php if ($pais=="espana") echo "selected"; ?>>India</option>
-            <option value="australia" <?php if ($pais=="espana") echo "selected"; ?>>Australia</option>
+            <option value="uk" <?php if ($pais=="uk") echo "selected"; ?>>Reino Unido</option>
+            <option value="italia" <?php if ($pais=="italia") echo "selected"; ?>>Italia</option>
+            <option value="francia" <?php if ($pais=="francia") echo "selected"; ?>>Francia</option>
+            <option value="usa" <?php if ($pais=="usa") echo "selected"; ?>>Estados Unidos</option>
+            <option value="china" <?php if ($pais=="china") echo "selected"; ?>>China</option>
+            <option value="japon" <?php if ($pais=="japon") echo "selected"; ?>>Japón</option>
+            <option value="sk" <?php if ($pais=="sk") echo "selected"; ?>>Corea del Sur</option>
+            <option value="india" <?php if ($pais=="india") echo "selected"; ?>>India</option>
+            <option value="australia" <?php if ($pais=="australia") echo "selected"; ?>>Australia</option>
         </select>
         <?php if (isset($errores["pais"])): ?>
             <span class="error-campo"><?php echo htmlspecialchars($errores["pais"]); ?></span>
@@ -111,6 +108,6 @@ include "header.php";
     </form>
 </main>
 
-<?php include "footer.php"; ?>
+<?php include "footer.php";?>
 </body>
 </html>
