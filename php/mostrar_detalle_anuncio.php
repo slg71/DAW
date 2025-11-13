@@ -61,6 +61,11 @@ if ($id > 0) {
         mysqli_close($mysqli);
     }
 }
+
+// Lógica de visualización y enlaces
+$num_total_fotos = $anuncio ? (1 + count($fotos_extra)) : 0;
+// Determinar la página de destino para la galería:
+$galeria_destino = $es_privada ? "ver_fotos_privado.php" : "ver_fotos_publico.php";
 ?>
 
 <main id="anuncio">
@@ -68,7 +73,23 @@ if ($id > 0) {
         <section>
             <h2><?php echo htmlspecialchars($anuncio["Titulo"]); ?></h2>
             <article>
-                <img src="../img/<?php echo htmlspecialchars($anuncio["FPrincipal"]); ?>" alt="Foto principal">
+                
+                <!-- 1. FOTO PRINCIPAL Y ENLACE A LA GALERÍA -->
+                <div class="contenedor-foto-principal">
+                    <a 
+                        href="<?php echo $galeria_destino; ?>?id=<?php echo $id; ?>" 
+                        title="Ver las <?php echo $num_total_fotos; ?> fotos"
+                    >
+                        <img 
+                            src="../img/<?php echo htmlspecialchars($anuncio["FPrincipal"]); ?>" 
+                            alt="Foto principal: <?php echo htmlspecialchars($anuncio["Titulo"]); ?>"
+                        >
+                    </a>
+                    <p class="pie-foto">
+                        Haz click en la imagen para ver la galería completa (<?php echo $num_total_fotos; ?> fotos)
+                    </p>
+                </div>
+                <!-- FIN FOTO PRINCIPAL Y ENLACE -->
 
                 <h3><?php echo number_format($anuncio["Precio"], 0, ',', '.'); ?> €</h3>
                 
@@ -89,7 +110,9 @@ if ($id > 0) {
                 </ul>
 
                 <section>
+                    <!-- Aquí se muestran las fotos extra (la foto principal está arriba) -->
                     <?php
+                    // Las fotos extra se muestran como miniaturas si existen.
                     foreach ($fotos_extra as $foto) {
                         echo "<img src='../img/" . htmlspecialchars($foto['Foto']) . "' alt='" . htmlspecialchars($foto['Alternativo']) . "'>";
                     }
