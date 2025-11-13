@@ -8,7 +8,7 @@ include "paginas_Estilo.php";
   <?php
 
     $hora = date("H");
-    $usuario = ucfirst($_SESSION['usuario_id']);
+    $usuario = ucfirst($_SESSION['usuario_nombre']);
 
     if ($hora >= 6 && $hora <= 11) {
         echo "<h2>Buenos días, $usuario.</h2>";
@@ -27,8 +27,6 @@ include "paginas_Estilo.php";
     <h3>Opciones</h3>
     <nav aria-label="Menú principal de usuario">
         <a href="inicio_registrado.php"><i class="icon-home"></i>Inicio</a>
-        <a href="../error.html"><i class="icon-pencil"></i>Modificar mis datos</a>
-        <a href="../error.html"><i class="icon-user-delete-outline"></i>Darme de baja</a>
         <a href="mis_anuncios.php"><i class="icon-eye"></i>Visualizar mis anuncios</a>
         <a href="crear_anuncio.php"><i class="icon-plus-outline"></i>Crear un anuncio nuevo</a>
         <a href="mismensajes.php"><i class="icon-mail"></i>Ver mensajes enviados y recibidos</a>
