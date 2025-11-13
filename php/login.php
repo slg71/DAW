@@ -1,14 +1,9 @@
 <?php
-
-// // Capturar posibles errores individuales
-// $error = $_GET["error"] ?? "";
-// $errores = [];
-// ... (código comentado, se omite por brevedad)
-
 // 1. Inicia la sesión al principio de la página
 session_start();
 
 $titulo_pagina = "Iniciar Sesión";
+
 include "paginas_Estilo.php";
 include "header.php";
 ?>
@@ -30,21 +25,19 @@ include "header.php";
         </label>
 
         <?php 
-        // Lógica de visualización de errores (resuelto el conflicto)
+        // Lógica de visualización de errores
         if (isset($_SESSION['mensaje_error_login'])): 
         ?>
             <span class="error-campo">
                 <?php
-                echo $_SESSION['mensaje_error_login'];
+                echo htmlspecialchars($_SESSION['mensaje_error_login']);
                 // 4. Bórralo de la sesión para que no vuelva a salir en la próxima carga
                 unset($_SESSION['mensaje_error_login']); 
                 ?>
             </span>
         <?php endif; ?>
 
-        <form action="control_acceso.php" method="post" novalidate class="form-login">
-            <button type="submit">Confirmar</button> 
-        </form>
+        <button type="submit">Confirmar</button>
     </form>
 
 </main>

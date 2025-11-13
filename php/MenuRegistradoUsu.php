@@ -4,8 +4,6 @@ $titulo_pagina = "Menú Usuario - Pisos & Inmuebles";
 include "paginas_Estilo.php";
 ?>
 
-<link rel="stylesheet" href="<?php echo $_SESSION['estilo']; ?>">
-
 <main id="usuariomenu">
   <?php
 

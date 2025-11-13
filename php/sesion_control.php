@@ -11,7 +11,8 @@ $usuarios_con_estilo = [
     "maria" => ["pwd" => "pass", "estilo" => "letra_y_contraste.css"],
     "saray" => ["pwd" => "1111", "estilo" => "estilo.css"],
     "prueba"=> ["pwd" => "9876", "estilo" => "estilo.css"] 
-];//METER LOS ESTILOS EN COOKIES 
+];
+
 $cookie_lifetime = time() + (90 * 24 * 60 * 60); // 90 dias
 
 $ultima_visita = "Esta es tu primera visita con la opción 'Recordarme'."; 
@@ -29,10 +30,13 @@ if (!isset($_SESSION['usuario_id'])) {
 
         if (isset($usuarios_con_estilo[$usuario_cookie]) && $usuarios_con_estilo[$usuario_cookie]['pwd'] === $pwd_cookie) {
             
-            // Restaurar sesión y estilo
+            // Restaurar sesión
             $_SESSION['usuario_id'] = $usuario_cookie;
-            $_SESSION['estilo'] = $usuarios_con_estilo[$usuario_cookie]['estilo'];
             $session_restored_by_cookie = true;
+            
+            // Guardar estilo en COOKIE
+            $estilo_usuario = $usuarios_con_estilo[$usuario_cookie]['estilo'];
+            setcookie('estilo', $estilo_usuario, $cookie_lifetime, '/', '', false, true);
             
             // ultima visita a la pagina
             if (isset($_COOKIE['last_visit_recordar'])) {
@@ -43,7 +47,7 @@ if (!isset($_SESSION['usuario_id'])) {
                 
                 // actualizar la cookie last_visit_recordar con la hora actual
                 $current_time = date("c"); 
-                setcookie("last_visit_recordar", $current_time, $cookie_lifetime, "/");
+                setcookie("last_visit_recordar", $current_time, $cookie_lifetime, "/", '', false, true);
             }
         }
     }
@@ -68,9 +72,11 @@ if ($ultima_visita !== "Esta es tu primera visita con la opción 'Recordarme'.")
     }
 }
 
-if (!isset($_SESSION['estilo'])) {
-    $_SESSION['estilo'] = "estilo.css"; 
+// Establecer estilo por defecto EN COOKIE
+if (!isset($_COOKIE['estilo'])) {
+    setcookie('estilo', 'estilo.css', $cookie_lifetime, '/', '', false, true);
 }
+
 
 if (!isset($_SESSION['usuario_id'])) {
     header("Location: login.php");

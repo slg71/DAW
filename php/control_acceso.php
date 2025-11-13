@@ -11,7 +11,6 @@ $usuarios_con_estilo = [
     "prueba"=> ["pwd" => "9876", "estilo" => "estilo.css"] 
 ];
 
-
 $cookie_lifetime = time() + (90 * 24 * 60 * 60);//90 dias
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -25,7 +24,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($usuarios_con_estilo[$usuario]) && $usuarios_con_estilo[$usuario]['pwd'] === $pwd) {
         // si las credenciales son correctas iniciamos sesion
         $_SESSION['usuario_id'] = $usuario;
-        $_SESSION['estilo'] = $usuarios_con_estilo[$usuario]['estilo'];
+        
+        // GUARDAR el estilo en COOKIE
+        $estilo_usuario = $usuarios_con_estilo[$usuario]['estilo'];
+        setcookie('estilo', $estilo_usuario, $cookie_lifetime, '/', '', false, true);
 
         // ------------------------------------------------------------------
         // RECUERDAME Y ULTIMA VISITA
@@ -44,20 +46,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $recordar_existente = (isset($_COOKIE["recordar_usuario"]) && $_COOKIE["recordar_usuario"] === $usuario);
 
             if (!$recordar_existente) {
-                setcookie("recordar_usuario", $usuario, $cookie_lifetime, "/");
-                setcookie("recordar_pass", $pwd, $cookie_lifetime, "/");
+                // Añadir parámetros de seguridad a setcookie
+                setcookie("recordar_usuario", $usuario, $cookie_lifetime, "/", '', false, true);
+                setcookie("recordar_pass", $pwd, $cookie_lifetime, "/", '', false, true);
             }
             
             // actualizar la cookie last_visit_recordar con la hora actual
             $current_time = date("c");
-            setcookie("last_visit_recordar", $current_time, $cookie_lifetime, "/");
+            setcookie("last_visit_recordar", $current_time, $cookie_lifetime, "/", '', false, true);
 
         } else {
+            // Si NO marca "recordarme", borrar las cookies de recordar
             setcookie("recordar_usuario", '', time() - 3600, '/');
             setcookie("recordar_pass", '', time() - 3600, '/');
             setcookie("last_visit_recordar", '', time() - 3600, '/');
             // si no quiere que lo recordemos lo olvidamos
             unset($_SESSION['last_visit_time_to_show']); 
+            
         }
 
         header("Location: menuRegistradoUsu.php");
