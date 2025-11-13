@@ -8,7 +8,7 @@ session_start();
 $usuarios_con_estilo = [
     "leigh" => ["pwd" => "1234", "estilo" => "contraste.css"],
     "hugo"  => ["pwd" => "abcd", "estilo" => "letra_grande.css"],
-    "maria" => ["pwd" => "pass", "estilo" => "letra_y_contraste.css"],
+    "maria" => ["pwd" => "pass", "estilo" => "estilo.css"],
     "saray" => ["pwd" => "1111", "estilo" => "estilo.css"],
     "prueba"=> ["pwd" => "9876", "estilo" => "estilo.css"] 
 ];

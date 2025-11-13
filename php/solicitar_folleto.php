@@ -13,6 +13,90 @@ if (!isset($_SESSION['usuario_id'])) {
 // -------------------------------------------------------------
 
 include "funciones_costes.php";
+include "conexion_bd.php"; // Incluimos el archivo de conexión
+
+// ID o nombre del usuario logueado (depende de lo que guarde el login)
+$session_value = $_SESSION['usuario_id'];
+
+/**
+ * Función para obtener los anuncios del usuario logueado desde la BD.
+ * Esta función está diseñada para manejar tanto el ID numérico como el NomUsuario (string).
+ * * @param mixed $session_value El valor de $_SESSION['usuario_id'], que puede ser el ID numérico (int) o el nombre de usuario (string).
+ * @return array Un array de objetos con 'id' (IdAnuncio) y 'titulo' (Titulo) del anuncio.
+ */
+function obtener_anuncios_usuario($session_value) {
+    $anuncios = [];
+    $mysqli = conectarBD();
+
+    if (!$mysqli) {
+        error_log("No se pudo conectar a la BD para obtener anuncios.");
+        return $anuncios;
+    }
+
+    // Paso 1: Determinar el ID numérico del usuario (IdUsuario)
+    $id_usuario_numerico = null;
+
+    // Si el valor de la sesión es numérico, lo usamos directamente como IdUsuario.
+    if (is_numeric($session_value)) {
+        $id_usuario_numerico = (int)$session_value;
+    } else {
+        // Si no es numérico, asumimos que es el NomUsuario (string) y buscamos su IdUsuario.
+        $query_id = "SELECT IdUsuario FROM usuarios WHERE NomUsuario = ?";
+        if ($stmt_id = $mysqli->prepare($query_id)) {
+            $stmt_id->bind_param("s", $session_value); // 's' porque NomUsuario es un string
+            $stmt_id->execute();
+            $result_id = $stmt_id->get_result();
+            if ($row_id = $result_id->fetch_assoc()) {
+                $id_usuario_numerico = $row_id['IdUsuario'];
+            }
+            $stmt_id->close();
+        } else {
+            error_log("Error al preparar la consulta de IdUsuario: " . $mysqli->error);
+        }
+    }
+
+    // Si no encontramos un ID numérico, salimos.
+    if ($id_usuario_numerico === null) {
+        $mysqli->close();
+        return $anuncios;
+    }
+    
+    // Paso 2: Obtener los anuncios usando el IdUsuario numérico
+    // En la tabla 'anuncios', el ID del usuario es la columna 'Usuario'.
+    $query_anuncios = "SELECT IdAnuncio, Titulo FROM anuncios WHERE Usuario = ?";
+    
+    // Preparamos la sentencia
+    if ($stmt = $mysqli->prepare($query_anuncios)) {
+        // Vinculamos el parámetro: 'i' para entero (Int) que es IdUsuario.
+        $stmt->bind_param("i", $id_usuario_numerico);
+        
+        // Ejecutamos la sentencia
+        $stmt->execute();
+        
+        // Obtenemos los resultados
+        $result = $stmt->get_result();
+        
+        // Recorremos los resultados y los guardamos en el array
+        while ($row = $result->fetch_assoc()) {
+            // Mapeamos IdAnuncio a 'id' para que el bucle PHP en el HTML funcione
+            $anuncios[] = ['id' => $row['IdAnuncio'], 'titulo' => $row['Titulo']];
+        }
+        
+        // Cerramos la sentencia
+        $stmt->close();
+    } else {
+        // Manejo de error en la preparación (opcional)
+        error_log("Error al preparar la consulta de anuncios: " . $mysqli->error);
+    }
+    
+    // Cerramos la conexión
+    $mysqli->close();
+
+    return $anuncios;
+}
+
+// Obtenemos la lista de anuncios
+$lista_anuncios = obtener_anuncios_usuario($session_value);
 
 // Función para generar la tabla de costes
 function generar_tabla_costes() {
@@ -159,10 +243,18 @@ include "header.php";
       <label for="anuncio" class="required">Anuncio</label>
       <select id="anuncio" name="anuncio">
         <option value="">--Seleccione un anuncio--</option>
-        <option value="piso">Piso en alquiler</option>
-        <option value="casa">Casa en venta</option>
-        <option value="garage">Garaje disponible</option>
-        <option value="oficina">Oficina en alquiler</option>
+        <?php
+        // Rellenamos el select con los anuncios obtenidos de la BD
+        if (!empty($lista_anuncios)) {
+            foreach ($lista_anuncios as $anuncio) {
+                // El 'value' será el ID del anuncio y el texto la descripción o título.
+                echo '<option value="' . htmlspecialchars($anuncio['id']) . '">' . htmlspecialchars($anuncio['titulo']) . '</option>';
+            }
+        } else {
+            // Mensaje si no hay anuncios
+            echo '<option value="" disabled>-- No tienes anuncios publicados --</option>';
+        }
+        ?>
       </select>
     
       <label for="fecha_rec">Fecha de Recepción</label>

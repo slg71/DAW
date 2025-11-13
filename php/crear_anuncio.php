@@ -1,16 +1,49 @@
 <?php
-session_start(); // Inicia o reanuda la sesión
+session_start();
 
-// Comprueba si la variable de sesión 'usuario_id' NO está definida
+
 if (!isset($_SESSION['usuario_id'])) {
-    // Si no lo está, redirige al usuario a la página de login
     header('Location: login.php');
-    exit; // Detiene la ejecución del script
+    exit;
 }
 
 // -------------------------------------------------------------
 // Página: Crear un anuncio nuevo
 // -------------------------------------------------------------
+
+include "conexion_bd.php";
+include "funciones_costes.php"; 
+
+function obtener_opciones_bd($tabla, $id_columna, $nombre_columna) {
+    $opciones = [];
+    $mysqli = conectarBD();
+
+    if ($mysqli) {
+        $query = "SELECT $id_columna, $nombre_columna FROM $tabla ORDER BY $nombre_columna ASC";
+        
+        if ($result = $mysqli->query($query)) {
+            while ($row = $result->fetch_assoc()) {
+
+                $opciones[] = [
+                    'id' => $row[$id_columna],
+                    'nombre' => $row[$nombre_columna]
+                ];
+            }
+            $result->free();
+        } else {
+            error_log("Error al consultar la tabla $tabla: " . $mysqli->error);
+        }
+        $mysqli->close();
+    } else {
+        error_log("No se pudo conectar a la BD para obtener opciones de $tabla.");
+    }
+    return $opciones;
+}
+
+// Obtenemos las listas de la base de datos
+$tipos_anuncios = obtener_opciones_bd('tiposanuncios', 'IdTAnuncio', 'NomTAnuncio');
+$tipos_viviendas = obtener_opciones_bd('tiposviviendas', 'IdTVivienda', 'NomTVivienda');
+$paises = obtener_opciones_bd('paises', 'IdPais', 'NomPais');
 
 
 $titulo_pagina = "Crear Nuevo Anuncio"; 
@@ -27,18 +60,30 @@ include "header.php";
         <label for="titulo">Título del anuncio:</label>
         <input type="text" id="titulo" name="titulo" maxlength="80" required>
 
+        <!-- Tipo de Contrato -->
         <label for="contrato">Tipo de Contrato:</label>
         <select id="contrato" name="tipo_contrato" required>
             <option value="" disabled selected>Selecciona un tipo</option>
-            <option value="venta">Venta</option>
-            <option value="alquiler">Alquiler</option>
+            <?php foreach ($tipos_anuncios as $tipo): ?>
+                <option value="<?php echo htmlspecialchars($tipo['id']); ?>">
+                    <?php echo htmlspecialchars($tipo['nombre']); ?>
+                </option>
+            <?php endforeach; ?>
         </select>
 
         <label for="descripcion">Descripción del anuncio:</label>
         <textarea id="descripcion" name="descripcion" rows="10" cols="50" required></textarea>
 
+        <!-- Pais -->
         <label for="pais">País:</label>
-        <input type="text" id="pais" name="pais" required>
+        <select id="pais" name="pais" required>
+            <option value="" disabled selected>Selecciona un país</option>
+            <?php foreach ($paises as $pais): ?>
+                <option value="<?php echo htmlspecialchars($pais['id']); ?>">
+                    <?php echo htmlspecialchars($pais['nombre']); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
 
         <label for="ciudad">Ciudad:</label>
         <input type="text" id="ciudad" name="ciudad" required>
@@ -49,13 +94,15 @@ include "header.php";
         <label for="habitaciones">Número de Habitaciones:</label>
         <input type="number" id="habitaciones" name="num_habitaciones" min="0" required>
 
+        <!-- Tipo de Vivienda -->
         <label for="tipo_vivienda">Tipo de Vivienda:</label>
         <select id="tipo_vivienda" name="tipo_vivienda" required>
             <option value="" disabled selected>Selecciona un tipo</option>
-            <option value="piso">Piso</option>
-            <option value="casa">Casa/Chalet</option>
-            <option value="apartamento">Apartamento</option>
-            <option value="estudio">Estudio</option>
+            <?php foreach ($tipos_viviendas as $vivienda): ?>
+                <option value="<?php echo htmlspecialchars($vivienda['id']); ?>">
+                    <?php echo htmlspecialchars($vivienda['nombre']); ?>
+                </option>
+            <?php endforeach; ?>
         </select>
 
         <label for="precio">Precio (€):</label>
