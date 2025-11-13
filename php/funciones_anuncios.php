@@ -1,10 +1,83 @@
 <?php
 // ==========================================================
-// funciones_anuncios.php - Funciones para obtener detalles de anuncios y fotos
+// funciones_anuncios.php - Funciones para obtener detalles de anuncios, fotos y datos de usuario
 // ==========================================================
 
-
+// Incluimos la conexión a la base de datos
 include_once "conexion_bd.php";
+
+function obtener_id_usuario_numerico($session_value) {
+    $mysqli = conectarBD();
+    if (!$mysqli) return null;
+
+    $id_usuario_numerico = null;
+
+    // 1. Si el valor es numérico, lo usamos directamente como IdUsuario.
+    if (is_numeric($session_value)) {
+        $id_usuario_numerico = (int)$session_value;
+    } else {
+        // 2. Si no es numérico, asumimos que es el NomUsuario y buscamos su IdUsuario.
+        $query_id = "SELECT IdUsuario FROM usuarios WHERE NomUsuario = ?";
+        if ($stmt_id = $mysqli->prepare($query_id)) {
+            $stmt_id->bind_param("s", $session_value);
+            $stmt_id->execute();
+            $result_id = $stmt_id->get_result();
+            if ($row_id = $result_id->fetch_assoc()) {
+                $id_usuario_numerico = $row_id['IdUsuario'];
+            }
+            $stmt_id->close();
+        } else {
+             error_log("Error al preparar la consulta de IdUsuario: " . $mysqli->error);
+        }
+    }
+    $mysqli->close();
+    return $id_usuario_numerico;
+}
+
+/**
+ * Obtiene el listado de todos los anuncios de un usuario específico para la página 'Mis Anuncios'.
+ * @param int $id_usuario El IdUsuario numérico.
+ * @return array Un array de arrays asociativos con los datos de los anuncios.
+ */
+function obtener_anuncios_usuario($id_usuario) {
+    $anuncios = [];
+    $mysqli = conectarBD();
+
+    if (!$mysqli) return $anuncios;
+
+    // Consulta para obtener los datos clave del listado
+    $query = "
+        SELECT 
+            A.IdAnuncio, A.Titulo, A.FPrincipal, A.Precio, A.FRegistro,
+            TA.NomTAnuncio, TV.NomTVivienda
+        FROM anuncios AS A
+        JOIN tiposanuncios AS TA ON A.TAnuncio = TA.IdTAnuncio
+        JOIN tiposviviendas AS TV ON A.TVivienda = TV.IdTVivienda
+        WHERE A.Usuario = ?
+        ORDER BY A.FRegistro DESC
+    ";
+    
+    if ($stmt = $mysqli->prepare($query)) {
+        $stmt->bind_param("i", $id_usuario);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        while ($row = $result->fetch_assoc()) {
+            $anuncios[] = $row;
+        }
+        
+        $stmt->close();
+    } else {
+        error_log("Error al preparar la consulta de anuncios de usuario: " . $mysqli->error);
+    }
+    
+    $mysqli->close();
+    return $anuncios;
+}
+
+// ----------------------------------------------------------------------
+// FUNCIONES DE DETALLE Y GALERIA
+// ----------------------------------------------------------------------
 
 function obtener_detalle_y_fotos_anuncio($id_anuncio) {
     $mysqli = conectarBD();
@@ -15,16 +88,16 @@ function obtener_detalle_y_fotos_anuncio($id_anuncio) {
     $datos_anuncio = [];
     $fotos = [];
 
-    // 1. Obtener la información básica del anuncio
-    // Se unen las tablas para obtener los nombres completos de tipo de anuncio, vivienda y país.
+    // obtenemos la informacion del anuncio
     $query_anuncio = "
         SELECT 
-            A.IdAnuncio, A.Titulo, A.Precio, A.Texto, A.FPrincipal, A.Usuario,
-            TA.NomTAnuncio, TV.NomTVivienda, P.NomPais
+            A.IdAnuncio, A.Titulo, A.Precio, A.Texto, A.FPrincipal, A.Usuario, A.Superficie, A.NHabitaciones, A.NBanyos, A.Planta, A.Anyo, A.FRegistro,
+            TA.NomTAnuncio, TV.NomTVivienda, P.NomPais, U.NomUsuario, U.IdUsuario
         FROM anuncios A
         JOIN tiposanuncios TA ON A.TAnuncio = TA.IdTAnuncio
         JOIN tiposviviendas TV ON A.TVivienda = TV.IdTVivienda
         JOIN paises P ON A.Pais = P.IdPais
+        JOIN usuarios U ON A.Usuario = U.IdUsuario
         WHERE A.IdAnuncio = ?
     ";
 
@@ -43,14 +116,13 @@ function obtener_detalle_y_fotos_anuncio($id_anuncio) {
         return null;
     }
     
-    // Si no encontramos el anuncio, cerramos y retornamos
     if (empty($datos_anuncio)) {
         $mysqli->close();
         return null;
     }
 
 
-    // 2. Obtener la lista de fotos secundarias del anuncio
+    // obtenemos listas de fotos secundarias del anuncio
     $query_fotos = "
         SELECT IdFoto, Foto, Alternativo, Titulo
         FROM fotos
@@ -73,9 +145,8 @@ function obtener_detalle_y_fotos_anuncio($id_anuncio) {
     $mysqli->close();
     
     // Agregamos la foto principal al inicio de la lista de fotos
-    // Usamos FPrincipal como foto, y Titulo como Alternativo si no hay foto secundaria
     array_unshift($fotos, [
-        'IdFoto' => 0, // ID 0 para la foto principal
+        'IdFoto' => 0, 
         'Foto' => $datos_anuncio['FPrincipal'],
         'Alternativo' => $datos_anuncio['Titulo'] . ' - Principal',
         'Titulo' => 'Foto Principal'
@@ -111,7 +182,6 @@ function mostrar_galeria_fotos($anuncio_data, $es_privada) {
         <section class="galeria-fotos">
             <?php foreach ($anuncio_data['fotos'] as $foto): ?>
                 <div class="contenedor-foto">
-                    <!-- Asumo que las fotos están en la carpeta img/anuncios/ o similar -->
                     <img 
                         src="../img/<?php echo htmlspecialchars($foto['Foto']); ?>" 
                         alt="<?php echo htmlspecialchars($foto['Alternativo']); ?>"

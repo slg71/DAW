@@ -1,148 +1,80 @@
 <?php
 session_start();
+ob_start();
 
+// Comprobación de seguridad: debe estar logueado
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
     exit;
 }
 
 // -------------------------------------------------------------
-// Página: mis_anuncios.php (AHORA CON BD)
+// Página: mis_anuncios.php
+// Muestra el listado de anuncios del usuario logueado.
 // -------------------------------------------------------------
 
-$titulo_pagina = "Mis Anuncios";
+include "funciones_anuncios.php";
+// La función obtener_id_usuario_numerico y obtener_anuncios_usuario están en funciones_anuncios.php
 
-// 1. AÑADIMOS CONEXIÓN
-include "conexion_bd.php";
+// 1. Obtener el ID numérico del usuario
+$id_usuario = obtener_id_usuario_numerico($_SESSION['usuario_id']);
 
-$anuncios = array(); // Array para los anuncios del usuario
-$mensaje_error = "";
-$usuario_id = $_SESSION['usuario_id']; // El ID del usuario logueado
-
-// DEBUG: Ver qué ID tenemos
-//echo "DEBUG: Buscando anuncios del usuario ID: " . $usuario_id . "<br>";
-
-$mysqli = conectarBD();
-
-if ($mysqli) {
-    
-    // 2. Consulta SQL: Pillar solo los anuncios del usuario
-    $sql = "SELECT 
-                A.IdAnuncio, A.Titulo, A.FPrincipal, A.Ciudad, A.Precio, A.FRegistro,
-                P.NomPais
-            FROM anuncios AS A
-            LEFT JOIN paises AS P ON A.Pais = P.IdPais
-            WHERE A.Usuario = ?
-            ORDER BY A.FRegistro DESC";
-
-    $stmt = mysqli_prepare($mysqli, $sql);
-    
-    if ($stmt) {
-        // Bind del usuario_id
-        mysqli_stmt_bind_param($stmt, "i", $usuario_id);
-        mysqli_stmt_execute($stmt);
-        $resultado = mysqli_stmt_get_result($stmt);
-        
-        // Meter los anuncios en el array
-        while ($fila = mysqli_fetch_assoc($resultado)) {
-            $anuncios[] = $fila;
-        }
-        
-        mysqli_stmt_close($stmt);
-    } else {
-        $mensaje_error = "Error al consultar tus anuncios.";
-    }
-    
-    mysqli_close($mysqli);
-} else {
-    $mensaje_error = "Error de conexión a la base de datos.";
+$anuncios_usuario = [];
+if ($id_usuario !== null) {
+    // 2. Obtener el listado de anuncios
+    $anuncios_usuario = obtener_anuncios_usuario($id_usuario);
 }
 
+$num_total_anuncios = count($anuncios_usuario);
+
+$titulo_pagina = "Mis Anuncios (" . $num_total_anuncios . ")";
 include "paginas_Estilo.php";
 include "header.php";
 ?>
 
-<main>
-
-    <?php
-    // Mostrar error si hay
-    if ($mensaje_error != "") {
-        echo "<section><p class='error'>" . htmlspecialchars($mensaje_error) . "</p></section>";
-    }
+<main id="mis-anuncios">
+    <h2>Mis Anuncios Publicados</h2>
     
-    if (count($anuncios) == 0) {
-        echo '<section id="bloque"><p>Aún no has publicado ningún anuncio.</p><button><a href="crear_anuncio.php">Crea tu primer anuncio</a></button></section>';
-    } else {
-    ?>
+    <p class="contador-anuncios">
+        Actualmente tienes **<?php echo $num_total_anuncios; ?>** anuncio(s) publicado(s).
+    </p>
 
-    <section id="listado">
-        <h2>MIS ANUNCIOS PUBLICADOS</h2>
-        
-        <p>Total de anuncios: <?php echo count($anuncios); ?></p>
-
-        <?php foreach ($anuncios as $anuncio): ?>
-        
-        <article>
-            
-            <a href="ver_anuncio.php?id=<?php echo $anuncio['IdAnuncio']; ?>">
-              <img src="../img/<?php echo htmlspecialchars($anuncio['FPrincipal']); ?>" 
-                   alt="Foto principal">
-            </a>
-
-            <h3>
-                <a href="ver_anuncio.php?id=<?php echo $anuncio['IdAnuncio']; ?>">
-                    <?php echo htmlspecialchars($anuncio['Titulo']); ?>
-                </a>
-            </h3>
-            
-            <p>Fecha: <?php echo htmlspecialchars($anuncio['FRegistro']); ?></p>
-            <p>Ciudad: <?php echo htmlspecialchars($anuncio['Ciudad']); ?></p>
-            <p>País: <?php echo htmlspecialchars($anuncio['NomPais']); ?></p>
-            <p>Precio: <?php echo number_format($anuncio['Precio'], 0, ',', '.'); ?> €</p>
-
-        
-            <section id="bloque">
-                <button>
-                    <a href="añadir_foto.php?anuncio_id=<?php echo $anuncio['IdAnuncio']; ?>">
-                    Añadir Foto
+    <?php if ($num_total_anuncios > 0): ?>
+        <section class="listado-anuncios">
+            <?php foreach ($anuncios_usuario as $anuncio): ?>
+                <article class="anuncio-card">
+                    <a href="ver_anuncio.php?id=<?php echo htmlspecialchars($anuncio['IdAnuncio']); ?>" class="enlace-anuncio-card">
+                        <img 
+                            src="../img/<?php echo htmlspecialchars($anuncio['FPrincipal']); ?>" 
+                            alt="Foto principal de <?php echo htmlspecialchars($anuncio['Titulo']); ?>"
+                            class="anuncio-miniatura"
+                        >
+                        <div class="info-anuncio">
+                            <h3><?php echo htmlspecialchars($anuncio['Titulo']); ?></h3>
+                            <p class="precio"><?php echo number_format($anuncio['Precio'], 0, ',', '.'); ?> €</p>
+                            <p><strong>Tipo:</strong> <?php echo htmlspecialchars($anuncio['NomTAnuncio']); ?> - <?php echo htmlspecialchars($anuncio['NomTVivienda']); ?></p>
+                            <p class="fecha-registro">Publicado el: <?php echo htmlspecialchars($anuncio['FRegistro']); ?></p>
+                        </div>
                     </a>
-                </button>
-                <button>
-                    <a href="editar_anuncio.php?id=<?php echo $anuncio['IdAnuncio']; ?>">
-                        Editar
-                    </a>
-                </button>
-            </section>
-
-                
-            <form action="gestion_anuncios.php" method="post">
-                <button type="submit" 
-                        name="eliminar" 
-                        value="<?php echo $anuncio['IdAnuncio']; ?>" 
-                        onclick="return confirm('¿Estás seguro de que quieres eliminar este anuncio?');"
-                        class="boton-eliminar">
-                    Eliminar
-                </button>
-            </form>
-        </article>
-        <?php endforeach; ?>
-    </section>
-
-    <section id="bloque">
-        <button>
-            <a href="añadir_foto.php">
-                Añadir Foto a anuncio
-            </a>
-        </button>
-        <button>
-            <a href="crear_anuncio.php">
-                Crear anuncio
-            </a>
-        </button>
-    </section>
-    <?php } ?>
+                    <div class="acciones">
+                        <!-- Enlace para ver detalle/editar -->
+                        <a href="ver_anuncio.php?id=<?php echo htmlspecialchars($anuncio['IdAnuncio']); ?>" class="btn-ver">Ver/Editar</a>
+                        <!-- Botón para eliminar (requeriría otra página de procesamiento) -->
+                        <a href="eliminar_anuncio.php?id=<?php echo htmlspecialchars($anuncio['IdAnuncio']); ?>" class="btn-eliminar">Eliminar</a>
+                        <!-- Botón para solicitar folleto -->
+                        <a href="solicitar_folleto.php?anuncio_id=<?php echo htmlspecialchars($anuncio['IdAnuncio']); ?>" class="btn-folleto">Solicitar Folleto</a>
+                    </div>
+                </article>
+            <?php endforeach; ?>
+        </section>
+    <?php else: ?>
+        <p class="aviso-sin-anuncios">
+            Aún no has publicado ningún anuncio. ¡<a href="../publicar.html">Publica el primero ahora</a>!
+        </p>
+    <?php endif; ?>
 </main>
 
 <?php
 include "footer.php";
+ob_end_flush();
 ?>
