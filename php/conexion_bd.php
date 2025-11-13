@@ -19,8 +19,7 @@ function conectarBD() {
     // Verificamos si hay error de conexion
     if ($mysqli->connect_errno) {
         // Registramos el error en el log del servidor
-        error_log("Fallo al conectar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error);
-        
+        error_log("Fallo al conectar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error);  
         echo "<p> Error de conexión a la base de datos. Por favor, revise la configuración.</p>";
         return null;
     }
