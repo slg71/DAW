@@ -288,7 +288,7 @@ INSERT INTO `usuarios` (`IdUsuario`, `NomUsuario`, `Clave`, `Email`, `Sexo`, `FN
 (2, 'maria', 'pass', 'maria@ejemplo.com', 0, '1985-11-20', 'Paris', 2, 'maria.jpg', '2025-11-13 14:50:28', 4),
 (3, 'usuario1', 'usuario1', 'usuario1@ejemplo.com', 1, '2000-01-01', 'Roma', 3, 'user1.jpg', '2025-11-13 14:50:28', 1),
 (4, 'hugo', 'abcd', 'hugo@ejemplo.com', 1, '1995-03-25', 'Berlín', 4, 'hugo.jpg', '2025-11-13 14:50:28', 3),
-(5, 'saray', '1111', 'saray@ejemplo.com', 0, '1992-08-10', 'Lisboa', 5, 'saray.jpg', '2025-11-13 14:50:28', 1);
+(5, 'saray', '1111', 'saray@ejemplo.com', 0, '1992-08-10', 'Lisboa', 5, 'saray.jpg', '2025-11-13 14:50:28', 5);
 
 --
 -- Índices para tablas volcadas

@@ -80,8 +80,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 // --- Fin del código copiado ---
 
                 // 9. Redirigimos a la página privada
-                // La práctica dice "menú de usuario registrado"
-                header("Location: MenuRegistradoUsu.php"); 
+                // La práctica dice "menú de usuario registrado" pero aparece configurar en el esquema antes
+                header("Location: configurar.php"); 
                 exit;
 
             } else {
