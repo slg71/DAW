@@ -76,13 +76,13 @@ if ($anuncio !== null) {
                     <li><strong>Año de construcción:</strong> <?php echo htmlspecialchars($anuncio["caracteristicas"]["anio"]); ?></li>
                 </ul>
 
-                <div class="miniaturas">
+                <section>
                     <?php
                     foreach ($anuncio["fotos"] as $foto) {
                         echo "<img src='" . htmlspecialchars($foto) . "' alt='Miniatura'>";
                     }
                     ?>
-                </div>
+                </section>
 
                 <p><strong>Anunciante:</strong> <?php echo htmlspecialchars($anuncio["usuario"]); ?></p>
 

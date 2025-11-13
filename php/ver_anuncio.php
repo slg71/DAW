@@ -49,10 +49,14 @@ include "header.php";
 
         </section>
 
-        <section>
-            <h3>Gestionar Anuncio</h3>
-            <a href="añadir_foto.php?anuncio_id=<?php echo $id; ?>">Añadir Foto</a>
-            <a href="mis_anuncios.php">Volver a Mis Anuncios</a>
+        <section id="bloque">
+            <h2>Gestionar Anuncio</h2>
+            <button>
+                <a href="añadir_foto.php?anuncio_id=<?php echo $id; ?>">Añadir Foto</a>
+            </button>
+            <button>
+                <a href="mis_anuncios.php">Volver a Mis Anuncios</a>
+            </button>
         </section>
         
     <?php else: ?>

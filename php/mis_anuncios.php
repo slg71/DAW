@@ -68,25 +68,30 @@ $anuncios = [
             <p>País: <?php echo htmlspecialchars($anuncio['pais']); ?></p>
             <p>Precio: <?php echo number_format($anuncio['precio'], 0, ',', '.'); ?> €</p>
 
-            <section>
-                <a href="añadir_foto.php?anuncio_id=<?php echo $anuncio['id']; ?>">
+        
+            <section id="bloque">
+                <button>
+                    <a href="añadir_foto.php?anuncio_id=<?php echo $anuncio['id']; ?>">
                     Añadir Foto
-                </a>
-
-                <a href="editar_anuncio.php?id=<?php echo $anuncio['id']; ?>">
-                    Editar
-                </a>
-                
-                <form action="gestion_anuncios.php" method="post">
-                    <button type="submit" 
-                            name="eliminar" 
-                            value="<?php echo $anuncio['id']; ?>" 
-                            onclick="return confirm('¿Estás seguro de que quieres eliminar este anuncio?');"
-                            class="boton-eliminar">
-                        Eliminar
-                    </button>
-                </form>
+                    </a>
+                </button>
+                <button>
+                    <a href="editar_anuncio.php?id=<?php echo $anuncio['id']; ?>">
+                        Editar
+                    </a>
+                </button>
             </section>
+
+                
+            <form action="gestion_anuncios.php" method="post">
+                <button type="submit" 
+                        name="eliminar" 
+                        value="<?php echo $anuncio['id']; ?>" 
+                        onclick="return confirm('¿Estás seguro de que quieres eliminar este anuncio?');"
+                        class="boton-eliminar">
+                    Eliminar
+                </button>
+            </form>
         </article>
         <?php endforeach; ?>
     </section>
