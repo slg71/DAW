@@ -33,7 +33,6 @@ if ($mysqli === null) {
 // La práctica pide nombre, foto y fecha de incorporación 
 $sql_usuario = "SELECT NomUsuario, Foto, FRegistro FROM usuarios WHERE IdUsuario = ?";
 
-// Usamos el método de sentencias preparadas del PDF (pág 28) [cite: 1332]
 $stmt_usuario = mysqli_prepare($mysqli, $sql_usuario);
 
 if ($stmt_usuario === false) {
@@ -43,16 +42,16 @@ if ($stmt_usuario === false) {
     exit;
 }
 
-// Asociamos el parámetro (el ID) [cite: 1335]
-mysqli_stmt_bind_param($stmt_usuario, 'i', $id_usuario_perfil); // 'i' de integer [cite: 1297]
+// Asociamos el parámetro
+mysqli_stmt_bind_param($stmt_usuario, 'i', $id_usuario_perfil);
 
-// Ejecutamos [cite: 1337]
+// Ejecutamos
 mysqli_stmt_execute($stmt_usuario);
 
-// Vinculamos los resultados a variables [cite: 1340]
+// Vinculamos los resultados a variables
 mysqli_stmt_bind_result($stmt_usuario, $nombre_usuario, $foto_usuario, $fecha_registro);
 
-// Obtenemos los valores [cite: 1345]
+// Obtenemos los valores
 if (!mysqli_stmt_fetch($stmt_usuario)) {
     echo "<main><p>Error: Usuario no encontrado.</p></main>";
     mysqli_stmt_close($stmt_usuario);
@@ -61,7 +60,7 @@ if (!mysqli_stmt_fetch($stmt_usuario)) {
     exit;
 }
 
-// Cerramos esta sentencia [cite: 1355]
+// Cerramos esta sentencia
 mysqli_stmt_close($stmt_usuario);
 
 ?>
@@ -75,7 +74,6 @@ mysqli_stmt_close($stmt_usuario);
             // La fecha la pongo tal cual sale de la BD, sin formatear ni nada.
             echo "<p>Fecha de incorporación: " . htmlspecialchars($fecha_registro) . "</p>";
             
-            // Asumo que la foto está en una carpeta img/usuarios/
             if (empty($foto_usuario)) {
                 $foto_usuario = "perfil.jpg"; // Pongo una por defecto si no tiene
             }
@@ -97,28 +95,28 @@ mysqli_stmt_close($stmt_usuario);
                         WHERE Usuario = ? 
                         ORDER BY FRegistro DESC";
         
-        $stmt_anuncios = mysqli_prepare($mysqli, $sql_anuncios); // [cite: 1332]
+        $stmt_anuncios = mysqli_prepare($mysqli, $sql_anuncios);
         
         if ($stmt_anuncios === false) {
             echo "<p>Error al preparar los anuncios.</p>";
         } else {
-            mysqli_stmt_bind_param($stmt_anuncios, 'i', $id_usuario_perfil); // [cite: 1335]
-            mysqli_stmt_execute($stmt_anuncios); // [cite: 1337]
+            mysqli_stmt_bind_param($stmt_anuncios, 'i', $id_usuario_perfil);
+            mysqli_stmt_execute($stmt_anuncios);
             
-            // Vinculamos las columnas que queremos a variables [cite: 1340]
+            // Vinculamos las columnas que queremos a variables
             mysqli_stmt_bind_result(
                 $stmt_anuncios, 
-                $anuncio_id,     // Col 1 -> IdAnuncio
-                $anuncio_titulo, // Col 2 -> Titulo
-                $anuncio_foto,   // Col 3 -> FPrincipal
-                $anuncio_ciudad, // Col 4 -> Ciudad
-                $anuncio_precio, // Col 5 -> Precio
-                $anuncio_fecha   // Col 6 -> FRegistro
+                $anuncio_id,
+                $anuncio_titulo,
+                $anuncio_foto,
+                $anuncio_ciudad,
+                $anuncio_precio,
+                $anuncio_fecha
             );
 
             $hay_anuncios = false;
             
-            // Recorremos los resultados con fetch [cite: 1345]
+            // Recorremos los resultados con fetch
             while (mysqli_stmt_fetch($stmt_anuncios)) {
                 $hay_anuncios = true;
         ?>
@@ -143,7 +141,7 @@ mysqli_stmt_close($stmt_usuario);
                 echo '<p>Este usuario no tiene anuncios publicados.</p>';
             }
 
-            mysqli_stmt_close($stmt_anuncios); // [cite: 1355]
+            mysqli_stmt_close($stmt_anuncios);
         }
         ?>
     </section>
@@ -151,7 +149,7 @@ mysqli_stmt_close($stmt_usuario);
 
 <?php
 // 6. Cerrar la conexión
-mysqli_close($mysqli); // [cite: 1357]
+mysqli_close($mysqli);
 
 include "footer.php";
 ?>

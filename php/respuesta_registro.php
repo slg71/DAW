@@ -3,7 +3,7 @@ session_start();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    // --- Recolección de datos (sin cambios) ---
+    // --- Recolección de datos ---
     $usuario = trim($_POST["usuario"] ?? "");
     $pwd = trim($_POST["pwd"] ?? "");
     $pwd2 = trim($_POST["pwd2"] ?? "");
@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $errores = [];
 
-    // ============ Validaciones (Lógica sin cambios) ============
+    // ============ Validaciones ============
 
     // --- Validación Usuario ---
     if ($usuario === "") {
@@ -93,7 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
 
-    // ============ ¡CAMBIO AQUÍ! (Flashdata) ============
+    // ============ Flashdata ============
     // Si hay errores, guardamos todo en la "estructura secundaria" _flash
     
     if (!empty($errores)) {

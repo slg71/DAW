@@ -42,7 +42,7 @@ $paises_bd = obtener_opciones_bd("paises", "IdPais", "NomPais");
 
 $titulo_pagina = "Resultado de Búsqueda";
 
-// Obtener parámetros GET (esto ya lo tenías)
+// Obtener parámetros GET
 $buscar = isset($_GET["buscar"]) ? trim($_GET["buscar"]) : "";
 
 $tipo_anuncio = isset($_GET["tipo_anuncio"]) ? trim($_GET["tipo_anuncio"]) : "";
@@ -79,7 +79,7 @@ if ($mysqli) {
 
     // 3. Montamos los filtros (el WHERE)
     
-    // Búsqueda rápida (la del PDF pág 7, que dice "vivienda alquiler alicante")
+    // Búsqueda rápida
     if ($buscar != "") {
         $condiciones_sql[] = "A.Ciudad LIKE ?";
         $params_tipos .= "s";
@@ -256,8 +256,6 @@ include "header.php";
                 <?php endforeach; ?>
             </select>
             
-            <!-- EL RESTO DEL FORMULARIO SE MANTIENE IGUAL -->
-
             <label for="precio_min">Precio mínimo (EUR)</label>
             <input type="number" id="precio_min" name="precio_min" min="0" step="0.01" placeholder="0"
                    value="<?php echo htmlspecialchars($precio_min); ?>">

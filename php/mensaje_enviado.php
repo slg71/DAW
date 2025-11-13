@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    // Validar longitud máxima del mensaje (4000 caracteres según el enunciado)
+    // Validar longitud máxima del mensaje
     if (strlen($mensaje) > 4000) {
         header("Location: mensaje.php?error=toolong");
         exit;
