@@ -42,7 +42,7 @@ $anuncios = [
 ];
 ?>
 
-<main id="mis-anuncios">
+<main>
 
     <?php
     if (empty($anuncios)) {
@@ -50,7 +50,7 @@ $anuncios = [
     } else {
     ?>
 
-    <section id="listado-anuncios">
+    <section id="listado">
         <h2>MIS ANUNCIOS PUBLICADOS</h2>
 
         <?php foreach ($anuncios as $anuncio): ?>
@@ -77,7 +77,7 @@ $anuncios = [
                     Editar
                 </a>
                 
-                <form action="gestion_anuncios.php" method="post" style="display:inline;">
+                <form action="gestion_anuncios.php" method="post">
                     <button type="submit" 
                             name="eliminar" 
                             value="<?php echo $anuncio['id']; ?>" 
@@ -89,6 +89,19 @@ $anuncios = [
             </section>
         </article>
         <?php endforeach; ?>
+    </section>
+
+    <section id="bloque">
+        <button>
+            <a href="añadir_foto.php">
+                Añadir Foto a anuncio
+            </a>
+        </button>
+        <button>
+            <a href="crear_anuncio.php">
+                Crear anuncio
+            </a>
+        </button>
     </section>
     <?php } ?>
 </main>
