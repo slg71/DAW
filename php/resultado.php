@@ -10,17 +10,45 @@ if (!isset($_SESSION['usuario_id'])) {
     exit; // Detiene la ejecución del script
 }
 
-// 1. AÑADIMOS CONEXIÓN
 include "conexion_bd.php";
+
+function obtener_opciones_bd($tabla, $id_columna, $nombre_columna) {
+    $opciones = [];
+    $mysqli = conectarBD();
+    if (!$mysqli) return $opciones;
+
+    $query = "SELECT $id_columna, $nombre_columna FROM $tabla ORDER BY $nombre_columna";
+    
+    if ($resultado = $mysqli->query($query)) {
+        while ($fila = $resultado->fetch_assoc()) {
+            $opciones[] = [
+                'id' => $fila[$id_columna],
+                'nombre' => $fila[$nombre_columna]
+            ];
+        }
+        $resultado->free();
+    } else {
+        error_log("Error al consultar la tabla $tabla: " . $mysqli->error);
+    }
+    $mysqli->close();
+    return $opciones;
+}
+
+
+// --- OBTENCION DE DATOS DEL FORMULARIO ---
+$tipos_anuncios = obtener_opciones_bd("tiposanuncios", "IdTAnuncio", "NomTAnuncio");
+$tipos_viviendas = obtener_opciones_bd("tiposviviendas", "IdTVivienda", "NomTVivienda");
+$paises_bd = obtener_opciones_bd("paises", "IdPais", "NomPais");
 
 $titulo_pagina = "Resultado de Búsqueda";
 
 // Obtener parámetros GET (esto ya lo tenías)
 $buscar = isset($_GET["buscar"]) ? trim($_GET["buscar"]) : "";
+
 $tipo_anuncio = isset($_GET["tipo_anuncio"]) ? trim($_GET["tipo_anuncio"]) : "";
 $tipo_vivienda = isset($_GET["tipo_vivienda"]) ? trim($_GET["tipo_vivienda"]) : "";
 $ciudad = isset($_GET["ciudad"]) ? trim($_GET["ciudad"]) : "";
-$pais = isset($_GET["pais"]) ? trim($_GET["pais"]) : "";
+$pais_seleccionado = isset($_GET["pais"]) ? trim($_GET["pais"]) : ""; // Renombrado para evitar conflicto
 $precio_min = isset($_GET["precio_min"]) ? trim($_GET["precio_min"]) : "";
 $precio_max = isset($_GET["precio_max"]) ? trim($_GET["precio_max"]) : "";
 $fecha_publicacion = isset($_GET["fecha_publicacion"]) ? trim($_GET["fecha_publicacion"]) : "";
@@ -36,7 +64,6 @@ $mysqli = conectarBD();
 if ($mysqli) {
     
     // 2. Preparamos la consulta SQL base
-    // Tengo que unir (JOIN) todo para poder buscar por los nombres de tu formulario cutre
     $sql_base = "SELECT 
                     A.IdAnuncio, A.Titulo, A.FRegistro, A.Ciudad, A.Precio, A.FPrincipal, 
                     P.NomPais 
@@ -53,7 +80,6 @@ if ($mysqli) {
     // 3. Montamos los filtros (el WHERE)
     
     // Búsqueda rápida (la del PDF pág 7, que dice "vivienda alquiler alicante")
-    // ...es muy difícil. La hago fácil: que busque solo en la ciudad.
     if ($buscar != "") {
         $condiciones_sql[] = "A.Ciudad LIKE ?";
         $params_tipos .= "s";
@@ -67,23 +93,25 @@ if ($mysqli) {
         $params_valores[] = "%" . $ciudad . "%";
     }
     
-    // Buscamos por el NOMBRE del país (NomPais)
-    if ($pais != "") {
-        $condiciones_sql[] = "P.NomPais LIKE ?";
-        $params_tipos .= "s";
-        $params_valores[] = "%" . $pais . "%";
+    // El País ahora viene con su ID numérico
+    if ($pais_seleccionado != "" && is_numeric($pais_seleccionado)) {
+        $condiciones_sql[] = "A.Pais = ?";
+        $params_tipos .= "i";
+        $params_valores[] = (int)$pais_seleccionado;
     }
-    // Buscamos por el NOMBRE del tipo (NomTAnuncio)
+    
+    // El Tipo Anuncio (Venta/Alquiler) viene con su nombre, se mantiene el filtro por nombre
     if ($tipo_anuncio != "") {
         $condiciones_sql[] = "TA.NomTAnuncio = ?";
         $params_tipos .= "s";
         $params_valores[] = $tipo_anuncio;
     }
-    // Buscamos por el NOMBRE de la vivienda (NomTVivienda)
-    if ($tipo_vivienda != "") {
-        $condiciones_sql[] = "TV.NomTVivienda = ?";
-        $params_tipos .= "s";
-        $params_valores[] = $tipo_vivienda;
+    
+    // El Tipo Vivienda ahora viene con su ID numérico
+    if ($tipo_vivienda != "" && is_numeric($tipo_vivienda)) {
+        $condiciones_sql[] = "A.TVivienda = ?";
+        $params_tipos .= "i";
+        $params_valores[] = (int)$tipo_vivienda;
     }
 
     if ($precio_min != "") {
@@ -97,7 +125,7 @@ if ($mysqli) {
         $params_valores[] = $precio_max;
     }
     if ($fecha_publicacion != "") {
-        $condiciones_sql[] = "DATE(A.FRegistro) = ?"; // DATE() para ignorar la hora
+        $condiciones_sql[] = "DATE(A.FRegistro) >= ?"; // Fecha IGUAL O POSTERIOR
         $params_tipos .= "s";
         $params_valores[] = $fecha_publicacion;
     }
@@ -107,15 +135,14 @@ if ($mysqli) {
     if (count($condiciones_sql) > 0) {
         $sql_final .= " WHERE " . implode(" AND ", $condiciones_sql);
     }
-    $sql_final .= " ORDER BY A.FRegistro DESC"; // La práctica dice de ordenar por fecha [cite: 269]
+    $sql_final .= " ORDER BY A.FRegistro DESC"; 
 
-    // 5. Preparamos y ejecutamos (como en la pág 28 del PDF) [cite: 1302-1359]
+    // 5. Preparamos y ejecutamos
     $stmt = mysqli_prepare($mysqli, $sql_final);
     
     if ($stmt) {
         // Solo hacemos bind si hay parámetros
         if (count($params_valores) > 0) {
-            // Esto es un lío, pero es para meter todos los parámetros del array
             mysqli_stmt_bind_param($stmt, $params_tipos, ...$params_valores);
         }
         
@@ -142,7 +169,7 @@ if ($mysqli) {
 }
 
 // -------------------------------------------------------------
-// Incluir plantillas (esto ya lo tenías)
+// Incluir plantillas
 // -------------------------------------------------------------
 
 include "paginas_Estilo.php";
@@ -159,13 +186,12 @@ include "header.php";
             echo "<p class='error'>" . htmlspecialchars($mensaje_error) . "</p>\n";
         }
 
-        // Mostrar los anuncios encontrados (MODIFICADO para usar nombres de la BD)
+        // Mostrar los anuncios encontrados
         foreach ($resultados as $r) {
             echo "<article>\n";
 
             // Enlace a detalle_anuncio.php con el ID real (IdAnuncio)
             echo "<a href='detalle_anuncio.php?id=" . urlencode($r["IdAnuncio"]) . "'>\n";
-            // Usamos FPrincipal (asumo que está en img/anuncios/)
             echo "<img src='../img/" . htmlspecialchars($r["FPrincipal"]) . "' alt='Foto del anuncio'>\n";
             echo "</a>\n";
 
@@ -175,7 +201,7 @@ include "header.php";
 
             echo "<p>Fecha: " . htmlspecialchars($r["FRegistro"]) . "</p>\n";
             echo "<p>Ciudad: " . htmlspecialchars($r["Ciudad"]) . "</p>\n";
-            echo "<p>País: " . htmlspecialchars($r["NomPais"]) . "</p>\n"; // <-- Usamos NomPais del JOIN
+            echo "<p>País: " . htmlspecialchars($r["NomPais"]) . "</p>\n"; 
             echo "<p>Precio: " . number_format($r["Precio"], 0, ',', '.') . " €</p>\n";
 
             echo "<form action='mensaje.php' method='get'>\n";
@@ -193,32 +219,44 @@ include "header.php";
 
             <fieldset>
                 <legend>Tipo de operación</legend>
-                <input type="radio" id="tipo_venta" name="tipo_anuncio" value="Venta"
-                    <?php if ($tipo_anuncio == "Venta") echo "checked"; ?>>
-                <label for="tipo_venta">Venta</label>
-
-                <input type="radio" id="tipo_alquiler" name="tipo_anuncio" value="Alquiler"
-                    <?php if ($tipo_anuncio == "Alquiler") echo "checked"; ?>>
-                <label for="tipo_alquiler">Alquiler</label>
+                <?php foreach ($tipos_anuncios as $tipo): ?>
+                    <!-- Se sigue usando el nombre (NomTAnuncio) como valor para evitar cambiar la lógica SQL de WHERE TA.NomTAnuncio = ? -->
+                    <input type="radio" id="tipo_<?php echo strtolower($tipo['nombre']); ?>" 
+                           name="tipo_anuncio" value="<?php echo htmlspecialchars($tipo['nombre']); ?>"
+                        <?php if ($tipo_anuncio == $tipo['nombre']) echo "checked"; ?>>
+                    <label for="tipo_<?php echo strtolower($tipo['nombre']); ?>"><?php echo htmlspecialchars($tipo['nombre']); ?></label>
+                <?php endforeach; ?>
             </fieldset>
 
             <label for="tipo_vivienda_select">Seleccione tipo de vivienda</label>
             <select id="tipo_vivienda_select" name="tipo_vivienda">
                 <option value="">---</option>
-                <option value="Obra nueva" <?php if ($tipo_vivienda == "Obra nueva") echo "selected"; ?>>Obra Nueva</option>
-                <option value="Vivienda" <?php if ($tipo_vivienda == "Vivienda") echo "selected"; ?>>Vivienda</option>
-                <option value="Oficina" <?php if ($tipo_vivienda == "Oficina") echo "selected"; ?>>Oficina</option>
-                <option value="Local" <?php if ($tipo_vivienda == "Local") echo "selected"; ?>>Local</option>
-                <option value="Garaje" <?php if ($tipo_vivienda == "Garaje") echo "selected"; ?>>Garaje</option>
+                <?php foreach ($tipos_viviendas as $vivienda): ?>
+                    <!-- Ahora usamos el ID numérico (IdTVivienda) como valor -->
+                    <option value="<?php echo htmlspecialchars($vivienda['id']); ?>" 
+                        <?php if ($tipo_vivienda == $vivienda['id']) echo "selected"; ?>>
+                        <?php echo htmlspecialchars($vivienda['nombre']); ?>
+                    </option>
+                <?php endforeach; ?>
             </select>
 
             <label for="ciudad">Ciudad</label>
             <input type="text" id="ciudad" name="ciudad" placeholder="Ej: Alicante"
                    value="<?php echo htmlspecialchars($ciudad); ?>">
 
-            <label for="pais">País</label>
-            <input type="text" id="pais" name="pais" placeholder="Ej: España"
-                   value="<?php echo htmlspecialchars($pais); ?>">
+            <label for="pais_select">País</label>
+            <select id="pais_select" name="pais">
+                <option value="">---</option>
+                <?php foreach ($paises_bd as $pais): ?>
+                    <!-- Ahora usamos el ID numérico (IdPais) como valor -->
+                    <option value="<?php echo htmlspecialchars($pais['id']); ?>"
+                        <?php if ($pais_seleccionado == $pais['id']) echo "selected"; ?>>
+                        <?php echo htmlspecialchars($pais['nombre']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            
+            <!-- EL RESTO DEL FORMULARIO SE MANTIENE IGUAL -->
 
             <label for="precio_min">Precio mínimo (EUR)</label>
             <input type="number" id="precio_min" name="precio_min" min="0" step="0.01" placeholder="0"

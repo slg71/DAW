@@ -2,6 +2,7 @@
 // -------------------------------------------------------------
 // Página: index.php (version publica, sin sesion)
 // -------------------------------------------------------------
+session_start();
 
 $titulo_pagina = "Inicio - PI Pisos & Inmuebles";
 include "paginas_Estilo.php";
