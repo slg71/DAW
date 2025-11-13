@@ -1,6 +1,6 @@
 <?php
 // -------------------------------------------------------------
-// Página: perfil.php
+// Página: perfil.php (versión con BD)
 // -------------------------------------------------------------
 
 include "sesion_control.php"; // Control central de sesión y cookies
@@ -8,70 +8,150 @@ $titulo_pagina = "Perfil";
 include "paginas_Estilo.php";
 include "header.php";
 
-// anuncios ficticios (REEMPLAZA POR BD)
-$anuncios = [
-    [
-        'foto' => '../img/piso.jpg',
-        'titulo' => 'Apartamento céntrico renovado',
-        'ciudad' => 'Alicante',
-        'pais' => 'España',
-        'precio' => '900',
-        'fecha' => '2025-09-15',
-        'id' => 1
-    ],
-    [
-        'foto' => '../img/piso.jpg',
-        'titulo' => 'Piso moderno con terraza',
-        'ciudad' => 'Valencia',
-        'pais' => 'España',
-        'precio' => '220000',
-        'fecha' => '2025-09-18',
-        'id' => 2
-    ],
-];
+// 1. Incluimos la conexión
+include "conexion_bd.php"; 
+
+// 2. Pillar el ID de la URL
+// La práctica dice "usuario seleccionado", así que pillo el id de la url 
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+    echo "<main><p>Error, no has dicho de qué usuario.</p></main>";
+    include "footer.php";
+    exit; // Adiós
+}
+
+$id_usuario_perfil = (int)$_GET['id']; // Por si acaso
+
+// 3. Conectar a la BD
+$mysqli = conectarBD();
+if ($mysqli === null) {
+    // La función conectarBD ya debería mostrar un error
+    include "footer.php";
+    exit;
+}
+
+// 4. CONSULTA 1: DATOS DEL USUARIO
+// La práctica pide nombre, foto y fecha de incorporación 
+$sql_usuario = "SELECT NomUsuario, Foto, FRegistro FROM usuarios WHERE IdUsuario = ?";
+
+// Usamos el método de sentencias preparadas del PDF (pág 28) [cite: 1332]
+$stmt_usuario = mysqli_prepare($mysqli, $sql_usuario);
+
+if ($stmt_usuario === false) {
+    echo "<main><p>Error al preparar la consulta de usuario.</p></main>";
+    mysqli_close($mysqli);
+    include "footer.php";
+    exit;
+}
+
+// Asociamos el parámetro (el ID) [cite: 1335]
+mysqli_stmt_bind_param($stmt_usuario, 'i', $id_usuario_perfil); // 'i' de integer [cite: 1297]
+
+// Ejecutamos [cite: 1337]
+mysqli_stmt_execute($stmt_usuario);
+
+// Vinculamos los resultados a variables [cite: 1340]
+mysqli_stmt_bind_result($stmt_usuario, $nombre_usuario, $foto_usuario, $fecha_registro);
+
+// Obtenemos los valores [cite: 1345]
+if (!mysqli_stmt_fetch($stmt_usuario)) {
+    echo "<main><p>Error: Usuario no encontrado.</p></main>";
+    mysqli_stmt_close($stmt_usuario);
+    mysqli_close($mysqli);
+    include "footer.php";
+    exit;
+}
+
+// Cerramos esta sentencia [cite: 1355]
+mysqli_stmt_close($stmt_usuario);
+
 ?>
 
 <main>
     <section id="bloque">
         <h2>Datos del usuario</h2>
-          <?php
-          //ACTUALIZAR CON BD
-            $fecha = date("D");
-            $usuario = ucfirst($_SESSION['usuario_id']);
-            //foto
-
-            echo "<p>Nombre de usuario: $usuario</p>";
-            echo "<p>Fecha de incorporación: $fecha</p>";
+        <?php
+            // Ponemos los datos que hemos pillado
+            echo "<p>Nombre de usuario: " . htmlspecialchars($nombre_usuario) . "</p>";
+            // La fecha la pongo tal cual sale de la BD, sin formatear ni nada.
+            echo "<p>Fecha de incorporación: " . htmlspecialchars($fecha_registro) . "</p>";
+            
+            // Asumo que la foto está en una carpeta img/usuarios/
+            if (empty($foto_usuario)) {
+                $foto_usuario = "perfil.jpg"; // Pongo una por defecto si no tiene
+            }
             echo "<p>Foto de perfil: </p>";
+            echo '<img src="../img/' . htmlspecialchars($foto_usuario) . '" alt="Foto de ' . htmlspecialchars($nombre_usuario) . '">';
         ?>
     </section>
-    <?php
-    if (empty($anuncios)) {
-        echo '<section><p>Aún no has publicado ningún anuncio.</p><p><a href="crear_anuncio.php">¡Publica tu primer anuncio ahora!</a></p></section>';
-    } else {
-    ?>
 
+    
     <section id="listado">
-        <h2>Mis Anuncios Publicados</h2>
+        <h2>Anuncios Publicados por <?php echo htmlspecialchars($nombre_usuario); ?></h2>
 
-        <?php foreach ($anuncios as $anuncio): ?>
+        <?php
+        // 5. CONSULTA 2: ANUNCIOS DEL USUARIO
+        // Pide un "listado simplificado". Saco lo básico.
+        $sql_anuncios = "SELECT 
+                            IdAnuncio, Titulo, FPrincipal, Ciudad, Precio, FRegistro 
+                        FROM anuncios 
+                        WHERE Usuario = ? 
+                        ORDER BY FRegistro DESC";
         
-        <article>
+        $stmt_anuncios = mysqli_prepare($mysqli, $sql_anuncios); // [cite: 1332]
+        
+        if ($stmt_anuncios === false) {
+            echo "<p>Error al preparar los anuncios.</p>";
+        } else {
+            mysqli_stmt_bind_param($stmt_anuncios, 'i', $id_usuario_perfil); // [cite: 1335]
+            mysqli_stmt_execute($stmt_anuncios); // [cite: 1337]
             
-            <a href="ver_anuncio.php?id=<?php echo $anuncio['id']; ?>">
-              <img src="<?php echo htmlspecialchars($anuncio['foto']); ?>" 
-                   alt="Foto principal: <?php echo htmlspecialchars($anuncio['titulo']); ?>">
+            // Vinculamos las columnas que queremos a variables [cite: 1340]
+            mysqli_stmt_bind_result(
+                $stmt_anuncios, 
+                $anuncio_id,     // Col 1 -> IdAnuncio
+                $anuncio_titulo, // Col 2 -> Titulo
+                $anuncio_foto,   // Col 3 -> FPrincipal
+                $anuncio_ciudad, // Col 4 -> Ciudad
+                $anuncio_precio, // Col 5 -> Precio
+                $anuncio_fecha   // Col 6 -> FRegistro
+            );
+
+            $hay_anuncios = false;
+            
+            // Recorremos los resultados con fetch [cite: 1345]
+            while (mysqli_stmt_fetch($stmt_anuncios)) {
+                $hay_anuncios = true;
+        ?>
+
+        <article>
+            <a href="ver_anuncio.php?id=<?php echo $anuncio_id; ?>">
+                
+                <img src="../img/<?php echo htmlspecialchars($anuncio_foto); ?>" 
+                     alt="Foto: <?php echo htmlspecialchars($anuncio_titulo); ?>">
             </a>
 
-            <h3><?php echo htmlspecialchars($anuncio['titulo']); ?></h3>
-            <p>Fecha: <?php echo htmlspecialchars($anuncio['fecha']); ?></p>
-            <p>Precio: <?php echo number_format($anuncio['precio'], 0, ',', '.'); ?> €</p>
+            <h3><?php echo htmlspecialchars($anuncio_titulo); ?></h3>
+            <p>Fecha: <?php echo htmlspecialchars($anuncio_fecha); ?></p>
+            <p>Ciudad: <?php echo htmlspecialchars($anuncio_ciudad); ?></p>
+            <p>Precio: <?php echo number_format($anuncio_precio, 0, ',', '.'); ?> €</p>
         </article>
-        <?php endforeach; ?>
+
+        <?php 
+            } // Fin del while
+            
+            if (!$hay_anuncios) {
+                echo '<p>Este usuario no tiene anuncios publicados.</p>';
+            }
+
+            mysqli_stmt_close($stmt_anuncios); // [cite: 1355]
+        }
+        ?>
     </section>
-    <?php } ?>
 </main>
 
 <?php
+// 6. Cerrar la conexión
+mysqli_close($mysqli); // [cite: 1357]
+
 include "footer.php";
 ?>

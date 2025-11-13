@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             
         }
 
-        header("Location: menuRegistradoUsu.php");
+        header("Location: configurar.php");
         exit;
     } else {
         $_SESSION['mensaje_error_login'] = "Datos de Usuario inválidos.";
