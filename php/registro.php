@@ -21,9 +21,38 @@ $pais    = $datos_previos["pais"] ?? "";
 $ciudad  = $datos_previos["ciudad"] ?? "";
 $nac     = $datos_previos["nac"] ?? "";
 
+// Incluir la conexión a la base de datos
+require_once "conexion_bd.php";
+
 $titulo_pagina = "Registro";
 include "paginas_Estilo.php";
 include "header.php";
+
+// Conectar a la base de datos
+$mysqli = conectarBD();
+
+// Array para almacenar los paises
+$paises = array();
+
+if ($mysqli) {
+    // Consulta para obtener los tipos de mensaje
+    $sentencia = "SELECT IdPais, NomPais FROM Paises";
+    
+    if ($resultado = $mysqli->query($sentencia)) {
+        // Recorrer los resultados y almacenarlos en el array
+        while ($fila = $resultado->fetch_assoc()) {
+            $paises[] = $fila;
+        }
+        
+        // Liberar memoria del resultado
+        $resultado->close();
+    } else {
+        echo "<p>Error al obtener los paises: " . $mysqli->error . "</p>";
+    }
+    
+    // Cerrar la conexión
+    $mysqli->close();
+}
 ?>
 
 <main id="registro">
@@ -77,17 +106,14 @@ include "header.php";
 
         <label for="pais">País de residencia</label>
         <select id="pais" name="pais">
-            <option value="">---</option>
-            <option value="espana" <?php if ($pais=="espana") echo "selected"; ?>>España</option>
-            <option value="uk" <?php if ($pais=="uk") echo "selected"; ?>>Reino Unido</option>
-            <option value="italia" <?php if ($pais=="italia") echo "selected"; ?>>Italia</option>
-            <option value="francia" <?php if ($pais=="francia") echo "selected"; ?>>Francia</option>
-            <option value="usa" <?php if ($pais=="usa") echo "selected"; ?>>Estados Unidos</option>
-            <option value="china" <?php if ($pais=="china") echo "selected"; ?>>China</option>
-            <option value="japon" <?php if ($pais=="japon") echo "selected"; ?>>Japón</option>
-            <option value="sk" <?php if ($pais=="sk") echo "selected"; ?>>Corea del Sur</option>
-            <option value="india" <?php if ($pais=="india") echo "selected"; ?>>India</option>
-            <option value="australia" <?php if ($pais=="australia") echo "selected"; ?>>Australia</option>
+            <?php
+            // Generar las opciones del select desde la base de datos
+            foreach ($paises as $tipo) {
+                echo '<option value="' . $tipo['IdPais'] . '">';
+                echo htmlspecialchars($tipo['NomPais']);
+                echo '</option>';
+            }
+            ?>
         </select>
         <?php if (isset($errores["pais"])): ?>
             <span class="error-campo"><?php echo htmlspecialchars($errores["pais"]); ?></span>
