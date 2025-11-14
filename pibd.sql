@@ -284,11 +284,11 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`IdUsuario`, `NomUsuario`, `Clave`, `Email`, `Sexo`, `FNacimiento`, `Ciudad`, `Pais`, `Foto`, `FRegistro`, `Estilo`) VALUES
-(1, 'leigh', '1234', 'leigh@ejemplo.com', 1, '1990-05-15', 'Alicante', 1, 'leigh.jpg', '2025-11-13 14:50:28', 2),
-(2, 'maria', 'pass', 'maria@ejemplo.com', 0, '1985-11-20', 'Paris', 2, 'maria.jpg', '2025-11-13 14:50:28', 4),
-(3, 'usuario1', 'usuario1', 'usuario1@ejemplo.com', 1, '2000-01-01', 'Roma', 3, 'user1.jpg', '2025-11-13 14:50:28', 1),
-(4, 'hugo', 'abcd', 'hugo@ejemplo.com', 1, '1995-03-25', 'Berlín', 4, 'hugo.jpg', '2025-11-13 14:50:28', 3),
-(5, 'saray', '1111', 'saray@ejemplo.com', 0, '1992-08-10', 'Lisboa', 5, 'saray.jpg', '2025-11-13 14:50:28', 5);
+(1, 'leigh', '$2y$10$DtVLtmsy/o345r3zpU70zuc2jyC67P0PzVJigjBHQd637vH1IfEle', 'leigh@ejemplo.com', 1, '1990-05-15', 'Alicante', 1, 'leigh.jpg', '2025-11-13 14:50:28', 2),
+(2, 'maria', '$2y$10$oHl.aiX1cyO2sLmqfscRbuO31Vs7ZvzxMyg5BMfxzB6gw6tZR7lEm', 'maria@ejemplo.com', 0, '1985-11-20', 'Paris', 2, 'maria.jpg', '2025-11-13 14:50:28', 4),
+(3, 'usuario1', '$2y$10$9GTk5aRotGhJZTBwMDkwmOJgzijmw.i0Za4PzCZ1/afTM3N599gcu', 'usuario1@ejemplo.com', 1, '2000-01-01', 'Roma', 3, 'user1.jpg', '2025-11-13 14:50:28', 1),
+(4, 'hugo', '$2y$10$HnfqoKZxVdnBMsDF2mPXAOIPxfTBu7N7UOWkJD/w7U.qDpq/AfxmK', 'hugo@ejemplo.com', 1, '1995-03-25', 'Berlín', 4, 'hugo.jpg', '2025-11-13 14:50:28', 3),
+(5, 'saray', '$2y$10$aZVH5AxfSy1ksWELK5WeVeMHhovqDIJ7RRxJ9EIidu05qQikcT1Cu', 'saray@ejemplo.com', 0, '1992-08-10', 'Lisboa', 5, 'saray.jpg', '2025-11-13 14:50:28', 5);
 
 --
 -- Índices para tablas volcadas

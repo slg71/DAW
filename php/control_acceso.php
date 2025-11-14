@@ -4,9 +4,9 @@
 // ======================================================
 
 // 1. Incluimos la conexión a la BD
-include "conexion_bd.php"; 
+require_once "conexion_bd.php"; 
 
-$cookie_lifetime = time() + (90 * 24 * 60 * 60);//90 dias
+$cookie_lifetime = time() + (90 * 24 * 60 * 60); // 90 dias
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     session_start();
@@ -20,85 +20,95 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($mysqli) {
         
-        // 3. Creamos el SQL para buscar al usuario
-        // Necesitamos el IdUsuario, la Clave y el Fichero de estilo
-        // (Tuve que buscar cómo se hacía un JOIN, como en mis_datos.php pero con Estilos)
+        // 3. Sentencia preparada para evitar Inyección SQL
         $sql = "SELECT u.IdUsuario, u.NomUsuario, u.Clave, e.Fichero 
                 FROM Usuarios u 
                 JOIN Estilos e ON u.Estilo = e.IdEstilo
-                WHERE u.NomUsuario = '" . mysqli_real_escape_string($mysqli, $usuario) . "'";
-                
-        // (Añadí mysqli_real_escape_string por si acaso, aunque no sé muy bien qué hace)
-
-        // 4. Ejecutamos la consulta
-        $resultado = mysqli_query($mysqli, $sql);
-
-        // 5. Comprobamos si encontramos al usuario
-        if ($resultado && mysqli_num_rows($resultado) == 1) {
+                WHERE u.NomUsuario = ?";
+        
+        $stmt = mysqli_prepare($mysqli, $sql);
+        
+        if ($stmt) {
+            // 4. Asociamos el parámetro
+            mysqli_stmt_bind_param($stmt, "s", $usuario);
             
-            $fila_usuario = mysqli_fetch_assoc($resultado);
+            // 5. Ejecutamos la consulta
+            mysqli_stmt_execute($stmt);
+            $resultado = mysqli_stmt_get_result($stmt);
 
-            // 6. Comprobamos la contraseña
-            if ($pwd === $fila_usuario['Clave']) {
-                                
-                // 7.Guardamos el ID numérico de la BD.
-                $_SESSION['usuario_id'] = $fila_usuario['IdUsuario'];
-                $_SESSION['usuario_nombre'] = $fila_usuario['NomUsuario'];
+            // 6. Comprobamos si encontramos al usuario
+            if ($resultado && mysqli_num_rows($resultado) == 1) {
                 
-                // 8. GUARDAR el estilo en COOKIE (desde la BD)
-                $estilo_usuario = $fila_usuario['Fichero'];
-                setcookie('estilo', $estilo_usuario, $cookie_lifetime, '/', '', false, true);
+                $fila_usuario = mysqli_fetch_assoc($resultado);
 
-                // ------------------------------------------------------------------
-                // RECUERDAME Y ULTIMA VISITA
-                // ------------------------------------------------------------------
-                if ($recordar) {
-                    $last_visit_antes = $_COOKIE["last_visit_recordar"] ?? null; 
+                // 7. Comprobamos la contraseña con password_verify()
+                if (password_verify($pwd, $fila_usuario['Clave'])) {
+                                    
+                    // 8. Guardamos el ID numérico de la BD.
+                    $_SESSION['usuario_id'] = $fila_usuario['IdUsuario'];
+                    $_SESSION['usuario_nombre'] = $fila_usuario['NomUsuario'];
                     
-                    if($last_visit_antes) {
-                        $_SESSION['last_visit_time_to_show'] = $last_visit_antes; 
+                    // 9. GUARDAR el estilo en COOKIE (desde la BD)
+                    $estilo_usuario = $fila_usuario['Fichero'];
+                    setcookie('estilo', $estilo_usuario, $cookie_lifetime, '/', '', false, true);
+
+                    // ------------------------------------------------------------------
+                    // RECUERDAME Y ULTIMA VISITA
+                    // ------------------------------------------------------------------
+                    if ($recordar) {
+                        $last_visit_antes = $_COOKIE["last_visit_recordar"] ?? null; 
+                        
+                        if($last_visit_antes) {
+                            $_SESSION['last_visit_time_to_show'] = $last_visit_antes; 
+                        } else {
+                            $_SESSION['last_visit_time_to_show'] = date("c");
+                        }
+                        
+                        $recordar_existente = (isset($_COOKIE["recordar_usuario"]) && $_COOKIE["recordar_usuario"] === $usuario);
+
+                        if (!$recordar_existente) {
+                            setcookie("recordar_usuario", $usuario, $cookie_lifetime, "/", '', false, true);
+                        }
+                        
+                        $current_time = date("c");
+                        setcookie("last_visit_recordar", $current_time, $cookie_lifetime, "/", '', false, true);
+
                     } else {
-                        $_SESSION['last_visit_time_to_show'] = date("c");
+                        setcookie("recordar_usuario", '', time() - 3600, '/');
+                        // setcookie("recordar_pass", '', time() - 3600, '/'); // <-- ELIMINADO
+                        setcookie("last_visit_recordar", '', time() - 3600, '/');
+                        unset($_SESSION['last_visit_time_to_show']); 
                     }
-                    
-                    $recordar_existente = (isset($_COOKIE["recordar_usuario"]) && $_COOKIE["recordar_usuario"] === $usuario);
 
-                    if (!$recordar_existente) {
-                        setcookie("recordar_usuario", $usuario, $cookie_lifetime, "/", '', false, true);
-                        setcookie("recordar_pass", $pwd, $cookie_lifetime, "/", '', false, true); // Dejo esto como lo tenías
-                    }
-                    
-                    $current_time = date("c");
-                    setcookie("last_visit_recordar", $current_time, $cookie_lifetime, "/", '', false, true);
+                    // 10. Redirigimos a la pagina privada
+                    header("Location: configurar.php"); 
+                    exit;
 
                 } else {
-                    setcookie("recordar_usuario", '', time() - 3600, '/');
-                    setcookie("recordar_pass", '', time() - 3600, '/');
-                    setcookie("last_visit_recordar", '', time() - 3600, '/');
-                    unset($_SESSION['last_visit_time_to_show']); 
+                    // Contraseña incorrecta
+                    $_SESSION['mensaje_error_login'] = "Datos de Usuario inválidos.";
+                    header("Location: login.php?usuario=" . urlencode($usuario));
+                    exit;
                 }
-
-                // 9. Redirigimos a la pagina privada
-                header("Location: configurar.php"); 
-                exit;
+                
+                mysqli_free_result($resultado);
 
             } else {
-                // Contraseña incorrecta
+                // Usuario no encontrado
                 $_SESSION['mensaje_error_login'] = "Datos de Usuario inválidos.";
                 header("Location: login.php?usuario=" . urlencode($usuario));
                 exit;
             }
-
-            mysqli_free_result($resultado);
+            
+            mysqli_stmt_close($stmt);
 
         } else {
-            // Usuario no encontrado
-            $_SESSION['mensaje_error_login'] = "Datos de Usuario inválidos.";
-            header("Location: login.php?usuario=" . urlencode($usuario));
+            $_SESSION['mensaje_error_login'] = "Error al preparar la consulta.";
+            header("Location: login.php");
             exit;
         }
 
-        mysqli_close($mysqli); // Cerramos la conexión, como en mis_datos.php
+        mysqli_close($mysqli);
 
     } else {
         // Error si no se puede conectar a la BD

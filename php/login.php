@@ -17,8 +17,7 @@ include "header.php";
             value="<?php echo htmlspecialchars($_GET['usuario'] ?? ($_COOKIE['recordar_usuario'] ?? '')); ?>">
 
         <label for="pwd">Contraseña</label>
-        <input type="password" id="pwd" name="pwd" 
-            value="<?php echo htmlspecialchars($_COOKIE['recordar_pass'] ?? ''); ?>">
+        <input type="password" id="pwd" name="pwd" value="">
 
         <label class="checkbox-recordar">Recordarme
             <input type="checkbox" name="recordar" <?php echo isset($_COOKIE['recordar_usuario']) ? 'checked' : ''; ?>>
