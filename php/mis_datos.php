@@ -70,7 +70,7 @@ if ($mysqli) {
 
 if ($mensaje_error != ""): ?>
     <main>
-        <p style="color: red;"><?php echo $mensaje_error; ?></p>
+        <p class="error-campo"><?php echo $mensaje_error; ?></p>
     </main>
 <?php elseif ($datos_usuario): 
     
