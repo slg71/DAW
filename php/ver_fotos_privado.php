@@ -1,20 +1,17 @@
 <?php
+// -------------------------------------------------------------
+// Página: ver_fotos_privado.php - Con Sesion
+// -------------------------------------------------------------
+
 session_start();
 ob_start();
 
-// Comprobación de seguridad: si no está logueado, redirigir
+// si no esta logueado, redirigir
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
     exit;
 }
 
-// -------------------------------------------------------------
-// Página: ver_fotos_privado.php
-// Privada (requiere sesión)
-// Muestra las fotos de un anuncio específico.
-// -------------------------------------------------------------
-
-// Incluimos las funciones de la BD para el anuncio y la galería
 include "funciones_anuncios.php";
 
 // Obtenemos el ID del anuncio de la URL

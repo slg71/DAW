@@ -3,7 +3,6 @@
 // funciones_anuncios.php - Funciones para obtener detalles de anuncios, fotos y datos de usuario
 // ==========================================================
 
-// Incluimos la conexión a la base de datos
 include_once "conexion_bd.php";
 
 function obtener_id_usuario_numerico($session_value) {
@@ -12,11 +11,11 @@ function obtener_id_usuario_numerico($session_value) {
 
     $id_usuario_numerico = null;
 
-    // 1. Si el valor es numérico, lo usamos directamente como IdUsuario.
+    // Si es un numero lo usamos como IdUsuario.
     if (is_numeric($session_value)) {
         $id_usuario_numerico = (int)$session_value;
     } else {
-        // 2. Si no es numérico, asumimos que es el NomUsuario y buscamos su IdUsuario.
+        // Es el NomUsuario y buscamos su IdUsuario en la BD, consultamos
         $query_id = "SELECT IdUsuario FROM usuarios WHERE NomUsuario = ?";
         if ($stmt_id = $mysqli->prepare($query_id)) {
             $stmt_id->bind_param("s", $session_value);
@@ -34,18 +33,13 @@ function obtener_id_usuario_numerico($session_value) {
     return $id_usuario_numerico;
 }
 
-/**
- * Obtiene el listado de todos los anuncios de un usuario específico para la página 'Mis Anuncios'.
- * @param int $id_usuario El IdUsuario numérico.
- * @return array Un array de arrays asociativos con los datos de los anuncios.
- */
 function obtener_anuncios_usuario($id_usuario) {
     $anuncios = [];
     $mysqli = conectarBD();
 
     if (!$mysqli) return $anuncios;
 
-    // Consulta para obtener los datos clave del listado
+    // Consulta para obtener los datos del listado
     $query = "
         SELECT 
             A.IdAnuncio, A.Titulo, A.FPrincipal, A.Precio, A.FRegistro,
@@ -158,7 +152,7 @@ function obtener_detalle_y_fotos_anuncio($id_anuncio) {
 
 function mostrar_galeria_fotos($anuncio_data, $es_privada) {
     if (!$anuncio_data) {
-        echo "<main><p>Anuncio no encontrado o ID no válido.</p></main>";
+        echo "<main><p>Anuncio no encontrado o ID no valido.</p></main>";
         return;
     }
 
