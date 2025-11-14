@@ -1,29 +1,22 @@
 <?php
-session_start(); // Inicia o reanuda la sesión
+// -------------------------------------------------------------
+// Página: solicitar_folleto.php 
+// -------------------------------------------------------------
 
-// Comprueba si la variable de sesión 'usuario_id' NO está definida
+session_start();
+
+
 if (!isset($_SESSION['usuario_id'])) {
-    // Si no lo está, redirige al usuario a la página de login
+
     header('Location: login.php');
-    exit; // Detiene la ejecución del script
+    exit; 
 }
 
-// -------------------------------------------------------------
-// Página: solicitar_folleto.php
-// -------------------------------------------------------------
-
 include "funciones_costes.php";
-include "conexion_bd.php"; // Incluimos el archivo de conexión
+include "conexion_bd.php";
 
-// ID o nombre del usuario logueado (depende de lo que guarde el login)
 $session_value = $_SESSION['usuario_id'];
 
-/**
- * Función para obtener los anuncios del usuario logueado desde la BD.
- * Esta función está diseñada para manejar tanto el ID numérico como el NomUsuario (string).
- * * @param mixed $session_value El valor de $_SESSION['usuario_id'], que puede ser el ID numérico (int) o el nombre de usuario (string).
- * @return array Un array de objetos con 'id' (IdAnuncio) y 'titulo' (Titulo) del anuncio.
- */
 function obtener_anuncios_usuario($session_value) {
     $anuncios = [];
     $mysqli = conectarBD();
@@ -33,14 +26,13 @@ function obtener_anuncios_usuario($session_value) {
         return $anuncios;
     }
 
-    // Paso 1: Determinar el ID numérico del usuario (IdUsuario)
     $id_usuario_numerico = null;
 
-    // Si el valor de la sesión es numérico, lo usamos directamente como IdUsuario.
+    // Si es un numero es el IdUsuario.
     if (is_numeric($session_value)) {
         $id_usuario_numerico = (int)$session_value;
     } else {
-        // Si no es numérico, asumimos que es el NomUsuario (string) y buscamos su IdUsuario.
+        // Si no es el NomUsuario y buscamos su IdUsuario.
         $query_id = "SELECT IdUsuario FROM usuarios WHERE NomUsuario = ?";
         if ($stmt_id = $mysqli->prepare($query_id)) {
             $stmt_id->bind_param("s", $session_value); // 's' porque NomUsuario es un string
@@ -55,43 +47,29 @@ function obtener_anuncios_usuario($session_value) {
         }
     }
 
-    // Si no encontramos un ID numérico, salimos.
+    // Salimos si no encontramos un ID
     if ($id_usuario_numerico === null) {
         $mysqli->close();
         return $anuncios;
     }
     
-    // Paso 2: Obtener los anuncios usando el IdUsuario numérico
-    // En la tabla 'anuncios', el ID del usuario es la columna 'Usuario'.
+    // Obtener los anuncios usando el IdUsuario
     $query_anuncios = "SELECT IdAnuncio, Titulo FROM anuncios WHERE Usuario = ?";
     
-    // Preparamos la sentencia
     if ($stmt = $mysqli->prepare($query_anuncios)) {
-        // Vinculamos el parámetro: 'i' para entero (Int) que es IdUsuario.
-        $stmt->bind_param("i", $id_usuario_numerico);
-        
-        // Ejecutamos la sentencia
+        $stmt->bind_param("i", $id_usuario_numerico); // 'i' porque Usuario es un entero
         $stmt->execute();
-        
-        // Obtenemos los resultados
-        $result = $stmt->get_result();
-        
-        // Recorremos los resultados y los guardamos en el array
+        $result = $stmt->get_result();        
         while ($row = $result->fetch_assoc()) {
-            // Mapeamos IdAnuncio a 'id' para que el bucle PHP en el HTML funcione
             $anuncios[] = ['id' => $row['IdAnuncio'], 'titulo' => $row['Titulo']];
         }
         
-        // Cerramos la sentencia
         $stmt->close();
     } else {
-        // Manejo de error en la preparación (opcional)
         error_log("Error al preparar la consulta de anuncios: " . $mysqli->error);
     }
-    
-    // Cerramos la conexión
-    $mysqli->close();
 
+    $mysqli->close();
     return $anuncios;
 }
 
@@ -247,7 +225,7 @@ include "header.php";
         // Rellenamos el select con los anuncios obtenidos de la BD
         if (!empty($lista_anuncios)) {
             foreach ($lista_anuncios as $anuncio) {
-                // El 'value' será el ID del anuncio y el texto la descripción o título.
+                // El 'value' será el ID del anuncio y el texto la descripción o titulo
                 echo '<option value="' . htmlspecialchars($anuncio['id']) . '">' . htmlspecialchars($anuncio['titulo']) . '</option>';
             }
         } else {

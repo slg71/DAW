@@ -77,10 +77,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     setcookie("last_visit_recordar", '', time() - 3600, '/');
                     unset($_SESSION['last_visit_time_to_show']); 
                 }
-                // --- Fin del código copiado ---
 
-                // 9. Redirigimos a la página privada
-                // La práctica dice "menú de usuario registrado" pero aparece configurar en el esquema antes
+                // 9. Redirigimos a la pagina privada
                 header("Location: configurar.php"); 
                 exit;
 

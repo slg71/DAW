@@ -1,13 +1,12 @@
 <?php
 // -------------------------------------------------------------
-// Página: resultado.php (AHORA CON BD)
+// Página: resultado.php
 // -------------------------------------------------------------
-session_start(); // Inicia o reanuda la sesión
+session_start(); // Inicia o reanuda la sesion
 
-// Comprueba si la variable de sesión 'usuario_id' NO está definida
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
-    exit; // Detiene la ejecución del script
+    exit;
 }
 
 include "conexion_bd.php";
@@ -42,7 +41,6 @@ $paises_bd = obtener_opciones_bd("paises", "IdPais", "NomPais");
 
 $titulo_pagina = "Resultado de Búsqueda";
 
-// Obtener parámetros GET
 $buscar = isset($_GET["buscar"]) ? trim($_GET["buscar"]) : "";
 
 $tipo_anuncio = isset($_GET["tipo_anuncio"]) ? trim($_GET["tipo_anuncio"]) : "";
@@ -79,7 +77,7 @@ if ($mysqli) {
 
     // 3. Montamos los filtros (el WHERE)
     
-    // Búsqueda rápida
+    // Busqueda rápida (la del PDF pág 7, que dice "vivienda alquiler alicante")
     if ($buscar != "") {
         $condiciones_sql[] = "A.Ciudad LIKE ?";
         $params_tipos .= "s";
@@ -141,7 +139,7 @@ if ($mysqli) {
     $stmt = mysqli_prepare($mysqli, $sql_final);
     
     if ($stmt) {
-        // Solo hacemos bind si hay parámetros
+        // Solo hacemos bind si hay parametros
         if (count($params_valores) > 0) {
             mysqli_stmt_bind_param($stmt, $params_tipos, ...$params_valores);
         }
@@ -156,10 +154,8 @@ if ($mysqli) {
         
         if (count($resultados) == 0) {
             $mensaje_error = "No se encontraron anuncios que coincidan con tu búsqueda.";
-        }
-        
+        }  
         mysqli_stmt_close($stmt);
-
     } else {
         $mensaje_error = "Error al preparar la consulta SQL.";
     }
@@ -220,7 +216,7 @@ include "header.php";
             <fieldset>
                 <legend>Tipo de operación</legend>
                 <?php foreach ($tipos_anuncios as $tipo): ?>
-                    <!-- Se sigue usando el nombre (NomTAnuncio) como valor para evitar cambiar la lógica SQL de WHERE TA.NomTAnuncio = ? -->
+                    <!--Lo dejamos como radio button porque asi esta bonito -->
                     <input type="radio" id="tipo_<?php echo strtolower($tipo['nombre']); ?>" 
                            name="tipo_anuncio" value="<?php echo htmlspecialchars($tipo['nombre']); ?>"
                         <?php if ($tipo_anuncio == $tipo['nombre']) echo "checked"; ?>>
@@ -232,7 +228,7 @@ include "header.php";
             <select id="tipo_vivienda_select" name="tipo_vivienda">
                 <option value="">---</option>
                 <?php foreach ($tipos_viviendas as $vivienda): ?>
-                    <!-- Ahora usamos el ID numérico (IdTVivienda) como valor -->
+                    <!-- IdTVivienda como valor -->
                     <option value="<?php echo htmlspecialchars($vivienda['id']); ?>" 
                         <?php if ($tipo_vivienda == $vivienda['id']) echo "selected"; ?>>
                         <?php echo htmlspecialchars($vivienda['nombre']); ?>
@@ -248,7 +244,7 @@ include "header.php";
             <select id="pais_select" name="pais">
                 <option value="">---</option>
                 <?php foreach ($paises_bd as $pais): ?>
-                    <!-- Ahora usamos el ID numérico (IdPais) como valor -->
+                    <!-- IdPais como valor -->
                     <option value="<?php echo htmlspecialchars($pais['id']); ?>"
                         <?php if ($pais_seleccionado == $pais['id']) echo "selected"; ?>>
                         <?php echo htmlspecialchars($pais['nombre']); ?>

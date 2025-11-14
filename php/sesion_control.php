@@ -5,13 +5,13 @@
 
 session_start();
 
-$usuarios_con_estilo = [
-    "leigh" => ["pwd" => "1234", "estilo" => "contraste.css"],
-    "hugo"  => ["pwd" => "abcd", "estilo" => "letra_grande.css"],
-    "maria" => ["pwd" => "pass", "estilo" => "estilo.css"],
-    "saray" => ["pwd" => "1111", "estilo" => "estilo.css"],
-    "prueba"=> ["pwd" => "9876", "estilo" => "estilo.css"] 
-];
+// $usuarios_con_estilo = [
+//     "leigh" => ["pwd" => "1234", "estilo" => "contraste.css"],
+//     "hugo"  => ["pwd" => "abcd", "estilo" => "letra_grande.css"],
+//     "maria" => ["pwd" => "pass", "estilo" => "estilo.css"],
+//     "saray" => ["pwd" => "1111", "estilo" => "estilo.css"],
+//     "prueba"=> ["pwd" => "9876", "estilo" => "estilo.css"] 
+// ];
 
 $cookie_lifetime = time() + (90 * 24 * 60 * 60); // 90 dias
 

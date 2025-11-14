@@ -1,6 +1,6 @@
 <?php
 // -------------------------------------------------------------
-// Página: perfil.php (versión con BD)
+// Página: perfil.php 
 // -------------------------------------------------------------
 
 include "sesion_control.php"; // Control central de sesión y cookies

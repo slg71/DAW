@@ -1,11 +1,10 @@
 <?php
-session_start(); // Inicia o reanuda la sesión
+session_start();
 
-// Comprueba si la variable de sesión 'usuario_id' NO está definida
 if (!isset($_SESSION['usuario_id'])) {
-    // Si no lo está, redirige al usuario a la página de login
+    
     header('Location: login.php');
-    exit; // Detiene la ejecución del script
+    exit; 
 }
 
 // -------------------------------------------------------------
@@ -14,15 +13,15 @@ if (!isset($_SESSION['usuario_id'])) {
 
 include "funciones_costes.php";
 
-$mapa_localidades = [
-    'alicante' => 'Alicante', 'valencia' => 'Valencia', 'albacete' => 'Albacete', 'barcelona' => 'Barcelona'
-];
-$mapa_provincias = [
-    'sanvi' => 'San Vicente del Raspeig', 'elche' => 'Elche', 'alicanteP' => 'Alicante', 'sanjuan' => 'San Juan'
-];
-$mapa_anuncios = [
-    'piso' => 'Piso en alquiler', 'casa' => 'Casa en venta', 'garage' => 'Garaje disponible', 'oficina' => 'Oficina en alquiler'
-];
+// $mapa_localidades = [
+//     'alicante' => 'Alicante', 'valencia' => 'Valencia', 'albacete' => 'Albacete', 'barcelona' => 'Barcelona'
+// ];
+// $mapa_provincias = [
+//     'sanvi' => 'San Vicente del Raspeig', 'elche' => 'Elche', 'alicanteP' => 'Alicante', 'sanjuan' => 'San Juan'
+// ];
+// $mapa_anuncios = [
+//     'piso' => 'Piso en alquiler', 'casa' => 'Casa en venta', 'garage' => 'Garaje disponible', 'oficina' => 'Oficina en alquiler'
+// ];
 
 // =============================================================
 // PROCESAMIENTO DE LA SOLICITUD
@@ -76,7 +75,7 @@ $imprimir_precio_texto = ($_POST['imprimir_precio'] ?? 'no') === 'si' ? 'Sí' : 
 $dir_completa = trim($direccion . ($direccion && $numero ? ' Nº ' . $numero : '') . ($cp ? ' CP ' . $cp : '')) ?: 'N/A';
 
 // =============================================================
-// HTML DE LA PÁGINA DE RESPUESTA
+// HTML DE LA PAGINA DE RESPUESTA
 // =============================================================
 
 $titulo_pagina = "Solicitud Registrada";

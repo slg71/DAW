@@ -6,7 +6,7 @@
 $config = parse_ini_file("config.ini", true);//archivo de configuracion
 $db_config = $config['BD'];
 
-// Definimos las constantes de conexión
+// Definimos las constantes de conexion
 define("DB_SERVER", $db_config['Server']);
 define("DB_USER", $db_config['User']);
 define("DB_PASSWORD", $db_config['Password']);
