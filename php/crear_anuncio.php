@@ -5,34 +5,9 @@ require_once "sesion_control.php";
 // Página: Crear un anuncio nuevo
 // -------------------------------------------------------------
 
-include "conexion_bd.php";
+require_once "conexion_bd.php";
+require_once "funciones_bd.php";
 include "funciones_costes.php"; 
-
-function obtener_opciones_bd($tabla, $id_columna, $nombre_columna) {
-    $opciones = [];
-    $mysqli = conectarBD();
-
-    if ($mysqli) {
-        $query = "SELECT $id_columna, $nombre_columna FROM $tabla ORDER BY $nombre_columna ASC";
-        
-        if ($result = $mysqli->query($query)) {
-            while ($row = $result->fetch_assoc()) {
-
-                $opciones[] = [
-                    'id' => $row[$id_columna],
-                    'nombre' => $row[$nombre_columna]
-                ];
-            }
-            $result->free();
-        } else {
-            error_log("Error al consultar la tabla $tabla: " . $mysqli->error);
-        }
-        $mysqli->close();
-    } else {
-        error_log("No se pudo conectar a la BD para obtener opciones de $tabla.");
-    }
-    return $opciones;
-}
 
 // Obtenemos las listas de la base de datos
 $tipos_anuncios = obtener_opciones_bd('tiposanuncios', 'IdTAnuncio', 'NomTAnuncio');
