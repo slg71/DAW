@@ -1,6 +1,6 @@
 <?php
 // -------------------------------------------------------------
-// Página: index.php (version publica, sin sesion)
+// Página: index.php -Publivo- SIN Sesion
 // -------------------------------------------------------------
 session_start();
 
