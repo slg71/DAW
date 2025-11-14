@@ -38,16 +38,18 @@ if (!$mysqli) {
                 <h3 class="tipo_mensaje">Mensajes Enviados</h3>
                 <?php
                 // Consulta para obtener los mensajes ENVIADOS por el usuario
-                $sentencia = "SELECT m.Texto, m.FRegistro, u.NomUsuario, tm.NomTMensaje, a.Titulo
-                              FROM Mensajes m, Usuarios u, TiposMensajes tm, Anuncios a
-                              WHERE m.UsuOrigen = '$usuario_id' 
-                              AND m.UsuDestino = u.IdUsuario 
-                              AND m.TMensaje = tm.IdTMensaje
-                              AND m.Anuncio = a.IdAnuncio
-                              ORDER BY m.FRegistro DESC";
-                
-                $resultado = $mysqli->query($sentencia);
-                
+                $sentencia_sql = "SELECT m.Texto, m.FRegistro, u.NomUsuario, tm.NomTMensaje, a.Titulo
+                    FROM Mensajes m
+                    JOIN Usuarios u ON m.UsuDestino = u.IdUsuario
+                    JOIN TiposMensajes tm ON m.TMensaje = tm.IdTMensaje
+                    JOIN Anuncios a ON m.Anuncio = a.IdAnuncio
+                    WHERE m.UsuOrigen = ?
+                    ORDER BY m.FRegistro DESC";
+                $sentencia = $mysqli->prepare($sentencia_sql);
+                $sentencia->bind_param("i", $usuario_id); // "i" porque IdUsuario es un entero
+                $sentencia->execute();
+                $resultado = $sentencia->get_result();
+                                
                 if (!$resultado) {
                     echo "<p>Error al obtener mensajes enviados: " . $mysqli->error . "</p>";
                 } else {
@@ -71,6 +73,7 @@ if (!$mysqli) {
                         echo "<p>No has enviado ningún mensaje todavía.</p>";
                     }
                 }
+                $sentencia->close();
                 ?>
             </section>
 
@@ -78,16 +81,18 @@ if (!$mysqli) {
                 <h3 class="tipo_mensaje">Mensajes Recibidos</h3>
                 <?php
                 // Consulta para obtener los mensajes RECIBIDOS por el usuario
-                $sentencia = "SELECT m.Texto, m.FRegistro, u.NomUsuario, tm.NomTMensaje, a.Titulo
-                              FROM Mensajes m, Usuarios u, TiposMensajes tm, Anuncios a
-                              WHERE m.UsuDestino = '$usuario_id' 
-                              AND m.UsuOrigen = u.IdUsuario 
-                              AND m.TMensaje = tm.IdTMensaje
-                              AND m.Anuncio = a.IdAnuncio
-                              ORDER BY m.FRegistro DESC";
-                
-                $resultado = $mysqli->query($sentencia);
-                
+                $sentencia_sql = "SELECT m.Texto, m.FRegistro, u.NomUsuario, tm.NomTMensaje, a.Titulo
+                    FROM Mensajes m
+                    JOIN Usuarios u ON m.UsuOrigen = u.IdUsuario
+                    JOIN TiposMensajes tm ON m.TMensaje = tm.IdTMensaje
+                    JOIN Anuncios a ON m.Anuncio = a.IdAnuncio
+                    WHERE m.UsuDestino = ?
+                    ORDER BY m.FRegistro DESC";
+                $sentencia = $mysqli->prepare($sentencia_sql);
+                $sentencia->bind_param("i", $usuario_id);
+                $sentencia->execute();
+                $resultado = $sentencia->get_result();
+                            
                 if (!$resultado) {
                     echo "<p>Error al obtener mensajes recibidos: " . $mysqli->error . "</p>";
                 } else {
@@ -111,6 +116,7 @@ if (!$mysqli) {
                         echo "<p>No has recibido ningún mensaje todavía.</p>";
                     }
                 }
+                $sentencia->close();
                 
                 // Cerrar la conexión
                 $mysqli->close();
