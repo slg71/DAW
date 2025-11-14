@@ -1,11 +1,7 @@
 <?php
-session_start();
 ob_start();
 
-if (!isset($_SESSION['usuario_id'])) {
-    header('Location: login.php');
-    exit;
-}
+require_once "sesion_control.php";
 
 $titulo_pagina = "Ver mi Anuncio";
 include "paginas_Estilo.php";

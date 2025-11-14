@@ -3,14 +3,7 @@
 // Página: solicitar_folleto.php 
 // -------------------------------------------------------------
 
-session_start();
-
-
-if (!isset($_SESSION['usuario_id'])) {
-
-    header('Location: login.php');
-    exit; 
-}
+require_once "sesion_control.php";
 
 include "funciones_costes.php";
 include "conexion_bd.php";

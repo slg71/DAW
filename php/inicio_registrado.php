@@ -2,7 +2,7 @@
 // -------------------------------------------------------------
 // Página: index.php - Con Sesion
 // -------------------------------------------------------------
-session_start();
+require_once "sesion_control.php";
 
 $titulo_pagina = "Inicio - PI Pisos & Inmuebles";
 include "paginas_Estilo.php";

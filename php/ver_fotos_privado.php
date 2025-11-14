@@ -3,14 +3,9 @@
 // Página: ver_fotos_privado.php - Con Sesion
 // -------------------------------------------------------------
 
-session_start();
 ob_start();
 
-// si no esta logueado, redirigir
-if (!isset($_SESSION['usuario_id'])) {
-    header('Location: login.php');
-    exit;
-}
+require_once "sesion_control.php";
 
 include "funciones_anuncios.php";
 

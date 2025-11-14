@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once "sesion_control.php";
 
 $_SESSION = array();
 

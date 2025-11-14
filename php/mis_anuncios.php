@@ -1,12 +1,7 @@
 <?php
-session_start();
 ob_start();
 
-// Comprobación de seguridad: debe estar logueado
-if (!isset($_SESSION['usuario_id'])) {
-    header('Location: login.php');
-    exit;
-}
+require_once "sesion_control.php";
 
 // -------------------------------------------------------------
 // Página: mis_anuncios.php

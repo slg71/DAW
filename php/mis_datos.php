@@ -1,12 +1,7 @@
 <?php
-session_start();
 ob_start();
 
-// Comprueba si el usuario está logueado
-if (!isset($_SESSION['usuario_id'])) {
-    header('Location: login.php');
-    exit;
-}
+require_once "sesion_control.php";
 
 $titulo_pagina = "Mis Datos"; 
 include "paginas_Estilo.php";
