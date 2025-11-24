@@ -18,34 +18,59 @@ include "header.php";
 
 // 1. AÑADIMOS LA CONEXIÓN
 include "conexion_bd.php"; 
-
+$estilo_actual_id = 0;
 $lista_estilos = []; // Array para guardar los estilos
 $mensaje_error = "";
 
 // 2. CONECTAR Y CONSULTAR
 $mysqli = conectarBD();
 if ($mysqli) {
+    // obtener estilo del usuario actual
+    $id_usuario = $_SESSION['usuario_id'];
+    $sql_usuario = "SELECT Estilo FROM usuarios WHERE IdUsuario = ?";
+    $stmt = mysqli_prepare($mysqli, $sql_usuario);
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "i", $id_usuario);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_bind_result($stmt, $estilo_actual_id);
+        mysqli_stmt_fetch($stmt);
+        mysqli_stmt_close($stmt);
+    }
+
+    // obtener estilos disponibles
+    $sql_estilos = "SELECT IdEstilo, Nombre, Descripcion, Fichero FROM estilos";
+    $resultado = mysqli_query($mysqli, $sql_estilos);
     
-    // La consulta para pillar todos los estilos
-    $sql = "SELECT Nombre, Descripcion, Fichero FROM estilos";
-    
-    // Como no hay datos del usuario (GET/POST), usamos mysqli_query
-    $resultado = @mysqli_query($mysqli, $sql);
-    
-    if (!$resultado) {
-        $mensaje_error = "Error al consultar los estilos: " . mysqli_error($mysqli);
-    } else {
-        // Metemos los resultados en el array
+    if ($resultado) {
         while ($fila = mysqli_fetch_assoc($resultado)) {
             $lista_estilos[] = $fila;
         }
-        
-        // El PDF dice que hay que liberar el resultado
         mysqli_free_result($resultado);
+    } else {
+        $mensaje_error = "Error al consultar los estilos: " . mysqli_error($mysqli);
     }
     
-    // Cerramos
     mysqli_close($mysqli);
+    // // La consulta para pillar todos los estilos
+    // $sql = "SELECT Nombre, Descripcion, Fichero FROM estilos";
+    
+    // // Como no hay datos del usuario (GET/POST), usamos mysqli_query
+    // $resultado = @mysqli_query($mysqli, $sql);
+    
+    // if (!$resultado) {
+    //     $mensaje_error = "Error al consultar los estilos: " . mysqli_error($mysqli);
+    // } else {
+    //     // Metemos los resultados en el array
+    //     while ($fila = mysqli_fetch_assoc($resultado)) {
+    //         $lista_estilos[] = $fila;
+    //     }
+        
+    //     // El PDF dice que hay que liberar el resultado
+    //     mysqli_free_result($resultado);
+    // }
+    
+    // // Cerramos
+    // mysqli_close($mysqli);
     
 } else {
     $mensaje_error = "No se pudo conectar a la base de datos.";
@@ -54,34 +79,39 @@ if ($mysqli) {
 ?>
 
 <main>
-    <section>
-        <h2>Listado de Estilos</h2>
+    <section id="bloque">
+        <h2>Selecciona tu estilo</h2>
         
-        <?php
-        if ($mensaje_error != "") {
-            echo "<p style='color: red;'>$mensaje_error</p>";
-        
-        } elseif (count($lista_estilos) == 0) {
-            echo "<p>No hay estilos disponibles en la base de datos.</p>";
-        
-        } else {
-            // El PDF dice que cambiarlo es en otra práctica (pág 9) 
-            echo "<p>Aquí puedes ver los estilos. En la próxima práctica podrás seleccionar el que quieras.</p>";
+        <?php if ($mensaje_error != ""): ?>
+            <p class="error-campo"><?php echo $mensaje_error; ?></p>
+        <?php else: ?>
             
-            echo "<ul>";
-            
-            // 3. PINTAMOS LA LISTA
-            foreach ($lista_estilos as $estilo) {
-                echo "<li style='margin-bottom: 15px;'>";
-                echo "<strong>Nombre: " . htmlspecialchars($estilo['Nombre']) . "</strong>";
-                echo "<p style='margin: 0;'>" . htmlspecialchars($estilo['Descripcion']) . "</p>";
-                echo "<em style='font-size: 0.9em;'>(Archivo: " . htmlspecialchars($estilo['Fichero']) . ")</em>";
-                echo "</li>";
-            }
-            
-            echo "</ul>";
-        }
-        ?>
+            <p>Elige cómo quieres visualizar la aplicación web. Tu elección se guardará para futuras visitas.</p>
+
+            <form action="respuesta_configurar.php" method="POST">
+                
+                <label for="estilo_seleccionado">Estilos disponibles:</label>
+                <select name="estilo" id="estilo_seleccionado">
+                    <?php foreach ($lista_estilos as $estilo): ?>
+                        <option value="<?php echo $estilo['IdEstilo']; ?>" 
+                            <?php echo ($estilo['IdEstilo'] == $estilo_actual_id) ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($estilo['Nombre']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+
+                <section id="bloque">
+                    <ul>
+                    <?php foreach ($lista_estilos as $estilo): ?>
+                        <li><strong><?php echo htmlspecialchars($estilo['Nombre']); ?>:</strong> <?php echo htmlspecialchars($estilo['Descripcion']); ?></li>
+                    <?php endforeach; ?>
+                    </ul>
+                </section>
+
+                <button type="submit">Guardar Configuración</button>
+            </form>
+
+        <?php endif; ?>
         
     </section>
 </main>
