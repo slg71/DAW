@@ -101,8 +101,11 @@ form input, form select, textarea {
     color: var(--blanco);
 }
 
-input:focus {
+input:focus, select:focus, textarea:focus {
     border-color: var(--color_destacado);
+    background-color: #1a1715;
+    color: var(--blanco);
+    outline: none;
 }
 
 form input[type="radio"] {

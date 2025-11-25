@@ -31,6 +31,7 @@ include "paginas_Estilo.php";
         <a href="crear_anuncio.php"><i class="icon-plus-outline"></i>Crear un anuncio nuevo</a>
         <a href="mismensajes.php"><i class="icon-mail"></i>Ver mensajes enviados y recibidos</a>
         <a href="solicitar_folleto.php"><i class="icon-doc"></i>Solicitar folleto publicitario impreso</a>
+        <a href="baja.php"><i class="icon-logout"></i>Darme de baja</a>
         <a href="salir.php"><i class="icon-logout"></i>Salir</a>
     </nav>
 </main>
