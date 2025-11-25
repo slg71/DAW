@@ -1,68 +1,102 @@
 <?php
+ob_start();
 require_once "sesion_control.php";
 
-// -------------------------------------------------------------
-// Página: mensaje.php (usuario autenticado)
-// -------------------------------------------------------------
-
-// Incluir la conexión a la base de datos
-require_once "conexion_bd.php";
-
-$titulo_pagina = "Mensaje (Usuario) - PI Pisos & Inmuebles";
+$titulo_pagina = "Redactar Mensaje";
 include "paginas_Estilo.php";
 include "header.php";
+require_once "conexion_bd.php";
 
-// Conectar a la base de datos
+// Comprobar usuario
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
+// Recuperar el ID del anuncio al que estamos respondiendo
+$id_anuncio = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$titulo_anuncio = "Desconocido";
+$id_destinatario = 0;
+$nombre_destinatario = "Usuario";
+
 $mysqli = conectarBD();
-
-// Array para almacenar los tipos de mensaje
-$tipos_mensaje = array();
+$error = "";
 
 if ($mysqli) {
-    // Consulta para obtener los tipos de mensaje
-    $sentencia = "SELECT IdTMensaje, NomTMensaje FROM TiposMensajes";
-    
-    if ($resultado = $mysqli->query($sentencia)) {
-        // Recorrer los resultados y almacenarlos en el array
-        while ($fila = $resultado->fetch_assoc()) {
-            $tipos_mensaje[] = $fila;
-        }
+    // Necesitamos saber quién es el dueño del anuncio para enviarle el mensaje a él
+    $sql_datos = "SELECT A.Titulo, U.IdUsuario, U.NomUsuario 
+                  FROM anuncios A 
+                  JOIN usuarios U ON A.Usuario = U.IdUsuario 
+                  WHERE A.IdAnuncio = ?";
+                  
+    $stmt = mysqli_prepare($mysqli, $sql_datos);
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "i", $id_anuncio);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_bind_result($stmt, $tit, $id_dst, $nom_dst);
         
-        // Liberar memoria del resultado
-        $resultado->close();
-    } else {
-        echo "<p>Error al obtener los tipos de mensaje: " . $mysqli->error . "</p>";
+        if (mysqli_stmt_fetch($stmt)) {
+            $titulo_anuncio = $tit;
+            $id_destinatario = $id_dst;
+            $nombre_destinatario = $nom_dst;
+        } else {
+            $error = "El anuncio no existe o ha sido borrado.";
+        }
+        mysqli_stmt_close($stmt);
     }
     
-    // Cerrar la conexión
-    $mysqli->close();
+    // También cargamos los tipos de mensaje para el select
+    $tipos = [];
+    $sql_tipos = "SELECT IdTMensaje, NomTMensaje FROM tiposmensajes";
+    $res_tipos = mysqli_query($mysqli, $sql_tipos);
+    if ($res_tipos) {
+        while($fila = mysqli_fetch_assoc($res_tipos)) {
+            $tipos[] = $fila;
+        }
+    }
+    
+    mysqli_close($mysqli);
+} else {
+    $error = "Error de conexión.";
 }
 ?>
-    <main>
-        <form action="mensaje_enviado.php" method="post">
-            <h2>Enviar mensaje a: usuario_ejemplo</h2>
+
+<main>
+    <section id="bloque">
+        <h2>Contactar con el anunciante</h2>
+        
+        <?php if ($error): ?>
+            <p class="error-campo"><?php echo $error; ?></p>
+            <a href="index.php">Volver</a>
+        <?php else: ?>
+        
+            <p>Vas a enviar un mensaje a <strong><?php echo htmlspecialchars($nombre_destinatario); ?></strong></p>
+            <p>Referente al anuncio: <em><?php echo htmlspecialchars($titulo_anuncio); ?></em></p>
+
+            <form action="mensaje_enviado.php" method="POST">
+                <input type="hidden" name="id_anuncio" value="<?php echo $id_anuncio; ?>">
+                <input type="hidden" name="id_destinatario" value="<?php echo $id_destinatario; ?>">
+                
+                <label for="tipo">Motivo del mensaje:</label>
+                <select name="tipo" id="tipo" required>
+                    <?php foreach ($tipos as $t): ?>
+                        <option value="<?php echo $t['IdTMensaje']; ?>">
+                            <?php echo htmlspecialchars($t['NomTMensaje']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                
+                <label for="texto">Tu mensaje:</label>
+                <textarea name="texto" id="texto" rows="5" required placeholder="Escribe aquí tu consulta..."></textarea>
+                
+                <button type="submit">Enviar Mensaje</button>
+            </form>
             
-            <label for="tipo_mensaje">Tipo de mensaje:</label>
-            <select id="tipo_mensaje" name="tipo_mensaje" required>
-                <option value="">Seleccione un tipo de mensaje</option>
-                <?php
-                // Generar las opciones del select desde la base de datos
-                foreach ($tipos_mensaje as $tipo) {
-                    echo '<option value="' . $tipo['IdTMensaje'] . '">';
-                    echo htmlspecialchars($tipo['NomTMensaje']);
-                    echo '</option>';
-                }
-                ?>
-            </select><br><br>
+        <?php endif; ?>
+    </section>
+</main>
 
-            <label for="mensaje">Escribe tu mensaje:</label>
-            <textarea id="mensaje" name="mensaje" rows="6" cols="50" 
-                      placeholder="Escribe aquí tu mensaje..." 
-                      maxlength="4000" required></textarea><br><br>
-
-            <button type="submit">Enviar mensaje</button>
-        </form>
-    </main>
-<?php include "footer.php"; ?>
-</body>
-</html>
+<?php
+include "footer.php";
+ob_end_flush();
+?>

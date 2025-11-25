@@ -27,6 +27,7 @@ include "paginas_Estilo.php";
     <h3>Opciones</h3>
     <nav aria-label="Menú principal de usuario">
         <a href="inicio_registrado.php"><i class="icon-home"></i>Inicio</a>
+        <a href="configurar.php"><i class="icon-eye"></i>Cambiar estilo</a>
         <a href="mis_anuncios.php"><i class="icon-eye"></i>Visualizar mis anuncios</a>
         <a href="crear_anuncio.php"><i class="icon-plus-outline"></i>Crear un anuncio nuevo</a>
         <a href="mismensajes.php"><i class="icon-mail"></i>Ver mensajes enviados y recibidos</a>

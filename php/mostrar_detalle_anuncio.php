@@ -130,7 +130,6 @@ $galeria_destino = $es_privada ? "ver_fotos_privado.php" : "ver_fotos_publico.ph
                         <a href="mis_anuncios.php">Volver a Mis Anuncios</a>
                     </button>
                 <?php else: ?>
-                    <!-- Botones para visitantes -->
                     <button>
                         <a href="perfil.php?id=<?php echo $anuncio['IdUsuario']; ?>">
                             Ver perfil del anunciante
@@ -138,6 +137,8 @@ $galeria_destino = $es_privada ? "ver_fotos_privado.php" : "ver_fotos_publico.ph
                     </button>
 
                     <form action="mensaje.php" method="get">
+                        <input type="hidden" name="id" value="<?php echo $id; ?>">
+                        
                         <button type="submit">Enviar mensaje</button>
                     </form>
                 <?php endif; ?>

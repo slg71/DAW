@@ -21,7 +21,7 @@ $total_anuncios = 0;
 $total_fotos = 0;
 
 if ($mysqli) {
-    //traer todos los anuncios y luego contar fotos uno a uno
+    // Consulta: traer todos los anuncios y luego contar fotos uno a uno
     $sql = "SELECT IdAnuncio, Titulo FROM anuncios WHERE Usuario = ?";
     $stmt = mysqli_prepare($mysqli, $sql);
     
@@ -29,6 +29,7 @@ if ($mysqli) {
         mysqli_stmt_bind_param($stmt, "i", $id_usuario);
         mysqli_stmt_execute($stmt);
         
+        // Almacenamos el resultado para poder anidar consultas
         mysqli_stmt_store_result($stmt);
         
         mysqli_stmt_bind_result($stmt, $id_anuncio, $titulo_anuncio);
@@ -39,7 +40,7 @@ if ($mysqli) {
         // Recorremos los resultados
         while (mysqli_stmt_fetch($stmt)) {
             
-            // Usamos una conexión NUEVA para evitar conflictos con la consulta principal que está abierta
+            // Usamos una conexión NUEVA para evitar conflictos con la consulta principal
             $link_aux = conectarBD(); 
             
             $sql_fotos = "SELECT COUNT(*) as num FROM fotos WHERE Anuncio = $id_anuncio";
@@ -80,7 +81,7 @@ if ($mysqli) {
         <h2>Confirmar Baja del Servicio</h2>
         <p>Lamentamos que quieras marcharte. Por favor, revisa la información que se eliminará permanentemente.</p>
         
-        <section id="bloque">
+        <article>
             <h3>Resumen de datos a eliminar</h3>
             
             <?php if ($total_anuncios > 0): ?>
@@ -89,12 +90,12 @@ if ($mysqli) {
                 <p>No tienes anuncios publicados.</p>
             <?php endif; ?>
             
-            <hr>
+            <br>
             
             <p><strong>Total Anuncios:</strong> <?php echo $total_anuncios; ?></p>
             <p><strong>Total Fotos:</strong> <?php echo $total_fotos; ?></p>
             <p><em>* También se borrarán todos tus mensajes enviados y recibidos.</em></p>
-        </section>
+        </article>
 
         <form action="respuesta_baja.php" method="POST">
             <p class="error-campo">Esta acción no se puede deshacer.</p>

@@ -19,7 +19,8 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     exit; // Adiós
 }
 
-$id_usuario_perfil = (int)$_GET['id']; // Por si acaso
+$id_usuario_perfil = (int)$_GET['id']; // El dueño del perfil que estamos viendo
+$id_visitante = isset($_SESSION['usuario_id']) ? (int)$_SESSION['usuario_id'] : 0; // Quien está mirando la web
 
 // 3. Conectar a la BD
 $mysqli = conectarBD();
@@ -60,7 +61,7 @@ if (!mysqli_stmt_fetch($stmt_usuario)) {
     exit;
 }
 
-// Cerramos esta sentencia
+// Cerramos esta sentencia para poder hacer otra
 mysqli_stmt_close($stmt_usuario);
 
 ?>
@@ -71,7 +72,6 @@ mysqli_stmt_close($stmt_usuario);
         <?php
             // Ponemos los datos que hemos pillado
             echo "<p>Nombre de usuario: " . htmlspecialchars($nombre_usuario) . "</p>";
-            // La fecha la pongo tal cual sale de la BD, sin formatear ni nada.
             echo "<p>Fecha de incorporación: " . htmlspecialchars($fecha_registro) . "</p>";
             
             if (empty($foto_usuario)) {
@@ -119,16 +119,23 @@ mysqli_stmt_close($stmt_usuario);
             // Recorremos los resultados con fetch
             while (mysqli_stmt_fetch($stmt_anuncios)) {
                 $hay_anuncios = true;
+                
+                // Si soy yo (visitante) el dueño de este perfil -> Voy a ver_anuncio (Privado)
+                // Si soy otro usuario -> Voy a detalle_anuncio (Público)
+                if ($id_visitante == $id_usuario_perfil) {
+                    $enlace_destino = "ver_anuncio.php?id=" . $anuncio_id;
+                } else {
+                    $enlace_destino = "detalle_anuncio.php?id=" . $anuncio_id;
+                }
         ?>
 
-        <article>
-            <a href="ver_anuncio.php?id=<?php echo $anuncio_id; ?>">
-                
+        <article onclick="location.href='<?php echo $enlace_destino; ?>'" style="cursor: pointer;">
+            <a href="<?php echo $enlace_destino; ?>">
                 <img src="../img/<?php echo htmlspecialchars($anuncio_foto); ?>" 
                      alt="Foto: <?php echo htmlspecialchars($anuncio_titulo); ?>">
             </a>
 
-            <h3><?php echo htmlspecialchars($anuncio_titulo); ?></h3>
+            <h3><a href="<?php echo $enlace_destino; ?>"><?php echo htmlspecialchars($anuncio_titulo); ?></a></h3>
             <p>Fecha: <?php echo htmlspecialchars($anuncio_fecha); ?></p>
             <p>Ciudad: <?php echo htmlspecialchars($anuncio_ciudad); ?></p>
             <p>Precio: <?php echo number_format($anuncio_precio, 0, ',', '.'); ?> €</p>
