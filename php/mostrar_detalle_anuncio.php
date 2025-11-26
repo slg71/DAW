@@ -127,6 +127,10 @@ $galeria_destino = $es_privada ? "ver_fotos_privado.php" : "ver_fotos_publico.ph
                         <a href="añadir_foto.php?anuncio_id=<?php echo $id; ?>">Añadir Foto</a>
                     </button>
                     <button>
+                        <a href="modificar_anuncio.php?id=<?php echo $id; ?>">Modificar Anuncio</a>
+                    </button>
+
+                    <button>
                         <a href="mis_anuncios.php">Volver a Mis Anuncios</a>
                     </button>
                 <?php else: ?>

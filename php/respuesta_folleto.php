@@ -11,7 +11,7 @@ if (!isset($_SESSION['usuario_id'])) {
 // Página: respuesta_folleto.php
 // -------------------------------------------------------------
 
-include "funciones_costes.php";
+require_once "funciones_costes.php";
 
 // $mapa_localidades = [
 //     'alicante' => 'Alicante', 'valencia' => 'Valencia', 'albacete' => 'Albacete', 'barcelona' => 'Barcelona'
@@ -79,8 +79,8 @@ $dir_completa = trim($direccion . ($direccion && $numero ? ' Nº ' . $numero : '
 // =============================================================
 
 $titulo_pagina = "Solicitud Registrada";
-include "paginas_Estilo.php";
-include "header.php";
+require_once "paginas_Estilo.php";
+require_once "header.php";
 ?>
 
 <main>
@@ -133,5 +133,5 @@ include "header.php";
 </main>
 
 <?php
-include "footer.php";
+require_once "footer.php";
 ?>

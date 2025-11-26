@@ -1,17 +1,24 @@
 <?php
-require_once "sesion_control.php";
+session_start();
+
+// 1. Control de acceso
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: login.php');
+    exit;
+}
 
 // -------------------------------------------------------------
-// Página: Crear un anuncio nuevo
+// Página: Modificar anuncio existente
 // -------------------------------------------------------------
 
 require_once "conexion_bd.php";
-require_once "validaciones.php"; 
+require_once "validaciones.php"; // Reutilizamos tu lógica de validación
 
 $errores = [];
+$mensaje = "";
 $mysqli = conectarBD();
 
-// obtener la lista de opciones desde la bd
+// --- Función interna para obtener opciones (igual que en crear_anuncio) ---
 function obtener_opciones_bd($mysqli, $tabla, $id_columna, $nombre_columna) {
     $opciones = [];
     if ($mysqli) {
@@ -29,29 +36,39 @@ function obtener_opciones_bd($mysqli, $tabla, $id_columna, $nombre_columna) {
     return $opciones;
 }
 
-// Cargar listas desde la BD
+// Cargar listas auxiliares
 $tipos_anuncios = obtener_opciones_bd($mysqli, 'tiposanuncios', 'IdTAnuncio', 'NomTAnuncio');
 $tipos_viviendas = obtener_opciones_bd($mysqli, 'tiposviviendas', 'IdTVivienda', 'NomTVivienda');
 $paises = obtener_opciones_bd($mysqli, 'paises', 'IdPais', 'NomPais');
 
-// Inicializar variables vacías para el formulario (evita errores de "undefined variable")
-$Titulo = '';
-$Precio = '';
-$TAnuncio = '';
-$TVivienda = '';
-$Pais = '';
-$Ciudad = '';
-$Texto = '';
-$Superficie = '';
-$NHabitaciones = '';
-$NBanyos = '';
-$Planta = '';
-$Anyo = '';
+// Recoger el ID del anuncio a editar (por GET o por POST si se ha enviado el formulario)
+$id_anuncio = isset($_REQUEST['id']) ? intval($_REQUEST['id']) : 0;
 
-// --- PROCESADO DEL FORMULARIO (POST) ---
+// Verificar que el anuncio existe y pertenece al usuario
+if ($id_anuncio > 0) {
+    // Usamos nombres de columnas de tu BD: IdAnuncio y Usuario
+    $stmt = $mysqli->prepare("SELECT * FROM anuncios WHERE IdAnuncio = ? AND Usuario = ?");
+    $stmt->bind_param("ii", $id_anuncio, $_SESSION['usuario_id']);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+    $datos_actuales = $resultado->fetch_assoc();
+    $stmt->close();
+
+    if (!$datos_actuales) {
+        // El anuncio no existe o no es tuyo
+        header("Location: mis_anuncios.php?error=no_encontrado");
+        exit;
+    }
+} else {
+    header("Location: mis_anuncios.php");
+    exit;
+}
+
+// --- Inicialización de variables ---
+// Si venimos de un POST (formulario enviado), usamos los datos enviados.
+// Si venimos de un GET (primera carga), usamos los datos de la BD.
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    
-    // 1. Recogemos los datos (y actualizamos las variables para que el formulario no se borre si hay error)
     $Titulo = trim($_POST['Titulo'] ?? '');
     $Precio = $_POST['Precio'] ?? '';
     $TAnuncio = $_POST['TAnuncio'] ?? '';
@@ -66,61 +83,84 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $NBanyos = $_POST['NBanyos'] ?? null;
     $Planta = $_POST['Planta'] ?? null;
     $Anyo = $_POST['Anyo'] ?? null;
+} else {
+    // Carga inicial desde BD
+    $Titulo = $datos_actuales['Titulo'];
+    $Precio = $datos_actuales['Precio'];
+    $TAnuncio = $datos_actuales['TAnuncio'];
+    $TVivienda = $datos_actuales['TVivienda'];
+    $Pais = $datos_actuales['Pais'];
+    $Ciudad = $datos_actuales['Ciudad'];
+    $Texto = $datos_actuales['Texto'];
+    $Superficie = $datos_actuales['Superficie'];
+    $NHabitaciones = $datos_actuales['NHabitaciones'];
+    $NBanyos = $datos_actuales['NBanyos'];
+    $Planta = $datos_actuales['Planta'];
+    $Anyo = $datos_actuales['Anyo'];
+}
 
-    // 2. Validamos usando tu archivo externo
+// --- PROCESADO DEL FORMULARIO (UPDATE) ---
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    
+    // 1. Validamos usando tu archivo externo
     $errores = validarAnuncio($_POST);
 
-    // 3. Si no hay errores, Insertamos
+    // 2. Si no hay errores, Actualizamos
     if (empty($errores)) {
-        $sql = "INSERT INTO anuncios (Titulo, Precio, Texto, TAnuncio, TVivienda, Pais, Ciudad, 
-                Superficie, NHabitaciones, NBanyos, Planta, Anyo, Usuario, FRegistro) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+        $sql = "UPDATE anuncios SET 
+                    Titulo = ?, Precio = ?, Texto = ?, TAnuncio = ?, TVivienda = ?, 
+                    Pais = ?, Ciudad = ?, Superficie = ?, NHabitaciones = ?, 
+                    NBanyos = ?, Planta = ?, Anyo = ?
+                WHERE IdAnuncio = ? AND Usuario = ?";
         
         $stmt = $mysqli->prepare($sql);
         
-        // Ajustamos los nulos para la BD
+        // Ajustamos los nulos
         $sup = ($Superficie !== "") ? $Superficie : null;
         $hab = ($NHabitaciones !== "") ? $NHabitaciones : null;
         $ban = ($NBanyos !== "") ? $NBanyos : null;
         $pla = ($Planta !== "") ? $Planta : null;
         $any = ($Anyo !== "") ? $Anyo : null;
-        $usuario_id = $_SESSION['usuario_id'];
 
-        // Tipos: s=string, d=double, i=int
-        $stmt->bind_param("sdsiiisdiiiii", 
+        // Tipos: sdsiiisdiiiii + ii (where)
+        $stmt->bind_param("sdsiiisdiiiiii", 
             $Titulo, $Precio, $Texto, $TAnuncio, $TVivienda, $Pais, $Ciudad,
-            $sup, $hab, $ban, $pla, $any, $usuario_id
+            $sup, $hab, $ban, $pla, $any, 
+            $id_anuncio, $_SESSION['usuario_id']
         );
 
         if ($stmt->execute()) {
-            $nuevo_id = $mysqli->insert_id;
-            // Redirigimos a añadir foto
-            header("Location: añadir_foto.php?anuncio_id=$nuevo_id&mensaje=Anuncio creado correctamente");
-            exit;
+            $mensaje = "Modificación realizada, tu anuncio ha sido actualizado.";
+            // Opcional: Redirigir a ver anuncio o quedarse aquí mostrando éxito
+             // header("Location: ver_anuncio.php?id=$id_anuncio");
+             // exit;
         } else {
-            $errores['general'] = "Error al insertar en la base de datos: " . $stmt->error;
+            $errores['general'] = "Error al actualizar en la base de datos: " . $stmt->error;
         }
         $stmt->close();
     }
 }
 $mysqli->close();
 
-$titulo_pagina = "Crear Nuevo Anuncio"; 
+$titulo_pagina = "Modificar Anuncio"; 
 require_once "paginas_Estilo.php";
 require_once "header.php";       
 ?>
     
 <main>
-    <h2>Publica tu Anuncio</h2>
+    <h2>Modificar Anuncio</h2>
     
+
+
     <?php if (isset($errores['general'])): ?>
-        <p style="color: red; font-weight: bold;"><?php echo $errores['general']; ?></p>
+        <p><?php echo $errores['general']; ?></p>
     <?php endif; ?>
 
-    <!-- El formulario se envía a sí mismo -->
-    <form action="crear_anuncio.php" method="POST">
-        
-        <!-- INICIO DEL FORMULARIO INTEGRADO -->
+    <!-- El formulario envía el ID como hidden o en la URL -->
+    <form action="respuesta_anuncios.php" method="POST">
+        <input type="hidden" name="id" value="<?php echo $id_anuncio; ?>">
+
+        <!-- INICIO DEL FORMULARIO INTEGRADO (Igual que crear_anuncio.php) -->
         
         <fieldset>
             <legend>Datos Principales</legend>
@@ -130,7 +170,7 @@ require_once "header.php";
                 <input type="text" id="titulo" name="Titulo" maxlength="255" 
                        value="<?php echo htmlspecialchars($Titulo); ?>" required>
                 <?php if(isset($errores['Titulo'])): ?>
-                    <strong style="color:red;"><?php echo $errores['Titulo']; ?></strong>
+                    <strong><?php echo $errores['Titulo']; ?></strong>
                 <?php endif; ?>
             </p>
 
@@ -139,7 +179,7 @@ require_once "header.php";
                 <input type="number" id="precio" name="Precio" min="0" step="0.01" 
                        value="<?php echo htmlspecialchars($Precio); ?>" required>
                 <?php if(isset($errores['Precio'])): ?>
-                    <strong style="color:red;"><?php echo $errores['Precio']; ?></strong>
+                    <strong><?php echo $errores['Precio']; ?></strong>
                 <?php endif; ?>
             </p>
 
@@ -155,7 +195,7 @@ require_once "header.php";
                     <?php endforeach; ?>
                 </select>
                 <?php if(isset($errores['TAnuncio'])): ?>
-                    <strong style="color:red;"><?php echo $errores['TAnuncio']; ?></strong>
+                    <strong><?php echo $errores['TAnuncio']; ?></strong>
                 <?php endif; ?>
             </p>
 
@@ -171,7 +211,7 @@ require_once "header.php";
                     <?php endforeach; ?>
                 </select>
                 <?php if(isset($errores['TVivienda'])): ?>
-                    <strong style="color:red;"><?php echo $errores['TVivienda']; ?></strong>
+                    <strong><?php echo $errores['TVivienda']; ?></strong>
                 <?php endif; ?>
             </p>
         </fieldset>
@@ -190,7 +230,7 @@ require_once "header.php";
                     <?php endforeach; ?>
                 </select>
                 <?php if(isset($errores['Pais'])): ?>
-                    <strong style="color:red;"><?php echo $errores['Pais']; ?></strong>
+                    <strong><?php echo $errores['Pais']; ?></strong>
                 <?php endif; ?>
             </p>
 
@@ -207,7 +247,7 @@ require_once "header.php";
                 <label for="texto">Descripción detallada (*):</label>
                 <textarea id="texto" name="Texto" rows="6" required><?php echo htmlspecialchars($Texto); ?></textarea>
                 <?php if(isset($errores['Texto'])): ?>
-                    <strong style="color:red;"><?php echo $errores['Texto']; ?></strong>
+                    <strong><?php echo $errores['Texto']; ?></strong>
                 <?php endif; ?>
             </p>
         </fieldset>
@@ -220,7 +260,7 @@ require_once "header.php";
                 <input type="number" id="superficie" name="Superficie" min="0" step="0.01" 
                        value="<?php echo htmlspecialchars($Superficie); ?>">
                 <?php if(isset($errores['Superficie'])): ?>
-                    <strong style="color:red;"><?php echo $errores['Superficie']; ?></strong>
+                    <strong><?php echo $errores['Superficie']; ?></strong>
                 <?php endif; ?>
             </p>
 
@@ -229,7 +269,7 @@ require_once "header.php";
                 <input type="number" id="habitaciones" name="NHabitaciones" min="0" 
                        value="<?php echo htmlspecialchars($NHabitaciones); ?>">
                 <?php if(isset($errores['NHabitaciones'])): ?>
-                    <strong style="color:red;"><?php echo $errores['NHabitaciones']; ?></strong>
+                    <strong><?php echo $errores['NHabitaciones']; ?></strong>
                 <?php endif; ?>
             </p>
 
@@ -255,8 +295,8 @@ require_once "header.php";
         <!-- FIN DEL FORMULARIO INTEGRADO -->
 
         <p class="botones-form">
-            <button type="submit">Publicar Anuncio</button>
-            <button type="reset">Limpiar Formulario</button>
+            <button type="submit">Guardar Cambios</button>
+            <button type="button"><a href="mis_anuncios.php">Cancelar</a></button>
         </p>
         
     </form>

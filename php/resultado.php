@@ -9,8 +9,29 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-include "conexion_bd.php";
-require_once "funciones_bd.php";
+require_once "conexion_bd.php";
+
+function obtener_opciones_bd($tabla, $id_columna, $nombre_columna) {
+    $opciones = [];
+    $mysqli = conectarBD();
+    if (!$mysqli) return $opciones;
+
+    $query = "SELECT $id_columna, $nombre_columna FROM $tabla ORDER BY $nombre_columna";
+    
+    if ($resultado = $mysqli->query($query)) {
+        while ($fila = $resultado->fetch_assoc()) {
+            $opciones[] = [
+                'id' => $fila[$id_columna],
+                'nombre' => $fila[$nombre_columna]
+            ];
+        }
+        $resultado->free();
+    } else {
+        error_log("Error al consultar la tabla $tabla: " . $mysqli->error);
+    }
+    $mysqli->close();
+    return $opciones;
+}
 
 
 // --- OBTENCION DE DATOS DEL FORMULARIO ---
@@ -147,8 +168,8 @@ if ($mysqli) {
 // Incluir plantillas
 // -------------------------------------------------------------
 
-include "paginas_Estilo.php";
-include "header.php";
+require_once "paginas_Estilo.php";
+require_once "header.php";
 ?>
 
 <main class="resultados">
@@ -250,5 +271,5 @@ include "header.php";
 </main>
 
 <?php
-include "footer.php";
+require_once "footer.php";
 ?>
