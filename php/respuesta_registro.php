@@ -144,7 +144,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // Tipos: s=string, i=integer
         // Orden: Nom(s), Clave(s), Email(s), Sexo(i), Nac(s), Ciudad(s), Pais(i), Foto(s), Estilo(i)
         // Total: sssisissi
-        mysqli_stmt_bind_param($stmt_ins, "sssisissi", 
+        mysqli_stmt_bind_param($stmt_ins, "sssissisi", 
             $usuario, $clave_hash, $email, $sexo_num, $nac, $ciudad, $pais, $foto_defecto, $estilo_defecto
         );
 

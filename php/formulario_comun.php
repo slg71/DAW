@@ -21,12 +21,9 @@
 <main id="registro">
     <h2><?php echo htmlspecialchars($titulo_formulario); ?></h2>
 
-    <?php 
-    // En "mis datos", el enunciado ponía un texto extra
-    if (!$es_registro) {
-        echo "<p>Aquí puedes ver tus datos. La modificación se activará en la próxima práctica.</p>";
-    }
-    ?>
+    <?php if (!$es_registro): ?>
+        <p>Puedes modificar tus datos. Deja la contraseña nueva vacía si no quieres cambiarla.</p>
+    <?php endif; ?>
 
     <form action="<?php echo htmlspecialchars($action_url); ?>" method="post" enctype="multipart/form-data" novalidate>
 
@@ -49,9 +46,27 @@
             <?php if (isset($errores["pwd2"])): ?>
                 <span class="error-campo"><?php echo htmlspecialchars($errores["pwd2"]); ?></span>
             <?php endif; ?>
-        <?php else: // En "mis datos", mostrar el campo deshabilitado como en el original ?>
-            <label for="pwd">Contraseña</label>
-            <input type="password" id="pwd" name="pwd" value="********" disabled>
+        <?php else: ?>
+            <label for="pwd_nueva">Nueva Contraseña (Opcional)</label>
+            <input type="password" id="pwd_nueva" name="pwd_nueva" placeholder="Dejar vacío para mantener la actual">
+            <?php if (isset($errores["pwd_nueva"])): ?>
+                <span class="error-campo"><?php echo htmlspecialchars($errores["pwd_nueva"]); ?></span>
+            <?php endif; ?>
+
+            <label for="pwd_nueva2">Repetir Nueva Contraseña</label>
+            <input type="password" id="pwd_nueva2" name="pwd_nueva2">
+            <?php if (isset($errores["pwd_nueva2"])): ?>
+                <span class="error-campo"><?php echo htmlspecialchars($errores["pwd_nueva2"]); ?></span>
+            <?php endif; ?>
+
+            <hr>
+            
+            <label for="pwd_actual" class="required">Contraseña ACTUAL (Para confirmar cambios)</label>
+            <input type="password" id="pwd_actual" name="pwd_actual">
+            <?php if (isset($errores["pwd_actual"])): ?>
+                <span class="error-campo"><?php echo htmlspecialchars($errores["pwd_actual"]); ?></span>
+            <?php endif; ?>
+
         <?php endif; ?>
 
 
@@ -111,12 +126,8 @@
         <?php endif; ?>
 
 
-        <?php if ($es_registro): // Botones para registro ?>
-            <button type="submit">Confirmar</button>
-            <button type="reset">Limpiar</button>
-        <?php else: // Botón para "mis datos" (deshabilitado) ?>
-            <button type="submit" disabled>Modificar (No disponible)</button>
-        <?php endif; ?>
+        <button type="submit"><?php echo $es_registro ? "Confirmar Registro" : "Guardar Cambios"; ?></button>
+        <?php if ($es_registro): ?><button type="reset">Limpiar</button><?php endif; ?>
 
     </form>
 </main>

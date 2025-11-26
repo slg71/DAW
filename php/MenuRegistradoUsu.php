@@ -27,8 +27,10 @@ include "paginas_Estilo.php";
     <h3>Opciones</h3>
     <nav aria-label="Menú principal de usuario">
         <a href="inicio_registrado.php"><i class="icon-home"></i>Inicio</a>
+        <a href="mis_datos.php"><i class="icon-home"></i>Mis Datos</a>
         <a href="configurar.php"><i class="icon-eye"></i>Cambiar estilo</a>
         <a href="mis_anuncios.php"><i class="icon-eye"></i>Visualizar mis anuncios</a>
+        <a href="añadir_foto.php"><i class="icon-plus-outline"></i>Añadir foto a anuncio</a>
         <a href="crear_anuncio.php"><i class="icon-plus-outline"></i>Crear un anuncio nuevo</a>
         <a href="mismensajes.php"><i class="icon-mail"></i>Ver mensajes enviados y recibidos</a>
         <a href="solicitar_folleto.php"><i class="icon-doc"></i>Solicitar folleto publicitario impreso</a>
