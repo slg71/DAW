@@ -9,7 +9,7 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-include "conexion_bd.php";
+require_once "conexion_bd.php";
 
 function obtener_opciones_bd($tabla, $id_columna, $nombre_columna) {
     $opciones = [];
@@ -168,8 +168,8 @@ if ($mysqli) {
 // Incluir plantillas
 // -------------------------------------------------------------
 
-include "paginas_Estilo.php";
-include "header.php";
+require_once "paginas_Estilo.php";
+require_once "header.php";
 ?>
 
 <main class="resultados">
@@ -271,5 +271,5 @@ include "header.php";
 </main>
 
 <?php
-include "footer.php";
+require_once "footer.php";
 ?>

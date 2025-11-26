@@ -54,7 +54,10 @@ main {
 }
 
 /* --- Tipografía y Elementos Comunes --- */
-
+.cambiar{
+    text-decoration: none;
+    color: var(--color_sec);
+}
 h1 {
     font-size: clamp(2rem, 7vw, 3.5rem);
     margin: 5px 0 5px 0;
@@ -125,6 +128,8 @@ dialog button:active {
     font-size: 0.9rem;
     margin-bottom: 8px;
 }
+
+
 
 /*=================================DISEÑO DEL ELEMENTO INFORMACIÓN SIMPLE=================================*/
 
@@ -207,6 +212,29 @@ nav img { /* DISEÑO DE IMAGEN DE PERFIL */
 }
 
 /*=================================DISEÑO DE BOTONES Y CAMPOS DE ENTRADA=================================*/
+.boton{
+    background-color: var(--blanco);
+    color: var(--color_sec);
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer; /* Cambia el cursor al pasar por encima */
+    transition: all 0.3s ease; /* Animación suave */
+}
+.btn-aceptar {
+    background-color: red;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+    border-radius: 4px;
+}
+
+.btn-aceptar:hover {
+    transform: scale(1.08);
+}
 
 button { /* DISEÑO DE LA SECCION DE BUSQUEDA/BOTONES */
     background-color: var(--blanco);
@@ -217,6 +245,13 @@ button { /* DISEÑO DE LA SECCION DE BUSQUEDA/BOTONES */
     font-weight: bold;
     cursor: pointer; /* Cambia el cursor al pasar por encima */
     transition: all 0.3s ease; /* Animación suave */
+}
+
+button {
+    >a {
+        text-decoration: none;
+        color: var(--color_sec);
+    }
 }
 
 /* Efecto al pasar el cursor */
@@ -478,6 +513,36 @@ footer p {
     margin:0;
 }
 
+.exito {
+    background-color: var(--color_sec);
+    color: var(--blanco);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.exito p,
+.exito h3,
+.exito a {
+    color: var(--blanco);
+}
+
+
+.ver {
+    background-color: var(--blanco);
+    color: var(--color_sec);
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer; /* Cambia el cursor al pasar por encima */
+    transition: all 0.3s ease; /* Animación suave */
+    >a {
+        text-decoration: none;
+        color: var(--blanco);
+    }
+
+}
+
 
 /*=================================MEDIA QUERIES=================================*/
 
@@ -700,6 +765,19 @@ footer p {
         top: 1rem;
         align-self: start;
     }
+    .exito {
+    background-color: var(--color_sec);
+    color: var(--blanco);
+    padding: 20px;
+    border-radius: 10px;
+    }
+
+    .exito p,
+    .exito h3,
+    .exito a {
+        color: var(--blanco);
+    }
+
 
 
 }

@@ -9,7 +9,7 @@
         if (isset($_SESSION['usuario_id'])) {
         ?>
             <a href="inicio_registrado.php"><i class="icon-home"></i>Inicio</a>
-            <a href="../publicar.html"><i class="icon-upload"></i>Publicar anuncio</a>
+            <a href="crear_anuncio.php"><i class="icon-upload"></i>Publicar anuncio</a>
             <a href="MenuRegistradoUsu.php"><i class="icon-menu"></i>Menú de Usuario</a>
             <a href="mis_datos.php"><img src="../img/perfil.jpg" alt="Foto de Perfil">Perfil</a>
         <?php
