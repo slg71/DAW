@@ -18,7 +18,7 @@ function obtener_opciones_bd($mysqli, $tabla, $id_columna, $nombre_columna) {
         $query = "SELECT $id_columna, $nombre_columna FROM $tabla ORDER BY $nombre_columna ASC";
         if ($result = $mysqli->query($query)) {
             while ($row = $result->fetch_assoc()) {
-                $opciones[] = [
+                $opciones[] = [//guardamos los resultados
                     'id' => $row[$id_columna],
                     'nombre' => $row[$nombre_columna]
                 ];
@@ -34,7 +34,7 @@ $tipos_anuncios = obtener_opciones_bd($mysqli, 'tiposanuncios', 'IdTAnuncio', 'N
 $tipos_viviendas = obtener_opciones_bd($mysqli, 'tiposviviendas', 'IdTVivienda', 'NomTVivienda');
 $paises = obtener_opciones_bd($mysqli, 'paises', 'IdPais', 'NomPais');
 
-// Inicializar variables vacías para el formulario (evita errores de "undefined variable")
+// inicializar variables del formulario
 $Titulo = '';
 $Precio = '';
 $TAnuncio = '';
@@ -48,10 +48,10 @@ $NBanyos = '';
 $Planta = '';
 $Anyo = '';
 
-// --- PROCESADO DEL FORMULARIO (POST) ---
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
-    // 1. Recogemos los datos (y actualizamos las variables para que el formulario no se borre si hay error)
+    // Recogemos los datos
     $Titulo = trim($_POST['Titulo'] ?? '');
     $Precio = $_POST['Precio'] ?? '';
     $TAnuncio = $_POST['TAnuncio'] ?? '';
@@ -67,10 +67,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $Planta = $_POST['Planta'] ?? null;
     $Anyo = $_POST['Anyo'] ?? null;
 
-    // 2. Validamos usando tu archivo externo
-    $errores = validarAnuncio($_POST);
+    $errores = validarAnuncio($_POST);//validamos los datos
 
-    // 3. Si no hay errores, Insertamos
+    // insertamos en la bd
     if (empty($errores)) {
         $sql = "INSERT INTO anuncios (Titulo, Precio, Texto, TAnuncio, TVivienda, Pais, Ciudad, 
                 Superficie, NHabitaciones, NBanyos, Planta, Anyo, Usuario, FRegistro) 
@@ -114,146 +113,127 @@ require_once "header.php";
     <h2>Publica tu Anuncio</h2>
     
     <?php if (isset($errores['general'])): ?>
-        <p style="color: red; font-weight: bold;"><?php echo $errores['general']; ?></p>
+        <p><?php echo $errores['general']; ?></p>
     <?php endif; ?>
 
-    <!-- El formulario se envía a sí mismo -->
+    <!-- El formulario se envia a si mismo -->
     <form action="crear_anuncio.php" method="POST">
-        
-        <!-- INICIO DEL FORMULARIO INTEGRADO -->
-        
+                
         <fieldset>
             <legend>Datos Principales</legend>
 
-            <p>
-                <label for="titulo">Título del anuncio (*):</label>
-                <input type="text" id="titulo" name="Titulo" maxlength="255" 
-                       value="<?php echo htmlspecialchars($Titulo); ?>" required>
-                <?php if(isset($errores['Titulo'])): ?>
-                    <strong style="color:red;"><?php echo $errores['Titulo']; ?></strong>
-                <?php endif; ?>
-            </p>
+            <label for="titulo">Título del anuncio (*):</label>
+            <input type="text" id="titulo" name="Titulo" maxlength="255" 
+                   value="<?php echo htmlspecialchars($Titulo); ?>" required>
+            <?php if(isset($errores['Titulo'])): ?>
+                <strong><?php echo $errores['Titulo']; ?></strong>
+            <?php endif; ?>
 
-            <p>
-                <label for="precio">Precio (€) (*):</label>
-                <input type="number" id="precio" name="Precio" min="0" step="0.01" 
-                       value="<?php echo htmlspecialchars($Precio); ?>" required>
-                <?php if(isset($errores['Precio'])): ?>
-                    <strong style="color:red;"><?php echo $errores['Precio']; ?></strong>
-                <?php endif; ?>
-            </p>
-
-            <p>
-                <label for="tipo_anuncio">Tipo de Operación (*):</label>
-                <select id="tipo_anuncio" name="TAnuncio" required>
-                    <option value="" disabled <?php echo empty($TAnuncio) ? 'selected' : ''; ?>>-- Seleccionar --</option>
-                    <?php foreach ($tipos_anuncios as $tipo): ?>
-                        <option value="<?php echo $tipo['id']; ?>" 
-                            <?php echo ($TAnuncio == $tipo['id']) ? 'selected' : ''; ?>>
-                            <?php echo htmlspecialchars($tipo['nombre']); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                <?php if(isset($errores['TAnuncio'])): ?>
-                    <strong style="color:red;"><?php echo $errores['TAnuncio']; ?></strong>
-                <?php endif; ?>
-            </p>
-
-            <p>
-                <label for="tipo_vivienda">Tipo de Vivienda (*):</label>
-                <select id="tipo_vivienda" name="TVivienda" required>
-                    <option value="" disabled <?php echo empty($TVivienda) ? 'selected' : ''; ?>>-- Seleccionar --</option>
-                    <?php foreach ($tipos_viviendas as $vivienda): ?>
-                        <option value="<?php echo $vivienda['id']; ?>" 
-                            <?php echo ($TVivienda == $vivienda['id']) ? 'selected' : ''; ?>>
-                            <?php echo htmlspecialchars($vivienda['nombre']); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                <?php if(isset($errores['TVivienda'])): ?>
-                    <strong style="color:red;"><?php echo $errores['TVivienda']; ?></strong>
-                <?php endif; ?>
-            </p>
+            <label for="precio">Precio (€) (*):</label>
+            <input type="number" id="precio" name="Precio" min="0" step="0.01" 
+                   value="<?php echo htmlspecialchars($Precio); ?>" required>
+            <?php if(isset($errores['Precio'])): ?>
+                <strong><?php echo $errores['Precio']; ?></strong>
+            <?php endif; ?>
+ 
+            <label for="tipo_anuncio">Tipo de Operación (*):</label>
+            <select id="tipo_anuncio" name="TAnuncio" required>
+                <option value="" disabled <?php echo empty($TAnuncio) ? 'selected' : ''; ?>>-- Seleccionar --</option>                    <?php foreach ($tipos_anuncios as $tipo): ?>
+                    <option value="<?php echo $tipo['id']; ?>" 
+                        <?php echo ($TAnuncio == $tipo['id']) ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($tipo['nombre']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <?php if(isset($errores['TAnuncio'])): ?>
+                <strong><?php echo $errores['TAnuncio']; ?></strong>
+            <?php endif; ?>
+ 
+            <label for="tipo_vivienda">Tipo de Vivienda (*):</label>
+            <select id="tipo_vivienda" name="TVivienda" required>
+                <option value="" disabled <?php echo empty($TVivienda) ? 'selected' : ''; ?>>-- Seleccionar --</option>
+                <?php foreach ($tipos_viviendas as $vivienda): ?>
+                    <option value="<?php echo $vivienda['id']; ?>" 
+                        <?php echo ($TVivienda == $vivienda['id']) ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($vivienda['nombre']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <?php if(isset($errores['TVivienda'])): ?>
+                <strong><?php echo $errores['TVivienda']; ?></strong>
+            <?php endif; ?>
+            
         </fieldset>
 
         <fieldset>
             <legend>Ubicación</legend>
-            <p>
-                <label for="pais">País (*):</label>
-                <select id="pais" name="Pais" required>
-                    <option value="" disabled <?php echo empty($Pais) ? 'selected' : ''; ?>>-- Seleccionar --</option>
-                    <?php foreach ($paises as $p): ?>
-                        <option value="<?php echo $p['id']; ?>" 
-                            <?php echo ($Pais == $p['id']) ? 'selected' : ''; ?>>
-                            <?php echo htmlspecialchars($p['nombre']); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                <?php if(isset($errores['Pais'])): ?>
-                    <strong style="color:red;"><?php echo $errores['Pais']; ?></strong>
-                <?php endif; ?>
-            </p>
+            
+            <label for="pais">País (*):</label>
+            <select id="pais" name="Pais" required>
+                <option value="" disabled <?php echo empty($Pais) ? 'selected' : ''; ?>>-- Seleccionar --</option>
+                <?php foreach ($paises as $p): ?>
+                    <option value="<?php echo $p['id']; ?>" 
+                        <?php echo ($Pais == $p['id']) ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($p['nombre']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <?php if(isset($errores['Pais'])): ?>
+                <strong><?php echo $errores['Pais']; ?></strong>
+            <?php endif; ?>
 
-            <p>
-                <label for="ciudad">Ciudad:</label>
-                <input type="text" id="ciudad" name="Ciudad" maxlength="255" 
-                       value="<?php echo htmlspecialchars($Ciudad); ?>">
-            </p>
+        
+            <label for="ciudad">Ciudad:</label>
+            <input type="text" id="ciudad" name="Ciudad" maxlength="255" 
+                    value="<?php echo htmlspecialchars($Ciudad); ?>">
+            
         </fieldset>
 
         <fieldset>
             <legend>Descripción</legend>
-            <p>
-                <label for="texto">Descripción detallada (*):</label>
-                <textarea id="texto" name="Texto" rows="6" required><?php echo htmlspecialchars($Texto); ?></textarea>
-                <?php if(isset($errores['Texto'])): ?>
-                    <strong style="color:red;"><?php echo $errores['Texto']; ?></strong>
-                <?php endif; ?>
-            </p>
+            
+            <label for="texto">Descripción detallada (*):</label>
+            <textarea id="texto" name="Texto" rows="6" required><?php echo htmlspecialchars($Texto); ?></textarea>
+            <?php if(isset($errores['Texto'])): ?>
+                <strong><?php echo $errores['Texto']; ?></strong>
+            <?php endif; ?>
+            
         </fieldset>
 
         <fieldset>
             <legend>Características (Opcional)</legend>
+                        
+            <label for="superficie">Superficie (m²):</label>
+            <input type="number" id="superficie" name="Superficie" min="0" step="0.01" 
+                   value="<?php echo htmlspecialchars($Superficie); ?>">
+            <?php if(isset($errores['Superficie'])): ?>
+                <strong><?php echo $errores['Superficie']; ?></strong>
+            <?php endif; ?>
             
-            <p>
-                <label for="superficie">Superficie (m²):</label>
-                <input type="number" id="superficie" name="Superficie" min="0" step="0.01" 
-                       value="<?php echo htmlspecialchars($Superficie); ?>">
-                <?php if(isset($errores['Superficie'])): ?>
-                    <strong style="color:red;"><?php echo $errores['Superficie']; ?></strong>
-                <?php endif; ?>
-            </p>
 
-            <p>
-                <label for="habitaciones">Habitaciones:</label>
-                <input type="number" id="habitaciones" name="NHabitaciones" min="0" 
-                       value="<?php echo htmlspecialchars($NHabitaciones); ?>">
-                <?php if(isset($errores['NHabitaciones'])): ?>
-                    <strong style="color:red;"><?php echo $errores['NHabitaciones']; ?></strong>
-                <?php endif; ?>
-            </p>
+            
+            <label for="habitaciones">Habitaciones:</label>
+            <input type="number" id="habitaciones" name="NHabitaciones" min="0" 
+                   value="<?php echo htmlspecialchars($NHabitaciones); ?>">
+            <?php if(isset($errores['NHabitaciones'])): ?>
+                <strong><?php echo $errores['NHabitaciones']; ?></strong>
+            <?php endif; ?>
+  
+            <label for="banyos">Baños:</label>
+            <input type="number" id="banyos" name="NBanyos" min="0" 
+                   value="<?php echo htmlspecialchars($NBanyos); ?>">
+            
+            <label for="planta">Planta:</label>
+            <input type="number" id="planta" name="Planta" 
+                    value="<?php echo htmlspecialchars($Planta); ?>">
 
-            <p>
-                <label for="banyos">Baños:</label>
-                <input type="number" id="banyos" name="NBanyos" min="0" 
-                       value="<?php echo htmlspecialchars($NBanyos); ?>">
-            </p>
 
-            <p>
-                <label for="planta">Planta:</label>
-                <input type="number" id="planta" name="Planta" 
-                       value="<?php echo htmlspecialchars($Planta); ?>">
-            </p>
-
-            <p>
-                <label for="anyo">Año Construcción:</label>
-                <input type="number" id="anyo" name="Anyo" min="1900" max="2099" 
-                       value="<?php echo htmlspecialchars($Anyo); ?>">
-            </p>
+            <label for="anyo">Año Construcción:</label>
+            <input type="number" id="anyo" name="Anyo" min="1900" max="2099" 
+                   value="<?php echo htmlspecialchars($Anyo); ?>">
+            
         </fieldset>
         
-        <!-- FIN DEL FORMULARIO INTEGRADO -->
-
         <p class="botones-form">
             <button type="submit">Publicar Anuncio</button>
             <button type="reset">Limpiar Formulario</button>

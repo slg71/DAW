@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// 1. Control de acceso
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
     exit;
@@ -15,7 +14,7 @@ require_once "paginas_Estilo.php";
 include "header.php";
 
 $errores = [];
-$Titulo = ""; // Inicializamos variable para el mensaje
+$Titulo = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $mysqli = conectarBD();
@@ -46,18 +45,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $pla = ($Planta !== "") ? $Planta : null;
     $any = ($Anyo !== "") ? $Anyo : null;
 
-    // 1. Validar
-    $errores = validarAnuncio($_POST);
+    $errores = validarAnuncio($_POST);//validaciones.php
 
-    // 2. Procesar si no hay errores
     if (empty($errores)) {
         
         if ($id_anuncio > 0) {
             // =================================================
-            // CASO MODIFICAR (UPDATE)
+            // MODIFICAR
             // =================================================
             
-            // Verificar propiedad (Seguridad)
+            //verificamos que es el dueño del anuncio
             $stmt_check = $mysqli->prepare("SELECT IdAnuncio FROM anuncios WHERE IdAnuncio = ? AND Usuario = ?");
             $stmt_check->bind_param("ii", $id_anuncio, $_SESSION['usuario_id']);
             $stmt_check->execute();
@@ -88,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         } else {
             // =================================================
-            // CASO CREAR (INSERT)
+            // CREAR
             // =================================================
 
             $sql = "INSERT INTO anuncios (Titulo, Precio, Texto, TAnuncio, TVivienda, Pais, Ciudad, 
@@ -107,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->close();
         }
 
-        // Si no hay errores → redirigir a anuncios_exito.php
+        // Si no hay errores anuncios_exito.php
         if (empty($errores)) {
             $mysqli->close();
             header("Location: anuncios_exito.php");

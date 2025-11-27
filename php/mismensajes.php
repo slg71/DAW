@@ -2,20 +2,16 @@
 require_once "sesion_control.php";
 
 // -------------------------------------------------------------
-// Página: mismensajes.php (usuario autenticado)
+// Pagina: mismensajes.php
 // -------------------------------------------------------------
 
-// Incluir la conexión a la base de datos
 require_once "conexion_bd.php";
 
 $titulo_pagina = "Mis Mensajes (Usuario) - PI Pisos & Inmuebles";
-include "paginas_Estilo.php";
-include "header.php";
+require_once "paginas_Estilo.php";
+require_once "header.php";
 
-// Obtener el ID del usuario actual de la sesión
 $usuario_id = $_SESSION['usuario_id'];
-
-// Conectar a la base de datos
 $mysqli = conectarBD();
 
 if (!$mysqli) {
@@ -111,13 +107,13 @@ if (!$mysqli) {
                 }
                 $sentencia->close();
                 
-                // Cerrar la conexión
+                // Cerrar la conexion a la base de datos
                 $mysqli->close();
                 ?>
             </section>
         </section>
     </main>
 
-<?php include "footer.php"; ?>
+<?php require_once "footer.php"; ?>
 </body>
 </html>

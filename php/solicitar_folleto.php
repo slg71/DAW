@@ -1,6 +1,6 @@
 <?php
 // -------------------------------------------------------------
-// Página: solicitar_folleto.php 
+// Pagina: solicitar_folleto.php 
 // -------------------------------------------------------------
 
 require_once "sesion_control.php";
@@ -69,7 +69,7 @@ function obtener_anuncios_usuario($session_value) {
 // Obtenemos la lista de anuncios
 $lista_anuncios = obtener_anuncios_usuario($session_value);
 
-// Función para generar la tabla de costes
+// Funcon para generar la tabla de costes
 function generar_tabla_costes() {
     $html = '<table class="tabla-costes-dinamica">';
     $html .= '<thead>';
@@ -121,7 +121,7 @@ function generar_tabla_costes() {
 }
 
 // =============================================================
-// Estructura de la página Solicitar Folleto
+// Estructura de la pagina Solicitar Folleto
 // =============================================================
 
 $titulo_pagina = "Solicitud folleto";
@@ -157,7 +157,6 @@ include "header.php";
     <p>Rellene el siguiente formulario aportando todos los detalles para confeccionar su folleto publicitario.</p>
     <p>Los campos marcados con un asterisco (*) son obligatorios</p>
 
-    <!-- FORMULARIO SIN VALIDACIÓN HTML5 NI JAVASCRIPT -->
     <form id="form-folleto" class="form-folleto" action="respuesta_folleto.php" method="POST" novalidate>
       
       <label for="texto_adicional">Texto Adicional</label>
@@ -218,7 +217,7 @@ include "header.php";
         // Rellenamos el select con los anuncios obtenidos de la BD
         if (!empty($lista_anuncios)) {
             foreach ($lista_anuncios as $anuncio) {
-                // El 'value' será el ID del anuncio y el texto la descripción o titulo
+                // El 'value' será el ID del anuncio y el texto la descripcion o titulo
                 echo '<option value="' . htmlspecialchars($anuncio['id']) . '">' . htmlspecialchars($anuncio['titulo']) . '</option>';
             }
         } else {

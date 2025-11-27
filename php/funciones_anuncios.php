@@ -11,11 +11,11 @@ function obtener_id_usuario_numerico($session_value) {
 
     $id_usuario_numerico = null;
 
-    // Si es un numero lo usamos como IdUsuario.
+    // Si es un numero lo usamos como IdUsuario
     if (is_numeric($session_value)) {
         $id_usuario_numerico = (int)$session_value;
     } else {
-        // Es el NomUsuario y buscamos su IdUsuario en la BD, consultamos
+        // Es el NomUsuario y buscamos su IdUsuario en la BD
         $query_id = "SELECT IdUsuario FROM usuarios WHERE NomUsuario = ?";
         if ($stmt_id = $mysqli->prepare($query_id)) {
             $stmt_id->bind_param("s", $session_value);
@@ -25,8 +25,6 @@ function obtener_id_usuario_numerico($session_value) {
                 $id_usuario_numerico = $row_id['IdUsuario'];
             }
             $stmt_id->close();
-        } else {
-             error_log("Error al preparar la consulta de IdUsuario: " . $mysqli->error);
         }
     }
     $mysqli->close();
@@ -39,7 +37,6 @@ function obtener_anuncios_usuario($id_usuario) {
 
     if (!$mysqli) return $anuncios;
 
-    // Consulta para obtener los datos del listado
     $query = "
         SELECT 
             A.IdAnuncio, A.Titulo, A.FPrincipal, A.Precio, A.FRegistro,
@@ -59,10 +56,7 @@ function obtener_anuncios_usuario($id_usuario) {
         while ($row = $result->fetch_assoc()) {
             $anuncios[] = $row;
         }
-        
         $stmt->close();
-    } else {
-        error_log("Error al preparar la consulta de anuncios de usuario: " . $mysqli->error);
     }
     
     $mysqli->close();
@@ -75,17 +69,16 @@ function obtener_anuncios_usuario($id_usuario) {
 
 function obtener_detalle_y_fotos_anuncio($id_anuncio) {
     $mysqli = conectarBD();
-    if (!$mysqli) {
-        return null;
-    }
+    if (!$mysqli) return null;
 
     $datos_anuncio = [];
     $fotos = [];
 
-    // obtenemos la informacion del anuncio
+    // Obtenemos la informacion del anuncio
     $query_anuncio = "
         SELECT 
-            A.IdAnuncio, A.Titulo, A.Precio, A.Texto, A.FPrincipal, A.Usuario, A.Superficie, A.NHabitaciones, A.NBanyos, A.Planta, A.Anyo, A.FRegistro,
+            A.IdAnuncio, A.Titulo, A.Precio, A.Texto, A.FPrincipal, A.Usuario, 
+            A.Superficie, A.NHabitaciones, A.NBanyos, A.Planta, A.Anyo, A.FRegistro,
             TA.NomTAnuncio, TV.NomTVivienda, P.NomPais, U.NomUsuario, U.IdUsuario
         FROM anuncios A
         JOIN tiposanuncios TA ON A.TAnuncio = TA.IdTAnuncio
@@ -104,10 +97,6 @@ function obtener_detalle_y_fotos_anuncio($id_anuncio) {
             $datos_anuncio = $result_anuncio->fetch_assoc();
         }
         $stmt_anuncio->close();
-    } else {
-        error_log("Error al preparar la consulta de detalle del anuncio: " . $mysqli->error);
-        $mysqli->close();
-        return null;
     }
     
     if (empty($datos_anuncio)) {
@@ -115,36 +104,30 @@ function obtener_detalle_y_fotos_anuncio($id_anuncio) {
         return null;
     }
 
-
-    // obtenemos listas de fotos secundarias del anuncio
-    $query_fotos = "
-        SELECT IdFoto, Foto, Alternativo, Titulo
-        FROM fotos
-        WHERE Anuncio = ?
-    ";
+    // Obtenemos lista de fotos secundarias
+    $query_fotos = "SELECT IdFoto, Foto, Alternativo, Titulo FROM fotos WHERE Anuncio = ?";
     
     if ($stmt_fotos = $mysqli->prepare($query_fotos)) {
         $stmt_fotos->bind_param("i", $id_anuncio);
         $stmt_fotos->execute();
         $result_fotos = $stmt_fotos->get_result();
-        
         while ($row = $result_fotos->fetch_assoc()) {
             $fotos[] = $row;
         }
         $stmt_fotos->close();
-    } else {
-        error_log("Error al preparar la consulta de fotos: " . $mysqli->error);
     }
     
     $mysqli->close();
     
-    // Agregamos la foto principal al inicio de la lista de fotos
-    array_unshift($fotos, [
-        'IdFoto' => 0, 
-        'Foto' => $datos_anuncio['FPrincipal'],
-        'Alternativo' => $datos_anuncio['Titulo'] . ' - Principal',
-        'Titulo' => 'Foto Principal'
-    ]);
+    // Si hay foto principal, la agregamos con IdFoto = 0
+    if (!empty($datos_anuncio['FPrincipal'])) {
+        array_unshift($fotos, [
+            'IdFoto' => 0, 
+            'Foto' => $datos_anuncio['FPrincipal'],
+            'Alternativo' => $datos_anuncio['Titulo'] . ' - Principal',
+            'Titulo' => 'Foto Principal'
+        ]);
+    }
     
     $datos_anuncio['fotos'] = $fotos;
     return $datos_anuncio;
@@ -159,32 +142,39 @@ function mostrar_galeria_fotos($anuncio_data, $es_privada) {
     $num_total_fotos = count($anuncio_data['fotos']);
     $enlace_volver = $es_privada ? "ver_anuncio.php?id=" . $anuncio_data['IdAnuncio'] : "ultimos_anuncios.php";
     $enlace_volver_texto = $es_privada ? "Volver al Anuncio" : "Volver a Últimos Anuncios";
-    
     ?>
     <main>
         <section class="info-anuncio-basica">
             <h2>Galería de Fotos del Anuncio #<?php echo htmlspecialchars($anuncio_data['IdAnuncio']); ?></h2>
             <h3><?php echo htmlspecialchars($anuncio_data['Titulo']); ?></h3>
-            <p><strong>Tipo de Anuncio:</strong> <?php echo htmlspecialchars($anuncio_data['NomTAnuncio']); ?></p>
-            <p><strong>Tipo de Vivienda:</strong> <?php echo htmlspecialchars($anuncio_data['NomTVivienda']); ?></p>
-            <p><strong>País:</strong> <?php echo htmlspecialchars($anuncio_data['NomPais']); ?></p>
-            <p><strong>Precio:</strong> <?php echo number_format($anuncio_data['Precio'], 2, ',', '.'); ?> €</p>
-            <p><strong>Total de Fotos:</strong> <?php echo $num_total_fotos; ?></p>
             <p><a href="<?php echo $enlace_volver; ?>">&larr; <?php echo $enlace_volver_texto; ?></a></p>
         </section>
 
         <section class="galeria-fotos">
-            <?php foreach ($anuncio_data['fotos'] as $foto): ?>
-                <div class="contenedor-foto">
-                    <img 
-                        src="../img/<?php echo htmlspecialchars($foto['Foto']); ?>" 
-                        alt="<?php echo htmlspecialchars($foto['Alternativo']); ?>"
-                        title="<?php echo htmlspecialchars($foto['Titulo']); ?>"
-                        class="foto-galeria"
-                    >
-                    <p class="titulo-foto"><?php echo htmlspecialchars($foto['Titulo']); ?></p>
-                </div>
-            <?php endforeach; ?>
+            <?php if ($num_total_fotos > 0): ?>
+                <?php foreach ($anuncio_data['fotos'] as $foto): ?>
+                    <div class="contenedor-foto">
+                        <img 
+                            src="../img/<?php echo htmlspecialchars($foto['Foto']); ?>" 
+                            alt="<?php echo htmlspecialchars($foto['Alternativo']); ?>"
+                            title="<?php echo htmlspecialchars($foto['Titulo']); ?>"
+                            class="foto-galeria"
+                        >
+                        <p class="titulo-foto"><?php echo htmlspecialchars($foto['Titulo']); ?></p>
+
+                        <!-- Botón de eliminar solo si es vista privada -->
+                        <?php if ($es_privada): ?>
+                            <form action="eliminar_foto.php" method="get">
+                                <input type="hidden" name="id_anuncio" value="<?php echo $anuncio_data['IdAnuncio']; ?>">
+                                <input type="hidden" name="id_foto" value="<?php echo $foto['IdFoto']; ?>">
+                                <button type="submit">Eliminar</button>
+                            </form>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>Este anuncio no tiene fotos actualmente.</p>
+            <?php endif; ?>
         </section>
     </main>
     <?php

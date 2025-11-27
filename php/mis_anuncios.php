@@ -4,20 +4,17 @@ ob_start();
 require_once "sesion_control.php";
 
 // -------------------------------------------------------------
-// Página: mis_anuncios.php
+// Pagina: mis_anuncios.php
 // Muestra el listado de anuncios del usuario logueado.
 // -------------------------------------------------------------
 
 include "funciones_anuncios.php";
-// La función obtener_id_usuario_numerico y obtener_anuncios_usuario están en funciones_anuncios.php
 
-// 1. Obtener el ID numérico del usuario
-$id_usuario = obtener_id_usuario_numerico($_SESSION['usuario_id']);
+$id_usuario = obtener_id_usuario_numerico($_SESSION['usuario_id']);//en funciones_anuncios
 
 $anuncios_usuario = [];
 if ($id_usuario !== null) {
-    // 2. Obtener el listado de anuncios
-    $anuncios_usuario = obtener_anuncios_usuario($id_usuario);
+    $anuncios_usuario = obtener_anuncios_usuario($id_usuario);//en funciones_anuncios
 }
 
 $num_total_anuncios = count($anuncios_usuario);
@@ -29,7 +26,6 @@ include "header.php";
 
 <main>
     <h2>Mis Anuncios Publicados</h2>
-    
     <p>
         Actualmente tienes <?php echo $num_total_anuncios; ?> anuncio(s) publicado(s).
     </p>

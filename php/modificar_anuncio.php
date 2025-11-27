@@ -8,17 +8,16 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 // -------------------------------------------------------------
-// Página: Modificar anuncio existente
+// Pagina: Modificar anuncio
 // -------------------------------------------------------------
 
 require_once "conexion_bd.php";
-require_once "validaciones.php"; // Reutilizamos tu lógica de validación
+require_once "validaciones.php";
 
 $errores = [];
 $mensaje = "";
 $mysqli = conectarBD();
 
-// --- Función interna para obtener opciones (igual que en crear_anuncio) ---
 function obtener_opciones_bd($mysqli, $tabla, $id_columna, $nombre_columna) {
     $opciones = [];
     if ($mysqli) {
@@ -41,12 +40,10 @@ $tipos_anuncios = obtener_opciones_bd($mysqli, 'tiposanuncios', 'IdTAnuncio', 'N
 $tipos_viviendas = obtener_opciones_bd($mysqli, 'tiposviviendas', 'IdTVivienda', 'NomTVivienda');
 $paises = obtener_opciones_bd($mysqli, 'paises', 'IdPais', 'NomPais');
 
-// Recoger el ID del anuncio a editar (por GET o por POST si se ha enviado el formulario)
 $id_anuncio = isset($_REQUEST['id']) ? intval($_REQUEST['id']) : 0;
 
 // Verificar que el anuncio existe y pertenece al usuario
 if ($id_anuncio > 0) {
-    // Usamos nombres de columnas de tu BD: IdAnuncio y Usuario
     $stmt = $mysqli->prepare("SELECT * FROM anuncios WHERE IdAnuncio = ? AND Usuario = ?");
     $stmt->bind_param("ii", $id_anuncio, $_SESSION['usuario_id']);
     $stmt->execute();
@@ -55,7 +52,7 @@ if ($id_anuncio > 0) {
     $stmt->close();
 
     if (!$datos_actuales) {
-        // El anuncio no existe o no es tuyo
+        // El anuncio no existe
         header("Location: mis_anuncios.php?error=no_encontrado");
         exit;
     }
@@ -65,9 +62,6 @@ if ($id_anuncio > 0) {
 }
 
 // --- Inicialización de variables ---
-// Si venimos de un POST (formulario enviado), usamos los datos enviados.
-// Si venimos de un GET (primera carga), usamos los datos de la BD.
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $Titulo = trim($_POST['Titulo'] ?? '');
     $Precio = $_POST['Precio'] ?? '';
@@ -102,10 +96,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 // --- PROCESADO DEL FORMULARIO (UPDATE) ---
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
-    // 1. Validamos usando tu archivo externo
-    $errores = validarAnuncio($_POST);
+    $errores = validarAnuncio($_POST);//en validaciones
 
-    // 2. Si no hay errores, Actualizamos
+    //actualizar en la BD si no hay errores
     if (empty($errores)) {
         $sql = "UPDATE anuncios SET 
                     Titulo = ?, Precio = ?, Texto = ?, TAnuncio = ?, TVivienda = ?, 
@@ -121,8 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $ban = ($NBanyos !== "") ? $NBanyos : null;
         $pla = ($Planta !== "") ? $Planta : null;
         $any = ($Anyo !== "") ? $Anyo : null;
-
-        // Tipos: sdsiiisdiiiii + ii (where)
+ 
         $stmt->bind_param("sdsiiisdiiiiii", 
             $Titulo, $Precio, $Texto, $TAnuncio, $TVivienda, $Pais, $Ciudad,
             $sup, $hab, $ban, $pla, $any, 
@@ -131,9 +123,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if ($stmt->execute()) {
             $mensaje = "Modificación realizada, tu anuncio ha sido actualizado.";
-            // Opcional: Redirigir a ver anuncio o quedarse aquí mostrando éxito
-             // header("Location: ver_anuncio.php?id=$id_anuncio");
-             // exit;
         } else {
             $errores['general'] = "Error al actualizar en la base de datos: " . $stmt->error;
         }
@@ -149,18 +138,14 @@ require_once "header.php";
     
 <main>
     <h2>Modificar Anuncio</h2>
-    
-
 
     <?php if (isset($errores['general'])): ?>
         <p><?php echo $errores['general']; ?></p>
     <?php endif; ?>
 
-    <!-- El formulario envía el ID como hidden o en la URL -->
+    <!-- El form envia el ID como hidden o en la URL -->
     <form action="respuesta_anuncios.php" method="POST">
         <input type="hidden" name="id" value="<?php echo $id_anuncio; ?>">
-
-        <!-- INICIO DEL FORMULARIO INTEGRADO (Igual que crear_anuncio.php) -->
         
         <fieldset>
             <legend>Datos Principales</legend>
@@ -292,8 +277,6 @@ require_once "header.php";
             </p>
         </fieldset>
         
-        <!-- FIN DEL FORMULARIO INTEGRADO -->
-
         <p class="botones-form">
             <button type="submit">Guardar Cambios</button>
             <button type="button"><a href="mis_anuncios.php">Cancelar</a></button>

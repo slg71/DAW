@@ -1,12 +1,12 @@
 <?php
 // ---------------------------------------------
 // Fichero: mostrar_detalle_anuncio.php
-// Código común para mostrar detalles
+// Codigo comun para mostrar detalles
 // ---------------------------------------------
 
 // Este fichero espera: $id y $es_privada
 
-include "conexion_bd.php";
+require_once "conexion_bd.php";
 
 $anuncio = null;
 $fotos_extra = array();
@@ -64,7 +64,6 @@ if ($id > 0) {
 
 // Lógica de visualización y enlaces
 $num_total_fotos = $anuncio ? (1 + count($fotos_extra)) : 0;
-// Determinar la página de destino para la galería:
 $galeria_destino = $es_privada ? "ver_fotos_privado.php" : "ver_fotos_publico.php";
 ?>
 
@@ -74,7 +73,7 @@ $galeria_destino = $es_privada ? "ver_fotos_privado.php" : "ver_fotos_publico.ph
             <h2><?php echo htmlspecialchars($anuncio["Titulo"]); ?></h2>
             <article>
                 
-                <!-- 1. FOTO PRINCIPAL Y ENLACE A LA GALERÍA -->
+                <!-- FOTO PRINCIPAL Y ENLACE A LA GALERIA -->
                 <section>
                     <a 
                         href="<?php echo $galeria_destino; ?>?id=<?php echo $id; ?>" 
@@ -123,6 +122,9 @@ $galeria_destino = $es_privada ? "ver_fotos_privado.php" : "ver_fotos_publico.ph
                 
                 <?php if ($es_privada): ?>
                     <!-- Botones para el dueño -->
+                     <button>
+                        <a href="ver_fotos_privado.php?id=<?php echo $id; ?>">Ver Fotos</a>
+                    </button>
                     <button>
                         <a href="añadir_foto.php?anuncio_id=<?php echo $id; ?>">Añadir Foto</a>
                     </button>
@@ -140,7 +142,7 @@ $galeria_destino = $es_privada ? "ver_fotos_privado.php" : "ver_fotos_publico.ph
                         </a>
                     </button>
 
-                    <form action="mensaje.php" method="get">
+                    <form action="enviar_mensaje.php" method="get">
                         <input type="hidden" name="id" value="<?php echo $id; ?>">
                         
                         <button type="submit">Enviar mensaje</button>
