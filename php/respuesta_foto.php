@@ -12,93 +12,124 @@ $errores = [];
 $exito = false;
 $mysqli = conectarBD();
 
-// Inicializar variables para mostrar en el HTML
+// Variables iniciales
 $titulo_foto = '';
 $nombre_fichero = '';
 $texto_alt = '';
 $anuncio_id = 0;
+$mensaje_resultado = "";
 
-// Recoger datos del POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $anuncio_id = isset($_POST['anuncio']) ? intval($_POST['anuncio']) : 0;
     $titulo_foto = trim($_POST['titulo_foto'] ?? '');
     $texto_alt = trim($_POST['texto_alt'] ?? '');
+    // Recogemos si el usuario INTENTA que sea principal
+    $usuario_pide_principal = isset($_POST['es_principal']) && $_POST['es_principal'] == '1';
     
-    // Recoger nombre del fichero 
-    // (Se asume subida manual según enunciado, pero guardamos el nombre para la BD)
-    $nombre_fichero = isset($_FILES['foto']['name']) ? $_FILES['foto']['name'] : '';
+    $nombre_fichero = isset($_FILES['foto']['name']) ? $_FILES['foto']['name'] : '';// Subida de fichero
 
-    // ---------------------------------------------------------
-    // VALIDACIONES
-    // ---------------------------------------------------------
-
-    // titulo obligatorio
-    if (empty($titulo_foto)) {
-        $errores[] = "El título de la foto es obligatorio.";
-    }
-
-    // img obligatorio
-    if (empty($nombre_fichero)) {
-        $errores[] = "Debes seleccionar un fichero de imagen.";
-    }
-
-    // Validaciones de la descripcion
+    // --- VALIDACIONES ---
+    if (empty($titulo_foto)) $errores[] = "El título de la foto es obligatorio.";
+    if (empty($nombre_fichero)) $errores[] = "Debes seleccionar un fichero de imagen.";
+    
     if (empty($texto_alt)) {
         $errores[] = "El texto alternativo es obligatorio.";
     } else {
-        if (strlen($texto_alt) < 10) {
-            $errores[] = "El texto alternativo debe tener al menos 10 caracteres.";
-        }
-        if (preg_match('/^(foto|imagen)/i', $texto_alt)) {//no empezar por foto o imagen
-            $errores[] = "El texto alternativo no debe empezar por 'foto' o 'imagen' (es redundante).";
-        }
-        if (strcasecmp($texto_alt, "Texto alternativo para la imagen") === 0) {
-            $errores[] = "No utilices el texto alternativo generado por defecto.";
-        }
+        if (strlen($texto_alt) < 10) $errores[] = "El texto alternativo debe tener al menos 10 caracteres.";
+        if (preg_match('/^(foto|imagen)/i', $texto_alt)) $errores[] = "El texto alternativo no debe empezar por 'foto' o 'imagen'.";
+        if (strcasecmp($texto_alt, "Texto alternativo para la imagen") === 0) $errores[] = "No utilices el texto alternativo generado por defecto.";
     }
 
-    // ---------------------------------------------------------
-    // INSERCION EN BD
-    // ---------------------------------------------------------
+    // --- LOGICA DE BASE DE DATOS---
     if (empty($errores)) {
-        // Verificar que el anuncio pertenece al usuario 
-        // Usamos nombres de columnas de la BD: IdAnuncio, Usuario
-        $check_sql = "SELECT IdAnuncio FROM anuncios WHERE IdAnuncio = ? AND Usuario = ?";
-        $stmt_check = $mysqli->prepare($check_sql);
+        // verificamos que el anuncio existe y pertenece al usuario
+        $sql_info = "SELECT IdAnuncio, FPrincipal, Alternativo FROM anuncios WHERE IdAnuncio = ? AND Usuario = ?";//coge la foto 
+        $stmt_info = $mysqli->prepare($sql_info);
         
-        if ($stmt_check) {
-            $stmt_check->bind_param("ii", $anuncio_id, $_SESSION['usuario_id']);
-            $stmt_check->execute();
-            
-            if ($stmt_check->fetch()) {
-                $stmt_check->close();
+        if ($stmt_info) {
+            $stmt_info->bind_param("ii", $anuncio_id, $_SESSION['usuario_id']);
+            $stmt_info->execute();
+            $resultado = $stmt_info->get_result();
+            $datos_anuncio = $resultado->fetch_assoc();
+            $stmt_info->close();
 
-                // Insertar la foto
-                // Tabla: fotos (Titulo, Foto, Alternativo, Anuncio)
-                $sql_insert = "INSERT INTO fotos (Titulo, Foto, Alternativo, Anuncio) VALUES (?, ?, ?, ?)";
-                $stmt_insert = $mysqli->prepare($sql_insert);
+            if ($datos_anuncio) {
+                // REGLA 1: Si no tiene foto, es principal
+                // REGLA 2: Si tiene foto y el usuario marca el checkbox, reemplaza la foto principal
+                // REGLA 3: Si tiene foto y el usuario NO marca el checkbox, va a la tablaa de fotos
                 
-                if ($stmt_insert) {
-                    $stmt_insert->bind_param("sssi", $titulo_foto, $nombre_fichero, $texto_alt, $anuncio_id);
-
-                    if ($stmt_insert->execute()) {
-                        $exito = true;
-                    } else {
-                        $errores[] = "Error al insertar en la base de datos: " . $stmt_insert->error;
-                    }
-                    $stmt_insert->close();
+                $es_principal_final = false;
+                
+                if (empty($datos_anuncio['FPrincipal'])) {
+                    $es_principal_final = true; // 1
+                } elseif ($usuario_pide_principal) {
+                    $es_principal_final = true; // 2 
                 } else {
-                    $errores[] = "Error al preparar la inserción: " . $mysqli->error;
+                    $es_principal_final = false; //3
                 }
+
+                if ($es_principal_final) {
+                    
+                    $mysqli->begin_transaction();
+                    try {
+                        // Si ya habia una foto, la guardamos en la tabla 'fotos' para no perderla
+                        if (!empty($datos_anuncio['FPrincipal'])) {
+                            $sql_mover = "INSERT INTO fotos (Titulo, Foto, Alternativo, Anuncio) VALUES (?, ?, ?, ?)";
+                            $stmt_mover = $mysqli->prepare($sql_mover);
+                            $tit_antiguo = "Antigua foto principal";
+                            $foto_antigua = $datos_anuncio['FPrincipal'];
+                            $alt_antiguo = $datos_anuncio['Alternativo'];
+                            
+                            $stmt_mover->bind_param("sssi", $tit_antiguo, $foto_antigua, $alt_antiguo, $anuncio_id);
+                            if (!$stmt_mover->execute()) {
+                                throw new Exception("Error al mover la foto antigua a secundarios.");
+                            }
+                            $stmt_mover->close();
+                        }
+
+                        // Guardamos la nueva foto en 'anuncios'
+                        $sql_upd = "UPDATE anuncios SET FPrincipal = ?, Alternativo = ? WHERE IdAnuncio = ?";
+                        $stmt_upd = $mysqli->prepare($sql_upd);
+                        $stmt_upd->bind_param("ssi", $nombre_fichero, $texto_alt, $anuncio_id);
+                        
+                        if (!$stmt_upd->execute()) {
+                            throw new Exception("Error al actualizar la foto principal.");
+                        }
+                        $stmt_upd->close();
+
+                        $mysqli->commit();
+                        $exito = true;
+                        $mensaje_resultado = "La imagen se ha establecido como FOTO PRINCIPAL del anuncio.";
+
+                    } catch (Exception $e) {
+                        $mysqli->rollback();
+                        $errores[] = "Error en la operación: " . $e->getMessage();
+                    }
+
+                } else {
+                    // Insertar en tabla 'fotos'
+                    $sql_ins = "INSERT INTO fotos (Titulo, Foto, Alternativo, Anuncio) VALUES (?, ?, ?, ?)";
+                    $stmt_ins = $mysqli->prepare($sql_ins);
+                    if ($stmt_ins) {
+                        $stmt_ins->bind_param("sssi", $titulo_foto, $nombre_fichero, $texto_alt, $anuncio_id);
+                        if ($stmt_ins->execute()) {
+                            $exito = true;
+                            $mensaje_resultado = "La imagen se ha guardado en la galería secundaria.";
+                        } else {
+                            $errores[] = "Error al guardar en BD: " . $stmt_ins->error;
+                        }
+                        $stmt_ins->close();
+                    }
+                }
+
             } else {
-                $errores[] = "El anuncio seleccionado no existe o no te pertenece.";
+                $errores[] = "El anuncio no existe o no tienes permisos.";
             }
         } else {
-            $errores[] = "Error en la verificación de seguridad: " . $mysqli->error;
+            $errores[] = "Error de conexión BD: " . $mysqli->error;
         }
     }
 }
-
 $mysqli->close();
 
 $titulo_pagina = "Confirmación Foto";
@@ -111,39 +142,30 @@ require_once "header.php";
         <h2>Estado de la operación</h2>
 
         <?php if ($exito): ?>
-            <!-- EXITO -->
             <section class ="exito">
-                <h3>¡Foto añadida con éxito!</h3>
-                <p>Se ha registrado la foto correctamente en el sistema.</p>
+                <h3>¡Operación Exitosa!</h3>
+                <p><?php echo $mensaje_resultado; ?></p>
                 <ul>
-                    <a><strong>Título:</strong> <?php echo htmlspecialchars($titulo_foto); ?></a><br>
-                    <a><strong>Archivo:</strong> <?php echo htmlspecialchars($nombre_fichero); ?></a><br>
-                    <a><strong>Texto Alternativo:</strong> <?php echo htmlspecialchars($texto_alt); ?></a>
+                    <li><strong>Título:</strong> <?php echo htmlspecialchars($titulo_foto); ?></li>
+                    <li><strong>Archivo:</strong> <?php echo htmlspecialchars($nombre_fichero); ?></li>
+                    <li><strong>Alternativo:</strong> <?php echo htmlspecialchars($texto_alt); ?></li>
                 </ul>
-                <button class="ver">                
-                    <a href="ver_anuncio.php?id=<?php echo $anuncio_id; ?>">Ver el anuncio</a>
-                </button>
-                <button class="ver">      
-                    <a href="mis_anuncios.php">Volver a mis anuncios</a>
-                </button>
+                
+                <button class="ver"><a href="ver_anuncio.php?id=<?php echo $anuncio_id; ?>">Ver Anuncio</a></button>
+                <button class="ver"><a href="mis_anuncios.php">Volver a mis anuncios</a></button>
+                
             </section>
-
         <?php else: ?>
-            <!-- MENSAJE DE ERROR -->
-            <section>
+            <section class="error">
                 <h3>Ha ocurrido un error</h3>
-                <p>No se ha podido guardar la foto debido a los siguientes problemas:</p>
                 <ul>
                     <?php foreach ($errores as $error): ?>
                         <li><?php echo htmlspecialchars($error); ?></li>
                     <?php endforeach; ?>
                 </ul>
-                <button>
-                    <a href="javascript:history.back()">Volver al formulario</a>
-                </button>
+                <button><a href="javascript:history.back()">Volver al formulario</a></button>
             </section>
         <?php endif; ?>
-
     </section>
 </main>
 
