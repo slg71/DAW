@@ -2,7 +2,6 @@
 session_start();
 require_once "conexion_bd.php";
 
-// Control de acceso básico
 if (!isset($_SESSION['usuario_id']) || $_SERVER["REQUEST_METHOD"] != "POST") {
     header("Location: login.php");
     exit;
@@ -27,16 +26,12 @@ if ($texto == "" || $id_destino == 0) {
 } else {
     $mysqli = conectarBD();
     
-    if ($mysqli) {
-        //IdMensaje, TMensaje, Texto, Anuncio, UsuOrigen, UsuDestino, FRegistro
-        // FRegistro se pone solo (default current_timestamp)
-        
+    if ($mysqli) {//la fecha de registro del mensaje se ponia sola
         $sql = "INSERT INTO mensajes (TMensaje, Texto, Anuncio, UsuOrigen, UsuDestino) VALUES (?, ?, ?, ?, ?)";
-        
         $stmt = mysqli_prepare($mysqli, $sql);
         
         if ($stmt) {
-            // Bind de parámetros: i (int), s (string), i (int), i (int), i (int) -> "isiii"
+            //i (int), s (string), i (int), i (int), i (int) -> "isiii"
             mysqli_stmt_bind_param($stmt, "isiii", $tipo_msg, $texto, $id_anuncio, $id_origen, $id_destino);
             
             if (mysqli_stmt_execute($stmt)) {

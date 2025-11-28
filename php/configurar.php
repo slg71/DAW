@@ -17,7 +17,7 @@ include "paginas_Estilo.php";
 include "header.php";
 
 // 1. AÑADIMOS LA CONEXIÓN
-include "conexion_bd.php"; 
+require_once "conexion_bd.php"; 
 $estilo_actual_id = 0;
 $lista_estilos = []; // Array para guardar los estilos
 $mensaje_error = "";

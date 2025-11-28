@@ -1,6 +1,6 @@
 <?php
 // -------------------------------------------------------------
-// Página: respuesta_mis_datos.php (Procesa la modificación)
+// Paagina: respuesta_mis_datos.php
 // -------------------------------------------------------------
 
 session_start();

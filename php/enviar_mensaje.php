@@ -117,7 +117,7 @@ require_once 'header.php';
 
             <p>
                 <label for="tipo_mensaje"><strong>Motivo de la consulta:</strong></label><br>
-                <select name="tipo_mensaje" id="tipo_mensaje" required style="width: 100%; padding: 8px;">
+                <select name="tipo_mensaje" id="tipo_mensaje" required>
                     <?php foreach ($tipos_options as $tipo): ?>
                         <option value="<?php echo $tipo['IdTMensaje']; ?>">
                             <?php echo htmlspecialchars($tipo['NomTMensaje']); ?>
@@ -128,13 +128,13 @@ require_once 'header.php';
 
             <p>
                 <label for="texto"><strong>Mensaje:</strong></label><br>
-                <textarea name="texto" id="texto" rows="6" required style="width: 100%; padding: 8px;" placeholder="Hola, estoy interesado en este inmueble..."></textarea>
+                <textarea name="texto" id="texto" rows="6" required  placeholder="Hola, estoy interesado en este inmueble..."></textarea>
             </p>
 
             <p style="text-align: center;">
                 <button type="submit" class="boton">Enviar Mensaje</button>
                 
-                <a href="ver_anuncio.php?id=<?php echo $id_anuncio_view; ?>" class="boton" style="background-color: #ccc; text-decoration: none; color: #000; display: inline-block; padding: 1px 6px; border: 1px solid #777;">
+                <a href="ver_anuncio.php?id=<?php echo $id_anuncio_view; ?>" class="boton">
                     Cancelar
                 </a>
             </p>

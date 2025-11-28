@@ -4,8 +4,8 @@ session_start();
 
 $titulo_pagina = "Iniciar Sesión";
 
-include "paginas_Estilo.php";
-include "header.php";
+require_once "paginas_Estilo.php";
+require_once "header.php";
 ?>
 
 <main id="login">
@@ -30,7 +30,7 @@ include "header.php";
             <span class="error-campo">
                 <?php
                 echo htmlspecialchars($_SESSION['mensaje_error_login']);
-                // 4. Bórralo de la sesión para que no vuelva a salir en la próxima carga
+                // 4. Borralo de la sesion para que no vuelva a salir en la próxima carga
                 unset($_SESSION['mensaje_error_login']); 
                 ?>
             </span>

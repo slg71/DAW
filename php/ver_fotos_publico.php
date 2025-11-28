@@ -1,6 +1,6 @@
 <?php
 // -------------------------------------------------------------
-// Página: ver_fotos_publico.php - SIN Sesion
+// Pagina: ver_fotos_publico.php - SIN Sesion
 // -------------------------------------------------------------
 
 session_start();

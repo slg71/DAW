@@ -2,20 +2,16 @@
 // validaciones igual q en el JS para las páginas php
 
 // --------- USUARIO ----------
-// 3-15 caract, letras/num, no empezar con num
 function validar_usuario($usuario) {
     //comprobar longitud
     if (strlen($usuario) < 3 || strlen($usuario) > 15) {
         return false;
     }
-
-    //comprobar si empieza con un numero
+    
     if (is_numeric($usuario[0])) {
         return false;
     }
 
-    //comprobar caract vsalidas con expr regu
-    //^ = principio     [a-zA-Z0-9] = letras/num    + = uno o mas   $ = final
     if (!preg_match("/^[a-zA-Z0-9]+$/", $usuario)) {
         return false;
     }
@@ -34,9 +30,9 @@ function validar_clave($pwd) {
         return false;
     }
 
-    if (!preg_match("/[a-z]/", $pwd)) return false; // Minúscula
-    if (!preg_match("/[A-Z]/", $pwd)) return false; // Mayúscula
-    if (!preg_match("/[0-9]/", $pwd)) return false; // Número
+    if (!preg_match("/[a-z]/", $pwd)) return false; // Minuscula
+    if (!preg_match("/[A-Z]/", $pwd)) return false; // Mayuscula
+    if (!preg_match("/[0-9]/", $pwd)) return false; // Numero
 
     return true;
 }

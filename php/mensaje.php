@@ -23,7 +23,7 @@ $mysqli = conectarBD();
 $error = "";
 
 if ($mysqli) {
-    // Necesitamos saber quién es el dueño del anuncio para enviarle el mensaje a él
+    // Necesitamos saber quien es el dueño del anuncio para enviarle el mensaje a el
     $sql_datos = "SELECT A.Titulo, U.IdUsuario, U.NomUsuario 
                   FROM anuncios A 
                   JOIN usuarios U ON A.Usuario = U.IdUsuario 
@@ -45,7 +45,7 @@ if ($mysqli) {
         mysqli_stmt_close($stmt);
     }
     
-    // También cargamos los tipos de mensaje para el select
+    // Tambien cargamos los tipos de mensaje para el select
     $tipos = [];
     $sql_tipos = "SELECT IdTMensaje, NomTMensaje FROM tiposmensajes";
     $res_tipos = mysqli_query($mysqli, $sql_tipos);
