@@ -142,7 +142,7 @@ $galeria_destino = $es_privada ? "ver_fotos_privado.php" : "ver_fotos_publico.ph
                         </a>
                     </button>
 
-                    <form action="enviar_mensaje.php" method="get">
+                    <form action="mensaje.php" method="get">
                         <input type="hidden" name="id" value="<?php echo $id; ?>">
                         
                         <button type="submit">Enviar mensaje</button>
