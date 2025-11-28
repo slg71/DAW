@@ -36,22 +36,32 @@ if ($mysqli) {
         mysqli_stmt_bind_result($stmt, $tit, $id_dst, $nom_dst);
         
         if (mysqli_stmt_fetch($stmt)) {
-            $titulo_anuncio = $tit;
-            $id_destinatario = $id_dst;
-            $nombre_destinatario = $nom_dst;
+        
+            // Comprobamos que no me este enviando un mensaje a mi mismo 
+            if ($id_dst == $_SESSION['usuario_id']) {
+                $error = "NO te puedes enviar un mensaje a ti mismo.";
+            } else {
+                // Si no es cargar datos
+                $titulo_anuncio = $tit;
+                $id_destinatario = $id_dst;
+                $nombre_destinatario = $nom_dst;
+            }
+            
         } else {
             $error = "El anuncio no existe o ha sido borrado.";
         }
         mysqli_stmt_close($stmt);
     }
     
-    // Tambien cargamos los tipos de mensaje para el select
+    // Cargar tipos de mensajes
     $tipos = [];
-    $sql_tipos = "SELECT IdTMensaje, NomTMensaje FROM tiposmensajes";
-    $res_tipos = mysqli_query($mysqli, $sql_tipos);
-    if ($res_tipos) {
-        while($fila = mysqli_fetch_assoc($res_tipos)) {
-            $tipos[] = $fila;
+    if (empty($error)) {
+        $sql_tipos = "SELECT IdTMensaje, NomTMensaje FROM tiposmensajes";
+        $res_tipos = mysqli_query($mysqli, $sql_tipos);
+        if ($res_tipos) {
+            while($fila = mysqli_fetch_assoc($res_tipos)) {
+                $tipos[] = $fila;
+            }
         }
     }
     
@@ -67,7 +77,8 @@ if ($mysqli) {
         
         <?php if ($error): ?>
             <p class="error-campo"><?php echo $error; ?></p>
-            <a href="index.php">Volver</a>
+            <br>
+            <button class="boton-volver"><a href="javascript:history.back()">Volver</a></button>
         <?php else: ?>
         
             <p>Vas a enviar un mensaje a <strong><?php echo htmlspecialchars($nombre_destinatario); ?></strong></p>
