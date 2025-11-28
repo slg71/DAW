@@ -129,7 +129,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         
         // Valores por defecto
         $foto_defecto = "perfil.jpg"; 
-        $estilo_defecto = 1; // Estilo por defecto (ID 1 en tu base de datos)
+        $estilo_defecto = 1; // Estilo por defecto
         
         // Convertir sexo a número (TinyInt en BD): Hombre=1, Mujer=0, Otro=2
         $sexo_num = 2; 

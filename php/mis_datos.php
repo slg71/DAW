@@ -80,7 +80,7 @@ if ($mensaje_error) {
     
     // Feedback visual de éxito
     if (isset($_GET['ok'])) {
-        echo "<main id='bloque'><p style='color:white; font-weight:bold;'>¡Datos actualizados correctamente!</p></main>";
+        echo "<main id='bloque'><p>¡Datos actualizados correctamente!</p></main>";
     }
 
     include "formulario_comun.php";

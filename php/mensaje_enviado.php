@@ -68,7 +68,7 @@ if ($texto == "" || $id_destino == 0) {
             <br>
             <a href="mismensajes.php">Ir a mis mensajes</a>
             <br>
-            <a href="ver_anuncio.php?id=<?php echo $id_anuncio; ?>">Volver al anuncio</a>
+            <a href="detalle_anuncio.php?id=<?php echo $id_anuncio; ?>">Volver al anuncio</a>
             
         <?php else: ?>
             <h2>Error al enviar</h2>
