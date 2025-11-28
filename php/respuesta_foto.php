@@ -2,7 +2,6 @@
 session_start();
 require_once "conexion_bd.php";
 
-// 1. Control de acceso
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
     exit;
