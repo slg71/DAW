@@ -1,5 +1,5 @@
 <?php
-require_once "sesion_control.php";
+require_once "sesion_control.php"; // Se asume que esto inicia session_start()
 
 // -------------------------------------------------------------
 // Página: Crear un anuncio nuevo
@@ -11,14 +11,14 @@ require_once "validaciones.php";
 $errores = [];
 $mysqli = conectarBD();
 
-// obtener la lista de opciones desde la bd
+// --- FUNCIONES ---
 function obtener_opciones_bd($mysqli, $tabla, $id_columna, $nombre_columna) {
     $opciones = [];
     if ($mysqli) {
         $query = "SELECT $id_columna, $nombre_columna FROM $tabla ORDER BY $nombre_columna ASC";
         if ($result = $mysqli->query($query)) {
             while ($row = $result->fetch_assoc()) {
-                $opciones[] = [//guardamos los resultados
+                $opciones[] = [
                     'id' => $row[$id_columna],
                     'nombre' => $row[$nombre_columna]
                 ];
@@ -34,7 +34,7 @@ $tipos_anuncios = obtener_opciones_bd($mysqli, 'tiposanuncios', 'IdTAnuncio', 'N
 $tipos_viviendas = obtener_opciones_bd($mysqli, 'tiposviviendas', 'IdTVivienda', 'NomTVivienda');
 $paises = obtener_opciones_bd($mysqli, 'paises', 'IdPais', 'NomPais');
 
-// inicializar variables del formulario
+// 1. Inicializar variables vacías por defecto
 $Titulo = '';
 $Precio = '';
 $TAnuncio = '';
@@ -48,60 +48,101 @@ $NBanyos = '';
 $Planta = '';
 $Anyo = '';
 
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
-    // Recogemos los datos
-    $Titulo = trim($_POST['Titulo'] ?? '');
-    $Precio = $_POST['Precio'] ?? '';
-    $TAnuncio = $_POST['TAnuncio'] ?? '';
-    $TVivienda = $_POST['TVivienda'] ?? '';
-    $Pais = $_POST['Pais'] ?? '';
-    $Ciudad = trim($_POST['Ciudad'] ?? '');
-    $Texto = trim($_POST['Texto'] ?? '');
-    
-    // Opcionales
-    $Superficie = $_POST['Superficie'] ?? null;
-    $NHabitaciones = $_POST['NHabitaciones'] ?? null;
-    $NBanyos = $_POST['NBanyos'] ?? null;
-    $Planta = $_POST['Planta'] ?? null;
-    $Anyo = $_POST['Anyo'] ?? null;
+    // Recogemos datos
+    $datos_form = [
+        'Titulo' => trim($_POST['Titulo'] ?? ''),
+        'Precio' => $_POST['Precio'] ?? '',
+        'TAnuncio' => $_POST['TAnuncio'] ?? '',
+        'TVivienda' => $_POST['TVivienda'] ?? '',
+        'Pais' => $_POST['Pais'] ?? '',
+        'Ciudad' => trim($_POST['Ciudad'] ?? ''),
+        'Texto' => trim($_POST['Texto'] ?? ''),
+        'Superficie' => $_POST['Superficie'] ?? null,
+        'NHabitaciones' => $_POST['NHabitaciones'] ?? null,
+        'NBanyos' => $_POST['NBanyos'] ?? null,
+        'Planta' => $_POST['Planta'] ?? null,
+        'Anyo' => $_POST['Anyo'] ?? null
+    ];
 
-    $errores = validarAnuncio($_POST);//validamos los datos
+    // Validamos
+    $errores = validarAnuncio($_POST);
 
-    // insertamos en la bd
-    if (empty($errores)) {
+    if (!empty($errores)) {
+        // si hay errores, guardar en sesion y redirigir
+        
+        $_SESSION['errores_anuncio'] = $errores;     // Guardamos el array de errores
+        $_SESSION['datos_anuncio'] = $datos_form;    // Guardamos lo que escribio el usu
+        
+        // Redirigimos a la misma página (GET)
+        header("Location: crear_anuncio.php");
+        exit; 
+
+    } else {
+        // -insertar en BD si no hay errores
+        
         $sql = "INSERT INTO anuncios (Titulo, Precio, Texto, TAnuncio, TVivienda, Pais, Ciudad, 
                 Superficie, NHabitaciones, NBanyos, Planta, Anyo, Usuario, FRegistro) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
         
         $stmt = $mysqli->prepare($sql);
         
-        // Ajustamos los nulos para la BD
-        $sup = ($Superficie !== "") ? $Superficie : null;
-        $hab = ($NHabitaciones !== "") ? $NHabitaciones : null;
-        $ban = ($NBanyos !== "") ? $NBanyos : null;
-        $pla = ($Planta !== "") ? $Planta : null;
-        $any = ($Anyo !== "") ? $Anyo : null;
+        // Ajustamos nulos
+        $sup = ($datos_form['Superficie'] !== "") ? $datos_form['Superficie'] : null;
+        $hab = ($datos_form['NHabitaciones'] !== "") ? $datos_form['NHabitaciones'] : null;
+        $ban = ($datos_form['NBanyos'] !== "") ? $datos_form['NBanyos'] : null;
+        $pla = ($datos_form['Planta'] !== "") ? $datos_form['Planta'] : null;
+        $any = ($datos_form['Anyo'] !== "") ? $datos_form['Anyo'] : null;
         $usuario_id = $_SESSION['usuario_id'];
 
-        // Tipos: s=string, d=double, i=int
         $stmt->bind_param("sdsiiisdiiiii", 
-            $Titulo, $Precio, $Texto, $TAnuncio, $TVivienda, $Pais, $Ciudad,
-            $sup, $hab, $ban, $pla, $any, $usuario_id
+            $datos_form['Titulo'], $datos_form['Precio'], $datos_form['Texto'], 
+            $datos_form['TAnuncio'], $datos_form['TVivienda'], $datos_form['Pais'], 
+            $datos_form['Ciudad'], $sup, $hab, $ban, $pla, $any, $usuario_id
         );
 
         if ($stmt->execute()) {
             $nuevo_id = $mysqli->insert_id;
-            // Redirigimos a añadir foto
             header("Location: añadir_foto.php?anuncio_id=$nuevo_id&mensaje=Anuncio creado correctamente");
             exit;
         } else {
-            $errores['general'] = "Error al insertar en la base de datos: " . $stmt->error;
+            // Error de base de datos (este es raro, pero lo manejamos igual)
+            $_SESSION['errores_anuncio'] = ['general' => "Error BD: " . $stmt->error];
+            $_SESSION['datos_anuncio'] = $datos_form;
+            header("Location: crear_anuncio.php");
+            exit;
         }
         $stmt->close();
     }
 }
+
+// recuperar errores y datos antiguos si existen
+if (isset($_SESSION['errores_anuncio'])) {
+    $errores = $_SESSION['errores_anuncio'];
+    
+    // Recuperar los datos antiguos para rellenar los inputs
+    if (isset($_SESSION['datos_anuncio'])) {
+        $datos = $_SESSION['datos_anuncio'];
+        $Titulo = $datos['Titulo'];
+        $Precio = $datos['Precio'];
+        $TAnuncio = $datos['TAnuncio'];
+        $TVivienda = $datos['TVivienda'];
+        $Pais = $datos['Pais'];
+        $Ciudad = $datos['Ciudad'];
+        $Texto = $datos['Texto'];
+        $Superficie = $datos['Superficie'];
+        $NHabitaciones = $datos['NHabitaciones'];
+        $NBanyos = $datos['NBanyos'];
+        $Planta = $datos['Planta'];
+        $Anyo = $datos['Anyo'];
+    }
+
+    // Borrar la seson los errores desaparecen
+    unset($_SESSION['errores_anuncio']);
+    unset($_SESSION['datos_anuncio']);
+}
+
 $mysqli->close();
 
 $titulo_pagina = "Crear Nuevo Anuncio"; 
@@ -113,44 +154,53 @@ require_once "header.php";
     <h2>Publica tu Anuncio</h2>
     
     <?php if (isset($errores['general'])): ?>
-        <p><?php echo $errores['general']; ?></p>
+        <p style="color: red; font-weight: bold;"><?php echo $errores['general']; ?></p>
     <?php endif; ?>
 
-    <!-- El formulario se envia a si mismo -->
-    <form action="crear_anuncio.php" method="POST">
+    <form action="crear_anuncio.php" method="POST" novalidate>
                 
         <fieldset>
             <legend>Datos Principales</legend>
 
             <label for="titulo">Título del anuncio (*):</label>
             <input type="text" id="titulo" name="Titulo" maxlength="255" 
-                   value="<?php echo htmlspecialchars($Titulo); ?>" required>
+                   value="<?php echo htmlspecialchars($Titulo); ?>">
+            
             <?php if(isset($errores['Titulo'])): ?>
-                <strong><?php echo $errores['Titulo']; ?></strong>
+                <div style="color: red; font-size: 0.9em; margin-top: 5px;">
+                    <?php echo $errores['Titulo']; ?>
+                </div>
             <?php endif; ?>
 
             <label for="precio">Precio (€) (*):</label>
             <input type="number" id="precio" name="Precio" min="0" step="0.01" 
-                   value="<?php echo htmlspecialchars($Precio); ?>" required>
+                   value="<?php echo htmlspecialchars($Precio); ?>">
+            
             <?php if(isset($errores['Precio'])): ?>
-                <strong><?php echo $errores['Precio']; ?></strong>
+                <div style="color: red; font-size: 0.9em; margin-top: 5px;">
+                    <?php echo $errores['Precio']; ?>
+                </div>
             <?php endif; ?>
  
             <label for="tipo_anuncio">Tipo de Operación (*):</label>
-            <select id="tipo_anuncio" name="TAnuncio" required>
-                <option value="" disabled <?php echo empty($TAnuncio) ? 'selected' : ''; ?>>-- Seleccionar --</option>                    <?php foreach ($tipos_anuncios as $tipo): ?>
+            <select id="tipo_anuncio" name="TAnuncio">
+                <option value="" disabled <?php echo empty($TAnuncio) ? 'selected' : ''; ?>>-- Seleccionar --</option>
+                <?php foreach ($tipos_anuncios as $tipo): ?>
                     <option value="<?php echo $tipo['id']; ?>" 
                         <?php echo ($TAnuncio == $tipo['id']) ? 'selected' : ''; ?>>
                         <?php echo htmlspecialchars($tipo['nombre']); ?>
                     </option>
                 <?php endforeach; ?>
             </select>
+            
             <?php if(isset($errores['TAnuncio'])): ?>
-                <strong><?php echo $errores['TAnuncio']; ?></strong>
+                <div style="color: red; font-size: 0.9em; margin-top: 5px;">
+                    <?php echo $errores['TAnuncio']; ?>
+                </div>
             <?php endif; ?>
  
             <label for="tipo_vivienda">Tipo de Vivienda (*):</label>
-            <select id="tipo_vivienda" name="TVivienda" required>
+            <select id="tipo_vivienda" name="TVivienda">
                 <option value="" disabled <?php echo empty($TVivienda) ? 'selected' : ''; ?>>-- Seleccionar --</option>
                 <?php foreach ($tipos_viviendas as $vivienda): ?>
                     <option value="<?php echo $vivienda['id']; ?>" 
@@ -159,8 +209,11 @@ require_once "header.php";
                     </option>
                 <?php endforeach; ?>
             </select>
+            
             <?php if(isset($errores['TVivienda'])): ?>
-                <strong><?php echo $errores['TVivienda']; ?></strong>
+                <div style="color: red; font-size: 0.9em; margin-top: 5px;">
+                    <?php echo $errores['TVivienda']; ?>
+                </div>
             <?php endif; ?>
             
         </fieldset>
@@ -169,7 +222,7 @@ require_once "header.php";
             <legend>Ubicación</legend>
             
             <label for="pais">País (*):</label>
-            <select id="pais" name="Pais" required>
+            <select id="pais" name="Pais">
                 <option value="" disabled <?php echo empty($Pais) ? 'selected' : ''; ?>>-- Seleccionar --</option>
                 <?php foreach ($paises as $p): ?>
                     <option value="<?php echo $p['id']; ?>" 
@@ -178,45 +231,51 @@ require_once "header.php";
                     </option>
                 <?php endforeach; ?>
             </select>
+            
             <?php if(isset($errores['Pais'])): ?>
-                <strong><?php echo $errores['Pais']; ?></strong>
+                <div style="color: red; font-size: 0.9em; margin-top: 5px;">
+                    <?php echo $errores['Pais']; ?>
+                </div>
             <?php endif; ?>
-
         
             <label for="ciudad">Ciudad:</label>
             <input type="text" id="ciudad" name="Ciudad" maxlength="255" 
                     value="<?php echo htmlspecialchars($Ciudad); ?>">
-            
-        </fieldset>
+            </fieldset>
 
         <fieldset>
             <legend>Descripción</legend>
             
             <label for="texto">Descripción detallada (*):</label>
-            <textarea id="texto" name="Texto" rows="6" required><?php echo htmlspecialchars($Texto); ?></textarea>
+            <textarea id="texto" name="Texto" rows="6"><?php echo htmlspecialchars($Texto); ?></textarea>
+            
             <?php if(isset($errores['Texto'])): ?>
-                <strong><?php echo $errores['Texto']; ?></strong>
+                <div style="color: red; font-size: 0.9em; margin-top: 5px;">
+                    <?php echo $errores['Texto']; ?>
+                </div>
             <?php endif; ?>
             
         </fieldset>
 
         <fieldset>
             <legend>Características (Opcional)</legend>
-                        
+            
             <label for="superficie">Superficie (m²):</label>
             <input type="number" id="superficie" name="Superficie" min="0" step="0.01" 
                    value="<?php echo htmlspecialchars($Superficie); ?>">
             <?php if(isset($errores['Superficie'])): ?>
-                <strong><?php echo $errores['Superficie']; ?></strong>
+                <div style="color: red; font-size: 0.9em; margin-top: 5px;">
+                    <?php echo $errores['Superficie']; ?>
+                </div>
             <?php endif; ?>
-            
-
             
             <label for="habitaciones">Habitaciones:</label>
             <input type="number" id="habitaciones" name="NHabitaciones" min="0" 
                    value="<?php echo htmlspecialchars($NHabitaciones); ?>">
             <?php if(isset($errores['NHabitaciones'])): ?>
-                <strong><?php echo $errores['NHabitaciones']; ?></strong>
+                <div style="color: red; font-size: 0.9em; margin-top: 5px;">
+                    <?php echo $errores['NHabitaciones']; ?>
+                </div>
             <?php endif; ?>
   
             <label for="banyos">Baños:</label>
@@ -226,7 +285,6 @@ require_once "header.php";
             <label for="planta">Planta:</label>
             <input type="number" id="planta" name="Planta" 
                     value="<?php echo htmlspecialchars($Planta); ?>">
-
 
             <label for="anyo">Año Construcción:</label>
             <input type="number" id="anyo" name="Anyo" min="1900" max="2099" 
