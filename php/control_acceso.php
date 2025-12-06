@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($mysqli) {
         
         // 3. Sentencia preparada para evitar Inyección SQL
-        $sql = "SELECT u.IdUsuario, u.NomUsuario, u.Clave, e.Fichero 
+        $sql = "SELECT u.IdUsuario, u.NomUsuario, u.Clave, u.Foto, e.Fichero 
                 FROM Usuarios u 
                 JOIN Estilos e ON u.Estilo = e.IdEstilo
                 WHERE u.NomUsuario = ?";
@@ -47,6 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     // 8. Guardamos el ID numérico de la BD.
                     $_SESSION['usuario_id'] = $fila_usuario['IdUsuario'];
                     $_SESSION['usuario_nombre'] = $fila_usuario['NomUsuario'];
+                    $_SESSION['usuario_foto'] = !empty($fila_usuario['Foto']) ? $fila_usuario['Foto'] : 'perfil.jpg';
                     
                     // 9. GUARDAR el estilo en COOKIE (desde la BD)
                     $estilo_usuario = $fila_usuario['Fichero'];

@@ -127,9 +127,33 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // Encriptamos contraseña
         $clave_hash = password_hash($pwd, PASSWORD_DEFAULT);
         
-        // Valores por defecto
-        $foto_defecto = "perfil.jpg"; 
-        $estilo_defecto = 1; // Estilo por defecto
+        $nombre_foto = "perfil.jpg"; // Empezamos con la de defecto
+        $estilo_defecto = 1; 
+
+        // Comprobamos si han subido un fichero y si no ha dado error
+        if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+            
+            $nombre_original = $_FILES['foto']['name'];
+            $temporal = $_FILES['foto']['tmp_name'];
+            
+            // Sacamos la extensión del archivo (jpg, png, etc.)
+            $extension = strtolower(pathinfo($nombre_original, PATHINFO_EXTENSION));
+            
+            // Extensiones que permitimos (seguridad básica)
+            $permitidas = ['jpg', 'jpeg', 'png', 'gif'];
+            
+            if (in_array($extension, $permitidas)) {
+                // Creamos un nombre único para no machacar fotos de otros:
+                // Ejemplo: leigh_173332123.jpg
+                $nuevo_nombre = $usuario . "_" . time() . "." . $extension;
+                $ruta_destino = "../img/" . $nuevo_nombre;
+                
+                // Intentamos mover el archivo de la carpeta temporal a la nuestra
+                if (move_uploaded_file($temporal, $ruta_destino)) {
+                    $nombre_foto = $nuevo_nombre; //Usaremos esta foto
+                }
+            }
+        }
         
         // Convertir sexo a número (TinyInt en BD): Hombre=1, Mujer=0, Otro=2
         $sexo_num = 2; 
@@ -145,7 +169,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // Orden: Nom(s), Clave(s), Email(s), Sexo(i), Nac(s), Ciudad(s), Pais(i), Foto(s), Estilo(i)
         // Total: sssisissi
         mysqli_stmt_bind_param($stmt_ins, "sssissisi", 
-            $usuario, $clave_hash, $email, $sexo_num, $nac, $ciudad, $pais, $foto_defecto, $estilo_defecto
+            $usuario, $clave_hash, $email, $sexo_num, $nac, $ciudad, $pais, $nombre_foto, $estilo_defecto
         );
 
         if (mysqli_stmt_execute($stmt_ins)) {
@@ -157,6 +181,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <section id="bloque">
                     <h2>Registro Completado</h2>
                     <p>Bienvenido, <strong><?php echo htmlspecialchars($usuario); ?></strong>.</p>
+                    
+                    <p>Tu foto de perfil:</p>
+                    <figure>
+                        <img src="../img/<?php echo htmlspecialchars($nombre_foto); ?>" 
+                             alt="Foto de <?php echo htmlspecialchars($usuario); ?>" 
+                             style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; margin: 0 auto;">
+                    </figure>
+
                     <p>Tus datos se han guardado correctamente.</p>
                     <br>
                     <a href="login.php">Iniciar Sesión</a>

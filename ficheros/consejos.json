@@ -1,0 +1,17 @@
+[
+    {
+        "categoria": "Compra",
+        "importancia": "Alta",
+        "descripcion": "Si compras una vivienda con tu pareja, con ella podrás cortar, con la hipoteca no."
+    },
+    {
+        "categoria": "Venta",
+        "importancia": "Media",
+        "descripcion": "Limpia y repasa la pintura antes de enseñar la casa."
+    },
+    {
+        "categoria": "Compra",
+        "importancia": "Baja",
+        "descripcion": "Haz una lista de lo que necesitas para ser feliz en tu nueva casa."
+    }
+]

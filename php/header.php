@@ -11,7 +11,15 @@
             <a href="inicio_registrado.php"><i class="icon-home"></i>Inicio</a>
             <!-- <a href="../publicar.html"><i class="icon-upload"></i>Publicar anuncio</a> -->
             <!-- <a href="MenuRegistradoUsu.php"><i class="icon-menu"></i>Menú de Usuario</a> -->
-            <a href="MenuRegistradoUsu.php"><img src="../img/perfil.jpg" alt="Foto de Perfil">Perfil</a>
+            <?php
+                // Si tenemos foto en sesión, la usamos. Si no, usamos la de defecto.
+                $foto_header = $_SESSION['usuario_foto'] ?? 'perfil.jpg';
+            ?>
+            <a href="MenuRegistradoUsu.php">
+                <img src="../img/<?php echo htmlspecialchars($foto_header); ?>" 
+                     alt="Foto de <?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?>">
+                Perfil
+            </a>
         <?php
         } else {
             // Enlaces que solo ve el usuario NO REGISTRADO/PUBLICO

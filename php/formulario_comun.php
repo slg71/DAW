@@ -120,9 +120,14 @@
             <span class="error-campo"><?php echo htmlspecialchars($errores["pais"]); ?></span>
         <?php endif; ?>
 
-        <?php if ($es_registro): // Solo mostrar en la página de registro ?>
-            <label for="foto">Foto de perfil</label>
-            <input type="file" id="foto" name="foto">
+        <label for="foto">Foto de perfil (Subir nueva para cambiar):</label>
+        <input type="file" id="foto" name="foto">
+        
+        <?php if (!$es_registro): ?>
+            <label class="checkbox-recordar">
+                Eliminar foto actual (volver a la de defecto)
+                <input type="checkbox" name="borrar_foto" id="borrar_foto" value="1">
+            </label>
         <?php endif; ?>
 
 

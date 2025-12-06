@@ -131,35 +131,75 @@ if ($mysqli) {
         header("Location: mis_datos.php");
         exit;
     } else {
-        // Todo correcto -> UPDATE
-        // Preparamos valores
+        // ========================================================
+        // GESTIÓN DE LA FOTO (NUEVO CÓDIGO)
+        // ========================================================
+        
+        // 1. Primero averiguamos qué foto tiene ahora mismo (para poder borrarla si la cambia)
+        $sql_foto_vieja = "SELECT Foto FROM usuarios WHERE IdUsuario = ?";
+        $stmt_f = mysqli_prepare($mysqli, $sql_foto_vieja);
+        mysqli_stmt_bind_param($stmt_f, "i", $id_usuario);
+        mysqli_stmt_execute($stmt_f);
+        mysqli_stmt_bind_result($stmt_f, $foto_actual);
+        mysqli_stmt_fetch($stmt_f);
+        mysqli_stmt_close($stmt_f);
+
+        $nombre_foto_final = $foto_actual; // Por defecto, nos quedamos con la que tiene
+
+        // 2. ¿Ha marcado el checkbox de borrar?
+        if (isset($_POST['borrar_foto']) && $_POST['borrar_foto'] == '1') {
+            // Si la foto vieja no es la de "perfil.jpg" (la default), la borramos del disco duro
+            if ($foto_actual != "perfil.jpg" && file_exists("../img/" . $foto_actual)) {
+                unlink("../img/" . $foto_actual);
+            }
+            $nombre_foto_final = "perfil.jpg"; // Volvemos a la inicial
+        }
+
+        // 3. ¿Ha subido una foto nueva?
+        if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+            $nombre_orig = $_FILES['foto']['name'];
+            $tmp = $_FILES['foto']['tmp_name'];
+            $ext = strtolower(pathinfo($nombre_orig, PATHINFO_EXTENSION));
+            
+            if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])) {
+                // Nombre único: usuario + timestamp
+                $nuevo_nombre = $usuario . "_" . time() . "." . $ext;
+                
+                if (move_uploaded_file($tmp, "../img/" . $nuevo_nombre)) {
+                    // Si se ha subido bien la nueva, borramos la vieja (si no es la default)
+                    if ($foto_actual != "perfil.jpg" && file_exists("../img/" . $foto_actual)) {
+                        unlink("../img/" . $foto_actual);
+                    }
+                    $nombre_foto_final = $nuevo_nombre; // Guardamos el nombre nuevo
+                }
+            }
+        }
+
+        // ========================================================
+        // ACTUALIZACIÓN EN BASE DE DATOS (UPDATE)
+        // ========================================================
+        
         $sexo_num = ($sexo == 'hombre') ? 1 : (($sexo == 'mujer') ? 0 : 2);
         
         if ($cambiar_clave) {
             // Actualizamos todo
-            $sql_update = "UPDATE usuarios SET NomUsuario=?, Email=?, Sexo=?, FNacimiento=?, Ciudad=?, Pais=?, Clave=? WHERE IdUsuario=?";
+            $sql_update = "UPDATE usuarios SET NomUsuario=?, Email=?, Sexo=?, FNacimiento=?, Ciudad=?, Pais=?, Clave=?, Foto=? WHERE IdUsuario=?";
             $stmt_up = mysqli_prepare($mysqli, $sql_update);
-            // Tipos: s s i s s i s i
-            mysqli_stmt_bind_param($stmt_up, "ssissisi", $usuario, $email, $sexo_num, $nac, $ciudad, $pais, $hash_nueva_clave, $id_usuario);
+            // Tipos: s s i s s i s s i
+            mysqli_stmt_bind_param($stmt_up, "ssississi", $usuario, $email, $sexo_num, $nac, $ciudad, $pais, $hash_nueva_clave, $nombre_foto_final, $id_usuario);
         } else {
             // Actualizamos sin tocar la clave
-            $sql_update = "UPDATE usuarios SET NomUsuario=?, Email=?, Sexo=?, FNacimiento=?, Ciudad=?, Pais=? WHERE IdUsuario=?";
+            $sql_update = "UPDATE usuarios SET NomUsuario=?, Email=?, Sexo=?, FNacimiento=?, Ciudad=?, Pais=?, Foto=? WHERE IdUsuario=?";
             $stmt_up = mysqli_prepare($mysqli, $sql_update);
-            // Tipos: s s i s s i i
-            mysqli_stmt_bind_param($stmt_up, "ssissii", $usuario, $email, $sexo_num, $nac, $ciudad, $pais, $id_usuario);
+            // Tipos: s s i s s i s i
+            mysqli_stmt_bind_param($stmt_up, "ssissisi", $usuario, $email, $sexo_num, $nac, $ciudad, $pais, $nombre_foto_final, $id_usuario);
         }
 
         if (mysqli_stmt_execute($stmt_up)) {
-            // Éxito
             mysqli_stmt_close($stmt_up);
-            
-            // Actualizamos el nombre en la sesión por si cambió
             $_SESSION['usuario_nombre'] = $usuario;
-            
-            /*si la sesión caduca, el usuario tendrá que loguearse de nuevo porque la cookie antigua tendrá el usuario viejo. */
+            $_SESSION['usuario_foto'] = $nombre_foto_final;
             mysqli_close($mysqli);
-            
-            // Redirigimos con mensaje de éxito
             header("Location: mis_datos.php?ok=1");
             exit;
         } else {
