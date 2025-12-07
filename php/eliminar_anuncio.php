@@ -36,11 +36,61 @@ if (!$existe) {
 }
 
 // -------------------------------------------------------------------------
-// PROCESO DE BORRADO
+// PROCESO DE BORRADO (MODIFICADO)
 // -------------------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirmado']) && $_POST['confirmado'] == 'si') {
     
-    // Borrar las fotos asociadas
+    // 1. OBTENER NOMBRES DE FICHERO ASOCIADOS AL ANUNCIO (ANTES DE BORRAR LA BD)
+    $ficheros_a_borrar = [];
+    // RUTA CORREGIDA: "../img/"
+    $directorio_fotos = "../img/"; 
+
+    // a) Obtener la Foto Principal
+    $sql_principal = "SELECT FPrincipal FROM anuncios WHERE IdAnuncio = ? AND Usuario = ?";
+    $stmt_p = $mysqli->prepare($sql_principal);
+    if ($stmt_p) {
+        $stmt_p->bind_param("ii", $id_anuncio, $_SESSION['usuario_id']);
+        $stmt_p->execute();
+        $stmt_p->bind_result($fprincipal);
+        if ($stmt_p->fetch() && !empty($fprincipal)) {
+            $ficheros_a_borrar[] = $fprincipal;
+        }
+        $stmt_p->close();
+    }
+    
+    // b) Obtener las Fotos Secundarias
+    $sql_secundarias = "SELECT Foto FROM fotos WHERE Anuncio = ?";
+    $stmt_s = $mysqli->prepare($sql_secundarias);
+    if ($stmt_s) {
+        $stmt_s->bind_param("i", $id_anuncio);
+        $stmt_s->execute();
+        $res_s = $stmt_s->get_result();
+        while ($fila = $res_s->fetch_assoc()) {
+            if (!empty($fila['Foto'])) {
+                $ficheros_a_borrar[] = $fila['Foto'];
+            }
+        }
+        $stmt_s->close();
+    }
+    
+    // b) Obtener las Fotos Secundarias
+    $sql_secundarias = "SELECT Foto FROM fotos WHERE Anuncio = ?";
+    $stmt_s = $mysqli->prepare($sql_secundarias);
+    if ($stmt_s) {
+        $stmt_s->bind_param("i", $id_anuncio);
+        $stmt_s->execute();
+        $res_s = $stmt_s->get_result();
+        while ($fila = $res_s->fetch_assoc()) {
+            if (!empty($fila['Foto'])) {
+                $ficheros_a_borrar[] = $fila['Foto'];
+            }
+        }
+        $stmt_s->close();
+    }
+    
+    // 2. BORRAR REGISTROS DE BASE DE DATOS
+    
+    // Borrar las fotos asociadas (DB)
     $stmt_fotos = $mysqli->prepare("DELETE FROM fotos WHERE Anuncio = ?");
     $stmt_fotos->bind_param("i", $id_anuncio);
     $stmt_fotos->execute();
@@ -64,6 +114,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirmado']) && $_POS
     
     if ($stmt_borrar->execute()) {
         $mensaje = "El anuncio se ha eliminado correctamente.";
+
+        // 3. BORRAR FICHEROS FÍSICOS (Sólo si el borrado de DB fue exitoso)
+        foreach ($ficheros_a_borrar as $nombre_fichero) {
+            $ruta = $directorio_fotos . $nombre_fichero;
+            if (file_exists($ruta)) {
+                unlink($ruta); // Eliminar el fichero físico
+            }
+        }
+
     } else {
         $error = "Error al intentar eliminar el anuncio: " . $mysqli->error;
     }
@@ -82,7 +141,6 @@ require_once 'header.php';
     <h2>Eliminar Anuncio</h2>
 
     <?php if ($mensaje): ?>
-        <!-- borrado -->
         <h3>Borrado realizado</h3>
         <p><?php echo $mensaje; ?></p>
         <p>El anuncio ya no aparecerá en el listado.</p>
@@ -92,7 +150,6 @@ require_once 'header.php';
         </button>
 
     <?php elseif ($error): ?>
-        <!-- ERROR al borrar -->
         <h3>Error</h3>
         <p><?php echo $error; ?></p>
         <button>

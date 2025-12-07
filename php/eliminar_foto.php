@@ -70,9 +70,9 @@ if ($mostrar_formulario && $confirmado && $_SERVER['REQUEST_METHOD'] == 'POST') 
             // BORRAR FOTO PRINCIPAL
             // ==========================================
             
-            // 1. Borrar el fichero físico actual (opcional, pero recomendado)
+            // 1. Borrar el fichero físico actual 
             if (!empty($datos_anuncio['FPrincipal'])) {
-                $ruta = "img/" . $datos_anuncio['FPrincipal'];
+                $ruta = "../img/" . $datos_anuncio['FPrincipal']; 
                 if (file_exists($ruta)) { unlink($ruta); }
             }
 
@@ -132,7 +132,8 @@ if ($mostrar_formulario && $confirmado && $_SERVER['REQUEST_METHOD'] == 'POST') 
             $stmt_get->close();
 
             if ($fichero_borrar) {
-                $ruta = "img/" . $fichero_borrar;
+                // RUTA CORREGIDA: "../img/"
+                $ruta = "../img/" . $fichero_borrar;
                 if (file_exists($ruta)) { unlink($ruta); }
             }
 

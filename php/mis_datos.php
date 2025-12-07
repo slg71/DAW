@@ -14,7 +14,7 @@ $titulo_pagina = "Mis Datos";
 include "paginas_Estilo.php";
 include "header.php";
 
-// 1. AÑADIMOS LA CONEXIÓN
+// 1. AÑADIMOS LA CONEXION
 include "conexion_bd.php"; 
 
 $datos_usuario = null;

@@ -22,110 +22,109 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $anuncio_id = isset($_POST['anuncio']) ? intval($_POST['anuncio']) : 0;
     $titulo_foto = trim($_POST['titulo_foto'] ?? '');
     $texto_alt = trim($_POST['texto_alt'] ?? '');
-    // Recogemos si el usuario INTENTA que sea principal
     $usuario_pide_principal = isset($_POST['es_principal']) && $_POST['es_principal'] == '1';
     
-    $nombre_fichero = isset($_FILES['foto']['name']) ? $_FILES['foto']['name'] : '';// Subida de fichero
+    // Subida de fichero
+    $fichero_info = $_FILES['foto'] ?? null;
+    $nombre_fichero_original = $fichero_info['name'] ?? '';
 
-    // --- VALIDACIONES ---
     if (empty($titulo_foto)) $errores[] = "El título de la foto es obligatorio.";
-    if (empty($nombre_fichero)) $errores[] = "Debes seleccionar un fichero de imagen.";
+    if (empty($anuncio_id)) $errores[] = "Debe seleccionar un anuncio.";
+    if ($fichero_info === null || empty($nombre_fichero_original)) {
+        $errores[] = "Debes seleccionar un fichero de imagen.";
+    }
     
     if (empty($texto_alt)) {
-        $errores[] = "El texto alternativo es obligatorio.";
-    } else {
-        if (strlen($texto_alt) < 10) $errores[] = "El texto alternativo debe tener al menos 10 caracteres.";
-        if (preg_match('/^(foto|imagen)/i', $texto_alt)) $errores[] = "El texto alternativo no debe empezar por 'foto' o 'imagen'.";
-        if (strcasecmp($texto_alt, "Texto alternativo para la imagen") === 0) $errores[] = "No utilices el texto alternativo generado por defecto.";
+        $texto_alt = $titulo_foto;
     }
 
-    // --- LOGICA DE BASE DE DATOS---
     if (empty($errores)) {
-        // verificamos que el anuncio existe y pertenece al usuario
-        $sql_info = "SELECT IdAnuncio, FPrincipal, Alternativo FROM anuncios WHERE IdAnuncio = ? AND Usuario = ?";//coge la foto 
-        $stmt_info = $mysqli->prepare($sql_info);
         
-        if ($stmt_info) {
-            $stmt_info->bind_param("ii", $anuncio_id, $_SESSION['usuario_id']);
-            $stmt_info->execute();
-            $resultado = $stmt_info->get_result();
-            $datos_anuncio = $resultado->fetch_assoc();
-            $stmt_info->close();
+        if ($fichero_info['error'] !== UPLOAD_ERR_OK) {
+            $errores[] = "Error al subir el archivo (Código: {$fichero_info['error']}).";
+        }
 
-            if ($datos_anuncio) {
-                // REGLA 1: Si no tiene foto, es principal
-                // REGLA 2: Si tiene foto y el usuario marca el checkbox, reemplaza la foto principal
-                // REGLA 3: Si tiene foto y el usuario NO marca el checkbox, va a la tablaa de fotos
-                
-                $es_principal_final = false;
-                
-                if (empty($datos_anuncio['FPrincipal'])) {
-                    $es_principal_final = true; // 1
-                } elseif ($usuario_pide_principal) {
-                    $es_principal_final = true; // 2 
-                } else {
-                    $es_principal_final = false; //3
+        $max_size = 5 * 1024 * 1024; 
+        $tipos_permitidos = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        $ext_original = strtolower(pathinfo($fichero_info['name'], PATHINFO_EXTENSION));
+        $mime_type = $fichero_info['type']; 
+
+        if ($fichero_info['size'] > $max_size) {
+            $errores[] = "El tamaño del archivo excede el límite permitido (5MB).";
+        }
+        if (!in_array($mime_type, $tipos_permitidos) && !in_array('image/'.$ext_original, $tipos_permitidos)) {
+            $errores[] = "Tipo de archivo no permitido. Solo se permiten JPEG, PNG, WebP o GIF.";
+        }
+    }
+
+    // estrategia de colision y subida de a la carpeta img
+    if (empty($errores)) {
+        
+        // Generar nombre de fichero unico: IdAnuncio_Timestamp_Hash.ext
+        $nombre_base = $anuncio_id . '_' . time() . '_' . uniqid();
+        $nombre_fichero = $nombre_base . '.' . $ext_original;
+        $ruta_destino = "../img/" . $nombre_fichero; 
+        
+        if (!move_uploaded_file($fichero_info['tmp_name'], $ruta_destino)) {
+            $errores[] = "Error al mover el fichero al directorio de destino. Compruebe permisos de la carpeta '../img/'.";
+        }
+    }
+
+
+    // --- INSERCIÓN EN BASE DE DATOS ---
+    if (empty($errores)) {
+        
+        $fprincipal_actual = null;
+        $sql_check_principal = "SELECT FPrincipal FROM anuncios WHERE IdAnuncio = ?";
+        $stmt_check_p = $mysqli->prepare($sql_check_principal);
+        $stmt_check_p->bind_param("i", $anuncio_id);
+        $stmt_check_p->execute();
+        $stmt_check_p->bind_result($fprincipal_actual);
+        $stmt_check_p->fetch();
+        $stmt_check_p->close();
+
+        $tiene_principal_actual = !empty($fprincipal_actual);
+        if ($usuario_pide_principal || !$tiene_principal_actual) {
+            
+            if ($tiene_principal_actual) {
+                $ruta_antigua = "../img/" . $fprincipal_actual;
+                if (file_exists($ruta_antigua)) {
+                    unlink($ruta_antigua);
                 }
-
-                if ($es_principal_final) {
-                    
-                    $mysqli->begin_transaction();
-                    try {
-                        // Si ya habia una foto, la guardamos en la tabla 'fotos' para no perderla
-                        if (!empty($datos_anuncio['FPrincipal'])) {
-                            $sql_mover = "INSERT INTO fotos (Titulo, Foto, Alternativo, Anuncio) VALUES (?, ?, ?, ?)";
-                            $stmt_mover = $mysqli->prepare($sql_mover);
-                            $tit_antiguo = "Antigua foto principal";
-                            $foto_antigua = $datos_anuncio['FPrincipal'];
-                            $alt_antiguo = $datos_anuncio['Alternativo'];
-                            
-                            $stmt_mover->bind_param("sssi", $tit_antiguo, $foto_antigua, $alt_antiguo, $anuncio_id);
-                            if (!$stmt_mover->execute()) {
-                                throw new Exception("Error al mover la foto antigua a secundarios.");
-                            }
-                            $stmt_mover->close();
-                        }
-
-                        // Guardamos la nueva foto en 'anuncios'
-                        $sql_upd = "UPDATE anuncios SET FPrincipal = ?, Alternativo = ? WHERE IdAnuncio = ?";
-                        $stmt_upd = $mysqli->prepare($sql_upd);
-                        $stmt_upd->bind_param("ssi", $nombre_fichero, $texto_alt, $anuncio_id);
-                        
-                        if (!$stmt_upd->execute()) {
-                            throw new Exception("Error al actualizar la foto principal.");
-                        }
-                        $stmt_upd->close();
-
-                        $mysqli->commit();
-                        $exito = true;
-                        $mensaje_resultado = "La imagen se ha establecido como FOTO PRINCIPAL del anuncio.";
-
-                    } catch (Exception $e) {
-                        $mysqli->rollback();
-                        $errores[] = "Error en la operación: " . $e->getMessage();
-                    }
-
-                } else {
-                    // Insertar en tabla 'fotos'
-                    $sql_ins = "INSERT INTO fotos (Titulo, Foto, Alternativo, Anuncio) VALUES (?, ?, ?, ?)";
-                    $stmt_ins = $mysqli->prepare($sql_ins);
-                    if ($stmt_ins) {
-                        $stmt_ins->bind_param("sssi", $titulo_foto, $nombre_fichero, $texto_alt, $anuncio_id);
-                        if ($stmt_ins->execute()) {
-                            $exito = true;
-                            $mensaje_resultado = "La imagen se ha guardado en la galería secundaria.";
-                        } else {
-                            $errores[] = "Error al guardar en BD: " . $stmt_ins->error;
-                        }
-                        $stmt_ins->close();
-                    }
-                }
-
-            } else {
-                $errores[] = "El anuncio no existe o no tienes permisos.";
             }
+            
+            // Actualizar anuncios
+            $sql_update = "UPDATE anuncios SET FPrincipal = ?, Alternativo = ? WHERE IdAnuncio = ?";
+            $stmt_update = $mysqli->prepare($sql_update);
+            $stmt_update->bind_param("ssi", $nombre_fichero, $texto_alt, $anuncio_id);
+            
+            if (!$stmt_update->execute()) {
+                $errores[] = "Error al asignar como foto principal: " . $stmt_update->error;
+            }
+            $stmt_update->close();
+            
+            $mensaje_resultado = "La foto se ha subido y establecido como foto principal del anuncio.";
+            
         } else {
-            $errores[] = "Error de conexión BD: " . $mysqli->error;
+            // Insertar en fotos
+            $sql_insert = "INSERT INTO fotos (Anuncio, Foto, Titulo, Alternativo) VALUES (?, ?, ?, ?)";
+            $stmt_insert = $mysqli->prepare($sql_insert);
+            $stmt_insert->bind_param("isss", $anuncio_id, $nombre_fichero, $titulo_foto, $texto_alt);
+            
+            if (!$stmt_insert->execute()) {
+                $errores[] = "Error al insertar la foto secundaria: " . $stmt_insert->error;
+            }
+            $stmt_insert->close();
+            
+            $mensaje_resultado = "La foto se ha subido correctamente a la galería secundaria.";
+        }
+
+        $exito = empty($errores);
+        
+        if (!$exito) {
+            if (file_exists($ruta_destino)) {
+                unlink($ruta_destino);
+            }
         }
     }
 }
