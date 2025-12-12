@@ -132,7 +132,7 @@ if ($mysqli) {
         exit;
     } else {
         // ========================================================
-        // GESTIÓN DE LA FOTO (NUEVO CÓDIGO)
+        // GESTIÓN DE LA FOTO
         // ========================================================
         
         // 1. Primero averiguamos qué foto tiene ahora mismo (para poder borrarla si la cambia)

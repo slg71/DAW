@@ -36,7 +36,7 @@ if (!$existe) {
 }
 
 // -------------------------------------------------------------------------
-// PROCESO DE BORRADO (MODIFICADO)
+// PROCESO DE BORRADO
 // -------------------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirmado']) && $_POST['confirmado'] == 'si') {
     
@@ -56,21 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirmado']) && $_POS
             $ficheros_a_borrar[] = $fprincipal;
         }
         $stmt_p->close();
-    }
-    
-    // b) Obtener las Fotos Secundarias
-    $sql_secundarias = "SELECT Foto FROM fotos WHERE Anuncio = ?";
-    $stmt_s = $mysqli->prepare($sql_secundarias);
-    if ($stmt_s) {
-        $stmt_s->bind_param("i", $id_anuncio);
-        $stmt_s->execute();
-        $res_s = $stmt_s->get_result();
-        while ($fila = $res_s->fetch_assoc()) {
-            if (!empty($fila['Foto'])) {
-                $ficheros_a_borrar[] = $fila['Foto'];
-            }
-        }
-        $stmt_s->close();
     }
     
     // b) Obtener las Fotos Secundarias
