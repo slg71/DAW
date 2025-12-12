@@ -1,6 +1,6 @@
 <?php
 // -------------------------------------------------------------
-// Página: index.php / inicio_registrado.php
+// Página: inicio_registrado.php
 // -------------------------------------------------------------
 require_once "sesion_control.php";
 
