@@ -134,7 +134,6 @@ if ($mostrar_formulario && $confirmado && $_SERVER['REQUEST_METHOD'] == 'POST') 
             $stmt_get->close();
 
             if ($fichero_borrar) {
-                // RUTA CORREGIDA: "../img/"
                 $ruta = "../img/" . $fichero_borrar;
                 if (file_exists($ruta)) { 
                     unlink($ruta); 

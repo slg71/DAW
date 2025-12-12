@@ -42,7 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirmado']) && $_POS
     
     // 1. OBTENER NOMBRES DE FICHERO ASOCIADOS AL ANUNCIO (ANTES DE BORRAR LA BD)
     $ficheros_a_borrar = [];
-    // RUTA CORREGIDA: "../img/"
     $directorio_fotos = "../img/"; 
 
     // a) Obtener la Foto Principal
