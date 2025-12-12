@@ -70,10 +70,12 @@ if ($mostrar_formulario && $confirmado && $_SERVER['REQUEST_METHOD'] == 'POST') 
             // BORRAR FOTO PRINCIPAL
             // ==========================================
             
-            // 1. Borrar el fichero físico actual 
+            // 1. Borrar la img fisica
             if (!empty($datos_anuncio['FPrincipal'])) {
                 $ruta = "../img/" . $datos_anuncio['FPrincipal']; 
-                if (file_exists($ruta)) { unlink($ruta); }
+                if (file_exists($ruta)) { 
+                    unlink($ruta); 
+                }
             }
 
             // 2. Buscar si hay reemplazo en la tabla 'fotos'
@@ -134,7 +136,9 @@ if ($mostrar_formulario && $confirmado && $_SERVER['REQUEST_METHOD'] == 'POST') 
             if ($fichero_borrar) {
                 // RUTA CORREGIDA: "../img/"
                 $ruta = "../img/" . $fichero_borrar;
-                if (file_exists($ruta)) { unlink($ruta); }
+                if (file_exists($ruta)) { 
+                    unlink($ruta); 
+                }
             }
 
             // Borrar registro
@@ -170,7 +174,7 @@ require_once "header.php";
     <h2>Eliminar Foto</h2>
 
     <?php if ($mostrar_formulario): ?>
-        <!-- PÁGINA DE CONFIRMACIÓN -->
+        <!-- PAGINA DE CONFIRMACION -->
         <section class="advertencia">
             
             

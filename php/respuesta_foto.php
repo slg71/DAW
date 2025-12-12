@@ -61,6 +61,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($errores)) {
         
         // Generar nombre de fichero unico: IdAnuncio_Timestamp_Hash.ext
+        //time recoge los segundos 
+        //uniqid genera un id unico basado en microsegundos
+        //entonces si id es 23 seria algo asi: 23_123456789_63jsc3e4f1a2b.jpg
+        //ID del anuncio  +  segundo exacto  +  un codigo unico aleatorio   +  extension
         $nombre_base = $anuncio_id . '_' . time() . '_' . uniqid();
         $nombre_fichero = $nombre_base . '.' . $ext_original;
         $ruta_destino = "../img/" . $nombre_fichero; 
@@ -71,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
 
-    // --- INSERCIÓN EN BASE DE DATOS ---
+    // --- INSERTAR EN BD ---
     if (empty($errores)) {
         
         $fprincipal_actual = null;
