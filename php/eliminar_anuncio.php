@@ -100,11 +100,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirmado']) && $_POS
     if ($stmt_borrar->execute()) {
         $mensaje = "El anuncio se ha eliminado correctamente.";
 
-        // 3. BORRAR FICHEROS FÍSICOS (Sólo si el borrado de DB fue exitoso)
+        // 3. BORRAR FICHEROS FISICOS solo si el borrado de DB fue exitoso
         foreach ($ficheros_a_borrar as $nombre_fichero) {
             $ruta = $directorio_fotos . $nombre_fichero;
             if (file_exists($ruta)) {
-                unlink($ruta); // Eliminar el fichero físico
+                unlink($ruta); // Eliminar la img fisica
             }
         }
 

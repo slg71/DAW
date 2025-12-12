@@ -40,7 +40,7 @@ if ($mysqli) {
         // Recorremos los resultados
         while (mysqli_stmt_fetch($stmt)) {
             
-            // Usamos una conexión NUEVA para evitar conflictos con la consulta principal
+            // Usamos una conexion NUEVA para evitar conflictos con la consulta principal
             $link_aux = conectarBD(); 
             
             $sql_fotos = "SELECT COUNT(*) as num FROM fotos WHERE Anuncio = $id_anuncio";
@@ -54,7 +54,7 @@ if ($mysqli) {
             // La foto principal cuenta como 1 extra
             $num_fotos++; 
             
-            mysqli_close($link_aux); // Cerramos la conexión auxiliar
+            mysqli_close($link_aux); // Cerramos la conexion auxiliar
             
             // Sumamos totales
             $total_anuncios++;

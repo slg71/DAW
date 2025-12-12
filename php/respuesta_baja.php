@@ -36,11 +36,9 @@ if ($mysqli) {
             // 1. OBTENER NOMBRES DE TODOS LOS FICHEROS DEL USUARIO
             // ==========================================================
             $ficheros_a_borrar = [];
-            // RUTA CORREGIDA: "../img/" (Sale de la carpeta php/)
-            $directorio_fotos = "../img/"; 
+            $ruta = "../img/"; 
             
-            // Consulta única para obtener todas las fotos: perfil, principales y secundarias
-            // EXCLUYE la foto 'perfil.jpg' si es la de usuario por defecto.
+            // Consulta para obtener todas las fotos: perfil, principales y secundarias
             $sql_ficheros = "
                 SELECT Foto AS Fichero FROM usuarios WHERE IdUsuario = ? AND Foto IS NOT NULL AND Foto != 'perfil.jpg'
                 UNION ALL
@@ -107,17 +105,17 @@ if ($mysqli) {
                 $borrado_ok = true;
                 
                 // ==========================================================
-                // 3. BORRAR FICHEROS FÍSICOS (Sólo si el borrado de DB fue exitoso)
+                // 3. BORRAR FICHEROS FISICOS si el borrado de DB fue exitoso
                 // ==========================================================
                 // Usamos array_unique para evitar procesar y borrar el mismo fichero varias veces
                 foreach (array_unique($ficheros_a_borrar) as $nombre_fichero) {
-                    $ruta = $directorio_fotos . $nombre_fichero;
+                    $ruta = $ruta . $nombre_fichero;
                     if (file_exists($ruta)) {
                         unlink($ruta);
                     }
                 }
                 
-                // Destruir sesión y borrar cookies
+                // Destruir sesion y borrar cookies
                 $_SESSION = array();
                 if (isset($_COOKIE[session_name()])) {
                     setcookie(session_name(), '', time()-42000, '/');
