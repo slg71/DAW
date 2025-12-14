@@ -9,6 +9,7 @@ require_once "sesion_control.php";
 // -------------------------------------------------------------
 
 include "funciones_anuncios.php";
+include "funciones_imagenes.php";
 
 $id_usuario = obtener_id_usuario_numerico($_SESSION['usuario_id']);//en funciones_anuncios
 
@@ -33,11 +34,15 @@ include "header.php";
     <?php if ($num_total_anuncios > 0): ?>
         <section id="listado">
             <?php foreach ($anuncios_usuario as $anuncio): ?>
+                <?php
+                    //calcular la ruta física del archivo en el servidor
+                    $ruta_foto = "../img/" . $anuncio['FPrincipal'];
+                ?>
                 <article>
                     <a href="ver_anuncio.php?id=<?php echo htmlspecialchars($anuncio['IdAnuncio']); ?>">
                         <img 
-                            src="../img/<?php echo htmlspecialchars($anuncio['FPrincipal']); ?>" 
-                            alt="Foto principal de <?php echo htmlspecialchars($anuncio['Titulo']); ?>"
+                            src="<?php echo generar_miniatura($ruta_foto, 150); ?>" 
+                            alt="Miniatura de <?php echo htmlspecialchars($anuncio['Titulo']); ?>"
                         >
                     </a>
                             <h3><?php echo htmlspecialchars($anuncio['Titulo']); ?></h3>

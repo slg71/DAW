@@ -2,6 +2,7 @@
 session_start();
 require_once "conexion_bd.php";
 
+// Control de acceso
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
     exit;
@@ -11,123 +12,154 @@ $errores = [];
 $exito = false;
 $mysqli = conectarBD();
 
-// Variables iniciales
+// Variables iniciales para el HTML
 $titulo_foto = '';
 $nombre_fichero = '';
 $texto_alt = '';
 $anuncio_id = 0;
 $mensaje_resultado = "";
+$fotos_subidas_info = []; 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    
+    // 1. Recogemos datos del formulario
     $anuncio_id = isset($_POST['anuncio']) ? intval($_POST['anuncio']) : 0;
-    $titulo_foto = trim($_POST['titulo_foto'] ?? '');
-    $texto_alt = trim($_POST['texto_alt'] ?? '');
+    $titulo_base = trim($_POST['titulo_foto'] ?? '');
+    $texto_alt_base = trim($_POST['texto_alt'] ?? '');
+    
+    // Variables para el HTML final
+    $titulo_foto = $titulo_base;
+    $texto_alt = $texto_alt_base;
+    
+    // RECUPERAMOS LA VARIABLE QUE DABA ERROR
+    // ¿El usuario marcó el check de "Portada"?
     $usuario_pide_principal = isset($_POST['es_principal']) && $_POST['es_principal'] == '1';
     
-    // Subida de fichero
-    $fichero_info = $_FILES['foto'] ?? null;
-    $nombre_fichero_original = $fichero_info['name'] ?? '';
-
-    if (empty($titulo_foto)) $errores[] = "El título de la foto es obligatorio.";
+    // 2. Validaciones básicas
+    if (empty($titulo_base)) $errores[] = "El título de la foto es obligatorio.";
     if (empty($anuncio_id)) $errores[] = "Debe seleccionar un anuncio.";
-    if ($fichero_info === null || empty($nombre_fichero_original)) {
-        $errores[] = "Debes seleccionar un fichero de imagen.";
-    }
     
-    if (empty($texto_alt)) {
-        $texto_alt = $titulo_foto;
+    // Verificamos el array de fotos
+    if (!isset($_FILES['fotos']) || !is_array($_FILES['fotos']['name']) || empty($_FILES['fotos']['name'][0])) {
+         $errores[] = "No se han seleccionado fotos.";
     }
 
+    // 3. Procesamiento de imágenes
     if (empty($errores)) {
         
-        if ($fichero_info['error'] !== UPLOAD_ERR_OK) {
-            $errores[] = "Error al subir el archivo (Código: {$fichero_info['error']}).";
-        }
+        $contador_exito = 0; // Inicializamos la variable que daba error
+        $total_archivos = count($_FILES['fotos']['name']);
 
-        $max_size = 5 * 1024 * 1024; 
-        $tipos_permitidos = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-        $ext_original = strtolower(pathinfo($fichero_info['name'], PATHINFO_EXTENSION));
-        $mime_type = $fichero_info['type']; 
-
-        if ($fichero_info['size'] > $max_size) {
-            $errores[] = "El tamaño del archivo excede el límite permitido (5MB).";
-        }
-        if (!in_array($mime_type, $tipos_permitidos) && !in_array('image/'.$ext_original, $tipos_permitidos)) {
-            $errores[] = "Tipo de archivo no permitido. Solo se permiten JPEG, PNG, WebP o GIF.";
-        }
-    }
-
-    // estrategia de colision y subida de a la carpeta img
-    if (empty($errores)) {
-        
-        // Generar nombre de fichero unico: IdAnuncio_Timestamp_Hash.ext
-        //time recoge los segundos 
-        //uniqid genera un id unico basado en microsegundos
-        //entonces si id es 23 seria algo asi: 23_123456789_63jsc3e4f1a2b.jpg
-        //ID del anuncio  +  segundo exacto  +  un codigo unico aleatorio   +  extension
-        $nombre_base = $anuncio_id . '_' . time() . '_' . uniqid();
-        $nombre_fichero = $nombre_base . '.' . $ext_original;
-        $ruta_destino = "../img/" . $nombre_fichero; 
-        
-        if (!move_uploaded_file($fichero_info['tmp_name'], $ruta_destino)) {
-            $errores[] = "Error al mover el fichero al directorio de destino. Compruebe permisos de la carpeta '../img/'.";
-        }
-    }
-
-
-    // --- INSERTAR EN BD ---
-    if (empty($errores)) {
-        
-        $fprincipal_actual = null;
-        $sql_check_principal = "SELECT FPrincipal FROM anuncios WHERE IdAnuncio = ?";
-        $stmt_check_p = $mysqli->prepare($sql_check_principal);
-        $stmt_check_p->bind_param("i", $anuncio_id);
-        $stmt_check_p->execute();
-        $stmt_check_p->bind_result($fprincipal_actual);
-        $stmt_check_p->fetch();
-        $stmt_check_p->close();
-
-        $tiene_principal_actual = !empty($fprincipal_actual);
-        if ($usuario_pide_principal || !$tiene_principal_actual) {
+        // Bucle para cada foto
+        for ($i = 0; $i < $total_archivos; $i++) {
             
-            if ($tiene_principal_actual) {
-                $ruta_antigua = "../img/" . $fprincipal_actual;
-                if (file_exists($ruta_antigua)) {
-                    unlink($ruta_antigua);
+            // Extraer info de la foto actual
+            $nombre_original = $_FILES['fotos']['name'][$i];
+            $tipo_mime       = $_FILES['fotos']['type'][$i];
+            $tmp_name        = $_FILES['fotos']['tmp_name'][$i];
+            $error_codigo    = $_FILES['fotos']['error'][$i];
+            $tamano          = $_FILES['fotos']['size'][$i];
+
+            if ($error_codigo !== UPLOAD_ERR_OK || empty($nombre_original)) {
+                continue; 
+            }
+
+            // Validaciones tipo y tamaño
+            $ext = strtolower(pathinfo($nombre_original, PATHINFO_EXTENSION));
+            $tipos_validos = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            
+            if (!in_array($tipo_mime, $tipos_validos) && !in_array('image/'.$ext, $tipos_validos)) {
+                $errores[] = "El archivo '$nombre_original' no es válido.";
+                continue;
+            }
+
+            // Mover fichero
+            // Añadimos $i al nombre para evitar colisiones en la misma subida
+            $nombre_nuevo = $anuncio_id . '_' . time() . '_' . uniqid() . '_' . $i . '.' . $ext;
+            $ruta_destino = "../img/" . $nombre_nuevo;
+
+            if (move_uploaded_file($tmp_name, $ruta_destino)) {
+                
+                // --- LÓGICA DE PORTADA ---
+                
+                // 1. Consultar portada actual
+                $fprincipal_actual = null;
+                $sql_check = "SELECT FPrincipal FROM anuncios WHERE IdAnuncio = ?";
+                $stmt_check = $mysqli->prepare($sql_check);
+                $stmt_check->bind_param("i", $anuncio_id);
+                $stmt_check->execute();
+                $stmt_check->bind_result($fprincipal_actual);
+                $stmt_check->fetch();
+                $stmt_check->close();
+
+                // 2. Comprobar si existe
+                $tiene_principal = !empty($fprincipal_actual) && file_exists("../img/" . $fprincipal_actual);
+                
+                // 3. Decidir si esta foto será la principal
+                $sera_principal = false;
+                
+                // CASO A: Usuario lo pidió y es la primera foto válida del lote
+                if ($usuario_pide_principal && $contador_exito === 0) {
+                    $sera_principal = true;
                 }
-            }
-            
-            // Actualizar anuncios
-            $sql_update = "UPDATE anuncios SET FPrincipal = ?, Alternativo = ? WHERE IdAnuncio = ?";
-            $stmt_update = $mysqli->prepare($sql_update);
-            $stmt_update->bind_param("ssi", $nombre_fichero, $texto_alt, $anuncio_id);
-            
-            if (!$stmt_update->execute()) {
-                $errores[] = "Error al asignar como foto principal: " . $stmt_update->error;
-            }
-            $stmt_update->close();
-            
-            $mensaje_resultado = "La foto se ha subido y establecido como foto principal del anuncio.";
-            
-        } else {
-            // Insertar en fotos
-            $sql_insert = "INSERT INTO fotos (Anuncio, Foto, Titulo, Alternativo) VALUES (?, ?, ?, ?)";
-            $stmt_insert = $mysqli->prepare($sql_insert);
-            $stmt_insert->bind_param("isss", $anuncio_id, $nombre_fichero, $titulo_foto, $texto_alt);
-            
-            if (!$stmt_insert->execute()) {
-                $errores[] = "Error al insertar la foto secundaria: " . $stmt_insert->error;
-            }
-            $stmt_insert->close();
-            
-            $mensaje_resultado = "La foto se ha subido correctamente a la galería secundaria.";
-        }
+                // CASO B: No había foto principal (asignación automática)
+                elseif (!$tiene_principal) {
+                    $sera_principal = true;
+                }
 
-        $exito = empty($errores);
-        
-        if (!$exito) {
-            if (file_exists($ruta_destino)) {
-                unlink($ruta_destino);
+                $titulo_final = ($total_archivos > 1) ? "$titulo_base (" . ($i + 1) . ")" : $titulo_base;
+
+                if ($sera_principal) {
+                    // Actualizar Anuncio (Portada)
+                    
+                    // Borrar anterior si existía
+                    if ($tiene_principal) {
+                        unlink("../img/" . $fprincipal_actual);
+                    }
+                    
+                    $sql_upd = "UPDATE anuncios SET FPrincipal = ?, Alternativo = ? WHERE IdAnuncio = ?";
+                    $stmt_upd = $mysqli->prepare($sql_upd);
+                    $stmt_upd->bind_param("ssi", $nombre_nuevo, $texto_alt, $anuncio_id);
+                    
+                    if ($stmt_upd->execute()) {
+                        $fotos_subidas_info[] = ['archivo' => $nombre_original, 'tipo' => 'Principal'];
+                        $contador_exito++;
+                        // Al asignar una principal, marcamos que ya tiene para las siguientes vueltas del bucle
+                    } else {
+                        $errores[] = "Error BD Principal: " . $stmt_upd->error;
+                    }
+                    $stmt_upd->close();
+
+                } else {
+                    // Insertar en Galería
+                    $sql_ins = "INSERT INTO fotos (Anuncio, Foto, Titulo, Alternativo) VALUES (?, ?, ?, ?)";
+                    $stmt_ins = $mysqli->prepare($sql_ins);
+                    $stmt_ins->bind_param("isss", $anuncio_id, $nombre_fichero, $titulo_final, $texto_alt);
+                    $sql_ins_corrected = "INSERT INTO fotos (Anuncio, Foto, Titulo, Alternativo) VALUES (?, ?, ?, ?)";
+                    $stmt_ins = $mysqli->prepare($sql_ins_corrected);
+                    $stmt_ins->bind_param("isss", $anuncio_id, $nombre_nuevo, $titulo_final, $texto_alt);
+
+                    if ($stmt_ins->execute()) {
+                        $fotos_subidas_info[] = ['archivo' => $nombre_original, 'tipo' => 'Galería'];
+                        $contador_exito++;
+                    } else {
+                        $errores[] = "Error BD Galería: " . $stmt_ins->error;
+                    }
+                    $stmt_ins->close();
+                }
+
+            } else {
+                $errores[] = "Error al mover el archivo $nombre_original";
+            }
+        } // Fin del for
+
+        if ($contador_exito > 0) {
+            $exito = true;
+            $mensaje_resultado = "Se han subido $contador_exito fotos correctamente.";
+            $nombre_fichero = "($contador_exito archivos procesados)";
+        } else {
+            if (empty($errores)) {
+                $errores[] = "No se pudo subir ninguna foto correctamente.";
             }
         }
     }
@@ -148,11 +180,18 @@ require_once "header.php";
                 <h3>¡Operación Exitosa!</h3>
                 <p><?php echo $mensaje_resultado; ?></p>
                 <ul>
-                    <li><strong>Título:</strong> <?php echo htmlspecialchars($titulo_foto); ?></li>
-                    <li><strong>Archivo:</strong> <?php echo htmlspecialchars($nombre_fichero); ?></li>
+                    <li><strong>Título Base:</strong> <?php echo htmlspecialchars($titulo_foto); ?></li>
+                    <li><strong>Archivos:</strong> <?php echo htmlspecialchars($nombre_fichero); ?></li>
                     <li><strong>Alternativo:</strong> <?php echo htmlspecialchars($texto_alt); ?></li>
                 </ul>
                 
+                <h4>Detalle:</h4>
+                <ul>
+                    <?php foreach ($fotos_subidas_info as $info): ?>
+                        <li>[<?php echo $info['tipo']; ?>] <?php echo htmlspecialchars($info['archivo']); ?></li>
+                    <?php endforeach; ?>
+                </ul>
+
                 <button class="ver"><a href="ver_anuncio.php?id=<?php echo $anuncio_id; ?>">Ver Anuncio</a></button>
                 <button class="ver"><a href="mis_anuncios.php">Volver a mis anuncios</a></button>
                 

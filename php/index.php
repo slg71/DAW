@@ -11,6 +11,8 @@ include "header.php";
 //conexion a la base de datos
 require_once("conexion_bd.php"); 
 $usuario_registrado = isset($_SESSION['usuario_id']);
+
+include "funciones_imagenes.php";
 ?>
 
 <main>
@@ -25,6 +27,32 @@ $usuario_registrado = isset($_SESSION['usuario_id']);
             </fieldset>
             <button type="submit"><i class="icon-search"></i>Buscar</button>
         </form>
+    </section>
+    
+    <section>
+        <h2>Estadísticas de la semana</h2>
+        <p>Fotos subidas en los últimos 7 días:</p>
+        
+        <?php
+        //QUERY SQL AQUI!!!!
+        //por ahora utilizo datos inventados para hacer pruebas
+        $datos_simulados = [
+            'Lun' => 5,
+            'Mar' => 12,
+            'Mie' => 8,
+            'Jue' => 20,
+            'Vie' => 15,
+            'Sab' => 45,
+            'Dom' => 3
+        ];
+        
+        // Llamo a mi función
+        $grafico_base64 = generar_grafico($datos_simulados);
+        ?>
+        
+        <article>
+            <img src="<?php echo $grafico_base64; ?>" alt="Gráfico de barras generado con GD">
+        </article>
     </section>
 
     <section id="listado">

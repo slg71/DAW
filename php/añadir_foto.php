@@ -79,8 +79,8 @@ require_once "header.php";
         <fieldset>
             <legend>Datos de la imagen</legend>
             
-            <label for="foto">Seleccionar Foto (*):</label>
-            <input type="file" id="foto" name="foto" accept="image/*" required>
+            <label for="fotos">Seleccionar Fotos (Puedes elegir varias):</label>
+            <input type="file" id="fotos" name="fotos[]" accept="image/*" multiple required>
             
             <label for="titulo_foto">Título de la Foto (*):</label>
             <input type="text" id="titulo_foto" name="titulo_foto" required>

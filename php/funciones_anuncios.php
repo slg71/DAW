@@ -112,6 +112,9 @@ function obtener_detalle_y_fotos_anuncio($id_anuncio) {
         $stmt_fotos->execute();
         $result_fotos = $stmt_fotos->get_result();
         while ($row = $result_fotos->fetch_assoc()) {
+            if (!empty($datos_anuncio['FPrincipal']) && $row['Foto'] === $datos_anuncio['FPrincipal']) {
+                continue; 
+            }
             $fotos[] = $row;
         }
         $stmt_fotos->close();
