@@ -31,7 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $titulo_foto = $titulo_base;
     $texto_alt = $texto_alt_base;
     
-    // RECUPERAMOS LA VARIABLE QUE DABA ERROR
     // ¿El usuario marcó el check de "Portada"?
     $usuario_pide_principal = isset($_POST['es_principal']) && $_POST['es_principal'] == '1';
     
