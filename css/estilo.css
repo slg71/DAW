@@ -133,7 +133,7 @@ dialog button:active {
 
 /*=================================DISEÑO DEL ELEMENTO INFORMACIÓN SIMPLE=================================*/
 
-#bloque {
+#bloque{
     max-width: 500px;
     margin: 0 auto;
     color: var(--blanco);
@@ -552,6 +552,151 @@ footer p {
         color: var(--blanco);
     }
 
+}
+/*=================================DISEÑO DE PAGINACIÓN=================================*/
+#paginacion {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 30px 0;
+    padding: 20px;
+}
+
+/* Enlaces de paginación */
+#paginacion a {
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    transition: background 0.3s;
+}
+.paginacion-container{
+    margin: 10 px;
+}
+
+#paginacion a:hover {
+    background-color: #f1f3f4;
+}
+/*=================================DISEÑO DE ARTICULOS=================================*/
+#listado {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+article {
+    border: 1px solid #ccc;
+    padding: 15px;
+    text-align: center;
+}
+
+article img {
+    max-width: 100%;
+    height: auto;
+}
+
+
+/* Contenedor principal de los anuncios en cuadrícula */
+
+/* 1. Forzar que el listado de mis anuncios sea una cuadrícula controlada */
+#listado-mis-anuncios {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 350px)); /* los arts tienen que medir entre 280px y 350px max */
+    gap: 30px; 
+    padding: 20px;
+    justify-content: center; /* Centra los arti si sobran espacios */
+}
+
+/* Controlar art y imgn */
+.tarjeta-anuncio {
+    background: var(--color_sec);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px; 
+}
+
+.img-mis-anuncios {
+    width: 100% !important; /* no cupa el ancho de la pantallaaa */
+    height: 200px !important; /* alt fija dolor cbz */
+    object-fit: cover; /* Cortar img*/
+    display: block;
+}
+
+.tarjeta-anuncio h3 {
+    font-size: 1.1rem;
+    padding: 10px;
+    margin: 0;
+}
+
+.botones-anuncio {
+    padding: 10px;
+    background: rgba(0,0,0,0.1); 
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: auto; 
+}
+
+.botones-anuncio button {
+    padding: 8px 4px;
+    font-size: 0.85rem;
+    width: 100%;
+}
+
+/* Diseño de la Paginación */
+.paginacion-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 40px 0;
+}
+
+.btn-pag {
+    background: var(--color_sec);
+    color: var(--blanco) !important;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    border: 1px solid var(--blanco);
+}
+
+.btn-pag.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    cursor: default;
+}
+
+.btn-pag:hover:not(.disabled) {
+    background: var(--blanco);
+    color: var(--color_sec) !important;
+}
+
+/* --- Ajustes para la Galería Semántica --- */
+
+.contenedor-miniatura {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+figcaption {
+    padding: 10px;
+    color: var(--blanco);
+    text-align: center;
+    font-size: 0.9rem;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.acciones-foto {
+    padding: 10px;
+    margin-top: auto;
+    display: flex;
+    justify-content: center;
 }
 
 
