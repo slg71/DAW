@@ -133,7 +133,7 @@ dialog button:active {
 
 /*=================================DISEÑO DEL ELEMENTO INFORMACIÓN SIMPLE=================================*/
 
-#bloque {
+#bloque{
     max-width: 500px;
     margin: 0 auto;
     color: var(--blanco);
@@ -553,7 +553,122 @@ footer p {
     }
 
 }
+/*=================================DISEÑO DE PAGINACIÓN=================================*/
+#paginacion {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 30px 0;
+    padding: 20px;
+}
 
+/* Enlaces de paginación */
+#paginacion a {
+    text-decoration: none;
+    color: #1a73e8;
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    transition: background 0.3s;
+}
+
+#paginacion a:hover {
+    background-color: #f1f3f4;
+}
+
+/* El listado de anuncios en grid */
+#listado {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+article {
+    border: 1px solid #ccc;
+    padding: 15px;
+    text-align: center;
+}
+
+article img {
+    max-width: 100%;
+    height: auto;
+}
+
+
+/* Contenedor principal de los anuncios en cuadrícula */
+#listado-mis-anuncios {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Tarjeta individual del anuncio */
+.tarjeta-anuncio {
+    background: var(--color_sec);
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Miniatura */
+.tarjeta-anuncio img {
+    border: 3px solid var(--blanco);
+    transition: transform 0.3s;
+}
+
+.tarjeta-anuncio img:hover {
+    transform: scale(1.05);
+}
+
+/* Contenedor de botones dentro de la tarjeta */
+.botones-anuncio {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dos columnas de botones */
+    gap: 8px;
+    width: 100%;
+    margin-top: 15px;
+    background: transparent; /* Anula el fondo del footer si hereda */
+}
+
+.botones-anuncio button {
+    padding: 8px 4px;
+    font-size: 0.85rem;
+    width: 100%;
+}
+
+/* Diseño de la Paginación */
+.paginacion-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 40px 0;
+}
+
+.btn-pag {
+    background: var(--color_sec);
+    color: var(--blanco) !important;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    border: 1px solid var(--blanco);
+}
+
+.btn-pag.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    cursor: default;
+}
+
+.btn-pag:hover:not(.disabled) {
+    background: var(--blanco);
+    color: var(--color_sec) !important;
+}
 
 /*=================================MEDIA QUERIES=================================*/
 
