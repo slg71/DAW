@@ -602,14 +602,13 @@ article img {
 /* 1. Forzar que el listado de mis anuncios sea una cuadrícula controlada */
 #listado-mis-anuncios {
     display: grid;
-    /* Esto obliga a que las tarjetas midan entre 280px y 350px máximo */
-    grid-template-columns: repeat(auto-fit, minmax(280px, 350px)); 
+    grid-template-columns: repeat(auto-fit, minmax(280px, 350px)); /* los arts tienen que medir entre 280px y 350px max */
     gap: 30px; 
     padding: 20px;
-    justify-content: center; /* Centra las tarjetas si sobran espacios */
+    justify-content: center; /* Centra los arti si sobran espacios */
 }
 
-/* 2. Controlar la tarjeta y la imagen */
+/* Controlar art y imgn */
 .tarjeta-anuncio {
     background: var(--color_sec);
     border-radius: 12px;
@@ -617,13 +616,13 @@ article img {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px; /* Separación extra por si falla el grid */
+    margin-bottom: 20px; 
 }
 
 .img-mis-anuncios {
-    width: 100% !important; /* Ocupa el ancho de la TARJETA (350px), no de la pantalla */
-    height: 200px !important; /* Altura fija para que no sea gigante */
-    object-fit: cover; /* Corta la imagen para que encaje sin deformarse */
+    width: 100% !important; /* no cupa el ancho de la pantallaaa */
+    height: 200px !important; /* alt fija dolor cbz */
+    object-fit: cover; /* Cortar img*/
     display: block;
 }
 
@@ -635,11 +634,11 @@ article img {
 
 .botones-anuncio {
     padding: 10px;
-    background: rgba(0,0,0,0.1); /* Ligera distinción para la botonera */
+    background: rgba(0,0,0,0.1); 
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
-    margin-top: auto; /* Empuja los botones siempre al final */
+    margin-top: auto; 
 }
 
 .botones-anuncio button {
@@ -676,6 +675,30 @@ article img {
     background: var(--blanco);
     color: var(--color_sec) !important;
 }
+
+/* --- Ajustes para la Galería Semántica --- */
+
+.contenedor-miniatura {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+figcaption {
+    padding: 10px;
+    color: var(--blanco);
+    text-align: center;
+    font-size: 0.9rem;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.acciones-foto {
+    padding: 10px;
+    margin-top: auto;
+    display: flex;
+    justify-content: center;
+}
+
 
 /*=================================MEDIA QUERIES=================================*/
 
