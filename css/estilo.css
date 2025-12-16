@@ -565,19 +565,20 @@ footer p {
 /* Enlaces de paginación */
 #paginacion a {
     text-decoration: none;
-    color: #1a73e8;
     padding: 8px 16px;
     border: 1px solid #ddd;
     border-radius: 4px;
     background-color: #fff;
     transition: background 0.3s;
 }
+.paginacion-container{
+    margin: 10 px;
+}
 
 #paginacion a:hover {
     background-color: #f1f3f4;
 }
-
-/* El listado de anuncios en grid */
+/*=================================DISEÑO DE ARTICULOS=================================*/
 #listado {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -597,9 +598,6 @@ article img {
 
 
 /* Contenedor principal de los anuncios en cuadrícula */
-/* Ajustes en estilo.css para Mis Anuncios */
-
-/* Ajustes para la sección de Mis Anuncios */
 
 /* 1. Forzar que el listado de mis anuncios sea una cuadrícula controlada */
 #listado-mis-anuncios {

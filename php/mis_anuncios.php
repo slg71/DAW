@@ -47,9 +47,9 @@ include "header.php";
                         alt="Miniatura" 
                         class="img-mis-anuncios">
                 </a>
-                <div style="padding:10px;">
-                    <h3 style="color:white; margin:0;"><?php echo htmlspecialchars($anuncio['Titulo']); ?></h3>
-                </div>
+                <p >
+                    <h3><?php echo htmlspecialchars($anuncio['Titulo']); ?></h3>
+                </p>
             </article>
             <?php endforeach; ?>
         </section>
