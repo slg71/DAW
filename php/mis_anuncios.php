@@ -36,24 +36,21 @@ include "header.php";
     <p style="text-align:center;">Página <?php echo $pagina_actual; ?> de <?php echo $total_paginas; ?></p>
 
     <?php if ($num_total_anuncios > 0): ?>
-        <section id="listado-mis-anuncios">
-            <?php foreach ($anuncios_mostrar as $anuncio): ?>
-                <?php $ruta_foto = "../img/" . $anuncio['FPrincipal']; ?>
-                <article class="tarjeta-anuncio">
-                    <a href="ver_anuncio.php?id=<?php echo $anuncio['IdAnuncio']; ?>">
-                        <img src="<?php echo generar_miniatura($ruta_foto, 200); ?>" 
-                             alt="Miniatura de <?php echo htmlspecialchars($anuncio['Titulo']); ?>">
-                    </a>
-                    <h3><?php echo htmlspecialchars($anuncio['Titulo']); ?></h3>
-                    <p><strong>Precio:</strong> <?php echo number_format($anuncio['Precio'], 0, ',', '.'); ?> €</p>
-                    
-                    <footer class="botones-anuncio">
-                        <button><a href="ver_anuncio.php?id=<?php echo $anuncio['IdAnuncio']; ?>">Ver/Editar</a></button>
-                        <button><a href="eliminar_anuncio.php?id=<?php echo $anuncio['IdAnuncio']; ?>">Eliminar</a></button>
-                        <button><a href="solicitar_folleto.php?anuncio_id=<?php echo $anuncio['IdAnuncio']; ?>">Folleto</a></button>
-                        <button><a href="añadir_foto.php?anuncio_id=<?php echo $anuncio['IdAnuncio']; ?>">+ Foto</a></button>
-                    </footer>
-                </article>
+        <section id="listado-mis-anuncios"> <?php foreach ($anuncios_mostrar as $anuncio): ?>
+            <article class="tarjeta-anuncio">
+                <a href="ver_anuncio.php?id=<?php echo $anuncio['IdAnuncio']; ?>">
+                    <?php 
+                        // Genera y devuelve la ruta: ../img/miniaturas/thumb_800_nombre.jpg
+                        $ruta_para_mostrar = generar_miniatura($anuncio['FPrincipal'], 800); 
+                    ?>
+                    <img src="<?php echo $ruta_para_mostrar; ?>" 
+                        alt="Miniatura" 
+                        class="img-mis-anuncios">
+                </a>
+                <div style="padding:10px;">
+                    <h3 style="color:white; margin:0;"><?php echo htmlspecialchars($anuncio['Titulo']); ?></h3>
+                </div>
+            </article>
             <?php endforeach; ?>
         </section>
 
