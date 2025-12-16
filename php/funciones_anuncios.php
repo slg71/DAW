@@ -136,50 +136,76 @@ function obtener_detalle_y_fotos_anuncio($id_anuncio) {
     return $datos_anuncio;
 }
 
-function mostrar_galeria_fotos($anuncio_data, $es_privada) {
+
+// Mostramos las fotos con paginacion .
+
+function mostrar_galeria_fotos_paginada($anuncio_data, $es_privada, $fotos_por_pagina = 2) {
     if (!$anuncio_data) {
-        echo "<main><p>Anuncio no encontrado o ID no valido.</p></main>";
+        echo "<section><p>Anuncio no encontrado.</p></section>";
         return;
     }
 
-    $num_total_fotos = count($anuncio_data['fotos']);
+    $todas_las_fotos = $anuncio_data['fotos'];
+    $total_fotos = count($todas_las_fotos);
+    $total_paginas = ceil($total_fotos / $fotos_por_pagina);
+
+    $pagina_actual = isset($_GET['pag_foto']) ? (int)$_GET['pag_foto'] : 1;
+    if ($pagina_actual < 1) $pagina_actual = 1;
+    if ($pagina_actual > $total_paginas && $total_paginas > 0) $pagina_actual = $total_paginas;
+
+    $inicio = ($pagina_actual - 1) * $fotos_por_pagina;
+    $fotos_mostrar = array_slice($todas_las_fotos, $inicio, $fotos_por_pagina);
+
     $enlace_volver = $es_privada ? "ver_anuncio.php?id=" . $anuncio_data['IdAnuncio'] : "ultimos_anuncios.php";
-    $enlace_volver_texto = $es_privada ? "Volver al Anuncio" : "Volver a Últimos Anuncios";
     ?>
-    <main>
-        <section class="info-anuncio-basica">
-            <h2>Galería de Fotos del Anuncio #<?php echo htmlspecialchars($anuncio_data['IdAnuncio']); ?></h2>
-            <h3><?php echo htmlspecialchars($anuncio_data['Titulo']); ?></h3>
-            <p><a href="<?php echo $enlace_volver; ?>">&larr; <?php echo $enlace_volver_texto; ?></a></p>
-        </section>
+    <section class="info-anuncio-basica">
+        <h2>Galería de Fotos (Página <?php echo $pagina_actual; ?> de <?php echo $total_paginas; ?>)</h2>
+        <h3><?php echo htmlspecialchars($anuncio_data['Titulo']); ?></h3>
+        <p><a href="<?php echo $enlace_volver; ?>">&larr; Volver al Anuncio</a></p>
+    </section>
 
-        <section class="galeria-fotos">
-            <?php if ($num_total_fotos > 0): ?>
-                <?php foreach ($anuncio_data['fotos'] as $foto): ?>
-                    <div class="contenedor-foto">
-                        <img 
-                            src="../img/<?php echo htmlspecialchars($foto['Foto']); ?>" 
-                            alt="<?php echo htmlspecialchars($foto['Alternativo']); ?>"
-                            title="<?php echo htmlspecialchars($foto['Titulo']); ?>"
-                            class="foto-galeria"
-                        >
-                        <p class="titulo-foto"><?php echo htmlspecialchars($foto['Titulo']); ?></p>
-
-                        <!-- Botón de eliminar solo si es vista privada -->
-                        <?php if ($es_privada): ?>
+    <section id="listado-mis-anuncios"> <?php if ($total_fotos > 0): ?>
+            <?php foreach ($fotos_mostrar as $foto): ?>
+                <article class="tarjeta-anuncio">
+                    <figure class="contenedor-miniatura">
+                        <?php 
+                        //  Generar miniatura 
+                        $ruta_thumb = generar_miniatura($foto['Foto'], 800); 
+                        $titulo_limpio = preg_replace('/\s\(\d+\)$/', '', $foto['Titulo']);
+                        ?>
+                        <img src="<?php echo $ruta_thumb; ?>" 
+                             alt="<?php echo htmlspecialchars($foto['Alternativo']); ?>"
+                             class="img-mis-anuncios">
+                        <figcaption><?php echo htmlspecialchars($titulo_limpio); ?></figcaption>
+                    </figure>
+                    
+                    <?php if ($es_privada && $foto['IdFoto'] !== 0): ?>
+                        <footer class="acciones-foto">
                             <form action="eliminar_foto.php" method="get">
                                 <input type="hidden" name="id_anuncio" value="<?php echo $anuncio_data['IdAnuncio']; ?>">
                                 <input type="hidden" name="id_foto" value="<?php echo $foto['IdFoto']; ?>">
-                                <button type="submit">Eliminar</button>
+                                <button type="submit" class="btn-aceptar">Eliminar</button>
                             </form>
-                        <?php endif; ?>
-                    </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p>Este anuncio no tiene fotos actualmente.</p>
+                        </footer>
+                    <?php endif; ?>
+                </article>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p>Este anuncio no tiene fotos.</p>
+        <?php endif; ?>
+    </section>
+
+    <?php if ($total_paginas > 1): ?>
+        <nav class="paginacion-container">
+            <?php if ($pagina_actual > 1): ?>
+                <a href="?id=<?php echo $anuncio_data['IdAnuncio']; ?>&pag_foto=<?php echo $pagina_actual - 1; ?>" class="btn-pag">Anterior</a>
             <?php endif; ?>
-        </section>
-    </main>
+            
+            <?php if ($pagina_actual < $total_paginas): ?>
+                <a href="?id=<?php echo $anuncio_data['IdAnuncio']; ?>&pag_foto=<?php echo $pagina_actual + 1; ?>" class="btn-pag">Siguiente</a>
+            <?php endif; ?>
+        </nav>
+    <?php endif; ?>
     <?php
 }
 ?>
