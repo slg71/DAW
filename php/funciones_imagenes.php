@@ -71,70 +71,8 @@ function generar_grafico($datos_dias) {
     return 'data:image/png;base64,' . base64_encode($datos_imagen);
 }
 
-// ============================================
 
-
-// ============================================
-//convertir una imagen grande en miniatura
-
-// function generar_miniatura($ruta_imagen, $ancho_deseado = 150) {
-//     //si no existe, se sale
-//     if (!file_exists($ruta_imagen)) {
-//         return ""; 
-//     }
-
-//     //obtener info de la imagen
-//     $info = getimagesize($ruta_imagen);
-//     $ancho_orig = $info[0];
-//     $alto_orig = $info[1];
-//     $tipo_mime = $info['mime'];
-
-//     //crear lienzo original segun el tipo (jpg o png)
-//     if ($tipo_mime == 'image/jpeg') {
-//         $img_origen = imagecreatefromjpeg($ruta_imagen);
-//     } elseif ($tipo_mime == 'image/png') {
-//         $img_origen = imagecreatefrompng($ruta_imagen);
-//     } else {
-//         return ""; // Si no es jpg/png, se sale
-//     }
-
-//     //calcular altura proporcional
-//     $alto_deseado = ($alto_orig / $ancho_orig) * $ancho_deseado;
-
-//     //crear lienzo vacio para la miniatura
-//     $img_destino = imagecreatetruecolor($ancho_deseado, $alto_deseado);
-
-//     //redimensionar     destino         origne  dst_x,y,src_x,y     dst_w       dst_h           src_w       src_h
-//     imagecopyresampled($img_destino, $img_origen, 0, 0, 0, 0, $ancho_deseado, $alto_deseado, $ancho_orig, $alto_orig);
-
-//     //volcar a base64
-//     ob_start();
-//     imagejpeg($img_destino);//sacar siempre como JPG que ocupa menos
-//     $datos = ob_get_contents();
-//     ob_end_clean();
-    
-//     //limpiar
-//     imagedestroy($img_origen);
-//     imagedestroy($img_destino);
-    
-//     return 'data:image/jpeg;base64,' . base64_encode($datos);
-// }
-// 
-
-
-// funciones_imagenes.php
-
-/**
- * Genera una miniatura física en el servidor si no existe.
- * @param string $nombre_archivo Nombre del archivo (ej: 'casa.jpg')
- * @param int $ancho_deseado Por defecto 800px según enunciado
- * @return string Ruta para usar en el atributo src de <img>
- */
-// funciones_imagenes.php
-
-/**
- * Genera una miniatura física en el servidor y devuelve su ruta.
- */
+/* Genera una miniatura en el servidor y devolvemos su ruta */
 function generar_miniatura($nombre_archivo, $ancho_deseado = 800) {
     $dir_original = "../img/";
     $dir_miniaturas = "../img/miniaturas/";
@@ -145,12 +83,11 @@ function generar_miniatura($nombre_archivo, $ancho_deseado = 800) {
         return "../img/default.jpg"; 
     }
 
-    // Nombre único para la miniatura basado en el ancho
     $nombre_miniatura = "thumb_" . $ancho_deseado . "_" . $nombre_archivo;
     $ruta_destino_fisica = $dir_miniaturas . $nombre_miniatura;
     $ruta_retorno_web = "../img/miniaturas/" . $nombre_miniatura;
 
-    // Si ya existe, no la procesamos de nuevo (ahorro de recursos)
+    // Si ya existe, no la procesamos de nuevo
     if (file_exists($ruta_destino_fisica)) {
         return $ruta_retorno_web;
     }
@@ -162,35 +99,33 @@ function generar_miniatura($nombre_archivo, $ancho_deseado = 800) {
 
     // Procesamiento con GD
     $info = getimagesize($ruta_original);
-    $ancho_orig = $info[0];
-    $alto_orig = $info[1];
+    $ancho_orig = $info[0]; 
+    $alto_orig = $info[1];  
     $tipo_mime = $info['mime'];
 
-    // Cargar imagen según tipo
     if ($tipo_mime == 'image/jpeg') {
         $img_origen = imagecreatefromjpeg($ruta_original);
     } elseif ($tipo_mime == 'image/png') {
         $img_origen = imagecreatefrompng($ruta_original);
     } else {
-        return "../img/" . $nombre_archivo; // Fallback a la original si no es compatible
+        return "../img/" . $nombre_archivo;
     }
 
-    // Calcular proporción original para el redimensionado
+    
     $alto_deseado = ($alto_orig / $ancho_orig) * $ancho_deseado;
 
-    // Crear lienzo y reescalar con alta calidad (imagecopyresampled)
     $img_destino = imagecreatetruecolor($ancho_deseado, $alto_deseado);
     
-    // Preservar transparencia para PNGs
-    if ($tipo_mime == 'image/png') {
+    
+    if ($tipo_mime == 'image/png') {// transparencia para PNGs
         imagealphablending($img_destino, false);
         imagesavealpha($img_destino, true);
     }
 
     imagecopyresampled($img_destino, $img_origen, 0, 0, 0, 0, $ancho_deseado, $alto_deseado, $ancho_orig, $alto_orig);
 
-    // Guardar físicamente como JPEG para optimizar peso
-    imagejpeg($img_destino, $ruta_destino_fisica, 80); 
+    
+    imagejpeg($img_destino, $ruta_destino_fisica, 80); // Guardar como JPEG para peso
 
     // Liberar memoria RAM
     imagedestroy($img_origen);

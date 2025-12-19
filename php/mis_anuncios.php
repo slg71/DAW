@@ -5,7 +5,7 @@ require_once "sesion_control.php";
 include "funciones_anuncios.php";
 include "funciones_imagenes.php";
 
-// PARAMETRO CONFIGURABLE [cite: 22]
+// PARAMETRO CONFIGURABLE
 $anuncios_por_pagina = 2; 
 
 $id_usuario = obtener_id_usuario_numerico($_SESSION['usuario_id']);
@@ -14,7 +14,7 @@ if ($id_usuario !== null) {
     $anuncios_usuario = obtener_anuncios_usuario($id_usuario);
 }
 
-// LÓGICA DE PAGINACIÓN [cite: 30]
+// LOGICA DE PAGINACION 
 $num_total_anuncios = count($anuncios_usuario);
 $total_paginas = ceil($num_total_anuncios / $anuncios_por_pagina);
 
@@ -23,7 +23,7 @@ if ($pagina_actual < 1) $pagina_actual = 1;
 if ($pagina_actual > $total_paginas && $total_paginas > 0) $pagina_actual = $total_paginas;
 
 $inicio = ($pagina_actual - 1) * $anuncios_por_pagina;
-// Extraemos solo los anuncios de la página actual [cite: 289]
+// Extraemos solo los anuncios de la pag actual
 $anuncios_mostrar = array_slice($anuncios_usuario, $inicio, $anuncios_por_pagina);
 
 $titulo_pagina = "Mis Anuncios (" . $num_total_anuncios . ")";
